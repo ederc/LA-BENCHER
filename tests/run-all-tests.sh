@@ -6,14 +6,15 @@ SCRIPT=`readlink -f $0`
 # Absolute path this script is in, thus /home/user/bin
 SCRIPTPATH=`dirname $SCRIPT`
 TESTPATH="$SCRIPTPATH/unit"
-echo "==========================================="
-echo "------ start: all tests for xmalloc -------"
-echo "==========================================="
-FILES=$(find $TESTPATH -name test-\* -perm /a+x | sort)
+echo "-------------------------------------------"
+echo "       start: all tests for xmalloc        "
+echo "-------------------------------------------"
+FILES=$(find $TESTPATH -name \_\* -perm /a+x | sort)
 countfailedunit=0
 countallunit=0
-echo "1. unit tests"
-echo "-------------------------------------------"
+echo ""
+echo "UNIT TESTS"
+echo ""
 for f in $FILES
 do
   fname=`basename $f`
@@ -42,9 +43,10 @@ TESTPATH="$SCRIPTPATH/basic"
 FILES=$(find $TESTPATH -name test-\* -perm /a+x | sort)
 countfailedbasic=0
 countallbasic=0
-echo "-------------------------------------------"
-echo "2. basic tests"
-echo "-------------------------------------------"
+echo ""
+echo ""
+echo "BASIC TESTS"
+echo ""
 for f in $FILES
 do
   fname=`basename $f`
@@ -65,15 +67,16 @@ do
   fi
   echo "$fname"
 done
-echo "-------------------------------------------"
+echo ""
+echo ""
 printf "%3d of %3d unit  tests failed\n" "$countfailedunit" "$countallunit"
 printf "%3d of %3d basic tests failed\n" "$countfailedbasic" "$countallbasic"
 echo "-------------------------------------------"
 printf "%3d of %3d tests failed\n" "$countfailed" "$countall"
-echo "==========================================="
+echo "-------------------------------------------"
 if test $countfailed -gt 0
 then
   echo "Please report to ederc@mathematik.uni-kl.de"
-  echo "==========================================="
+  echo "-------------------------------------------"
   exit 1
 fi

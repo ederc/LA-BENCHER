@@ -19,7 +19,7 @@ SOURCES=							\
 pkginclude_HEADERS =	\
 	$(BASIC_HDRS)
 
-libf4rt_la_CPPFLAGS= $(AM_CXXFLAGS) -c -Wall -pthread -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
+libf4rt_la_CPPFLAGS= $(AM_CXXFLAGS) -Wall -pthread -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
 
 libf4rt_la_SOURCES=	\
 	$(SOURCES)
@@ -40,4 +40,4 @@ bin_PROGRAMS = f4rt
 
 f4rt_CPPFLAGS= $(AM_CPPFLAGS)
 f4rt_SOURCES= intrinsics.c intrinsics.h
-#f4rt_LDADD=libf4rt.la
+f4rt_LDADD=libf4rt.la

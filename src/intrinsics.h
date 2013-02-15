@@ -10,9 +10,12 @@
 #ifndef F4RT_INTRINSICS_H
 #define F4RT_INTRINSICS_H
 
-#include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
-#include <limits.h> // for ULLONG_MAX etc.
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <limits.h>
 
 #include "f4rt-config.h"
 

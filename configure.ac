@@ -86,7 +86,7 @@ AC_SUBST([MKDIR_P])
 AC_STDC_HEADERS
 #LT_INIT()
 LT_INIT([disable-shared])
-AC_PROG_CC
+AM_PROG_CC_C_O
 #AC_PROG_CXX
 
 # check assert setting
@@ -112,7 +112,6 @@ AC_C_BIGENDIAN(
 dnl If CFLAGS isn't defined, set CFLAGS to something reasonable.  Otherwise,
 dnl just prevent autoconf from molesting CFLAGS.
 CFLAGS=$CFLAGS
-AC_PROG_CC
 if test "x$GCC" != "xyes" ; then
   AC_CACHE_CHECK([whether compiler is MSVC],
                  [x_cv_msvc],
@@ -976,7 +975,6 @@ Makefile
 f4rt-config
 src/Makefile
 tests/Makefile
-tests/basic/Makefile
 tests/data/Makefile
 tests/unit/Makefile
 m4/Makefile

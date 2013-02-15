@@ -9,10 +9,9 @@ AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer -pthrea
 BENCHMARK_CXXFLAGS = -O2 -pthread
 
 # all tests are done in the corresponding subdirectories
-SUBDIRS = unit basic data
+SUBDIRS = unit data
 
 UNIT_DIR=unit
-BASIC_DIR=basic
 if ENABLE_DEBUG
 LDADD = $(top_builddir)/src/.libs/libxmalloc_debug.la
 else
