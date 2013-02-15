@@ -1,0 +1,11 @@
+F4RT - F4 Reduction Tools
+========================================================================
+F4RT is a library of tools for implementing fast and efficient reduction
+in F4-like Groebner basis algorithms. Thus the tools focus on the special matrix
+structure appearing during Groebner basis algorithms. This structure leads to
+special Gaussian Elimination steps, e.g. as presented in "Parallel Gaussian
+Elimination for Gröbner bases computations in finite fields" by Faugère and
+Lachartre.
+Note that this library is dedicated to highly use CPU intrinsics and
+parallelization methods. Thus it cannot be guaranteed to be efficient or, even
+more, support older CPUs.

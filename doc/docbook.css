@@ -1,0 +1,117 @@
+body {
+         font-family: luxi sans,sans-serif;
+         color: #eee;
+         background-color: #333;
+         margin: 0px auto;
+         max-width: 700px;
+         text-align: justify;
+}
+
+.screen {
+        font-family: monospace;
+        font-size: 1em;
+        display: block;
+        padding: 10px;
+        border: 1px solid #bbb;
+        background-color: #eee;
+        color: #000;   
+        overflow: auto;
+        border-radius: 2.5px;
+        -moz-border-radius: 2.5px;
+        margin: 0.5em 2em;
+ 
+}
+
+.programlisting {
+        font-family: monospace;
+        font-size: 1em;
+        display: block;
+        padding: 10px;
+        border: 0px solid #333;
+        background-color: #467446;
+        color: #eee;   
+        overflow: auto;
+        border-radius: 1.5px;
+        -moz-border-radius: 1.5px;
+        margin: 0.1em 0.1em;
+}
+
+.caution, .warning {
+        text-align: justify;
+        padding-top: 10px;
+        padding-left: 5px;
+        background-color: #921e1e;
+        border: 1px solid #333;
+        overflow: auto;
+        border-radius: 2.5px;
+        -moz-border-radius: 2.5px;
+        margin: 0.5em 2em;
+}
+
+.caution {
+      text-align: justify;
+}
+
+.warning {
+      text-align: justify;
+}
+
+.note {
+    display: block;
+    text-align: justify;
+}
+
+.toc a {
+  color: #dddd33;
+  text-decoration: none;
+}
+
+.toc a:hover {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.toc a:active {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.ulink {
+  color: #dddd33;
+  text-decoration: none;
+}
+
+.ulink:hover {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.ulink:active {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.ulink:visited {
+  color: #dddd33;
+  text-decoration: none;
+}
+
+.link {
+  color: #dddd33;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.link:active {
+  color: #dddd33;
+  text-decoration: underline;
+}
+
+.link:visited {
+  color: #dddd33;
+  text-decoration: none;
+}

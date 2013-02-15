@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+               "docbook/dtd/xml/4.2/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>F4RT -- F4 Reduction Tools</title>
+    <copyright>
+      <year>2013</year>
+      <holder>Christian Eder</holder>
+    </copyright>
+  </articleinfo>
+  <sect1>
+    <title>Downloading and installing</title>
+
+    <para>
+      Developement of F4RT occurs at
+      its <ulink url="https://github.com/ederc/F4RT">GIT
+      repository</ulink> to which anyone may obtain read-only access.
+    </para>
+    <sect2>
+    <title>Basic installation</title>
+    <para>
+      See the file INSTALL in the F4RT-distribution for detailed
+      installation-instructions. The basic procedure is
+      <programlisting>
+./autogen.sh
+./configure
+make
+make install</programlisting>
+    </para>
+    </sect2>
+    <sect2>
+    <title>Optimizations during the build process</title>
+    <para>
+      Of course, an optimized memory management depends highly on compile-time
+      predefined macros. Moreover, a good performance clearly depends on the
+      operating system as well as the CPU. Thus it is inevitable that some of
+      those macros cannot be determined during compile-time. Instead of moving
+      away from fast macros and checking needed data via configuration scripts
+      at the beginning of the application we stuck with macros and define
+      sensitive default values. Of course any of these macros can be customized
+      by the user during the build process by handing the configure script the
+      corresponding data.
+    </para>
+    <sect3>
+      <title>Cache size</title>
+      <para>
+        The cache size of a CPU is very important for efficient allocations.
+        xmalloc tries to use your CPU's cache as efficient as possible. For this it does
+        not only try to determine the corresponding sizes ( in bytes ) for the L1
+        and the L2 cache via checking platform-dependent mechanisms. In xmalloc the user
+        has two other options on tuning the cache usage resp. on setting the values of
+        <varname>__F4RT_CPU_L1_CACHE</varname> and
+        <varname>__F4RT_LOG_CPU_L2_CACHE</varname>.
+      </para>
+      <para>
+      <orderedlist>
+      <listitem>
+      <para>
+        The user can hand over a flag for the configure script in which the corresponding values for
+        L1 and L2 cache are defined:
+        <programlisting>
+./configure --with-cachesize="32000:64000"</programlisting>
+        This results in
+        <programlisting>
+__F4RT_CPU_L1_CACHE=32000
+__F4RT_CPU_L2_CACHE=64000</programlisting>
+      </para>
+      </listitem>
+      <listitem>
+      <para>
+        Moreover, the user can trigger an internal tuner for the cache size to run
+        during the configure process by calling
+        <programlisting>
+./configure --enable-cachetune</programlisting>
+        The internal checker can be found in
+        <filename>m4/ax_cache_size_tune.m4</filename>.
+      </para>
+      <para>
+        If the user hands over own values to the configure script via the
+        <varname>--with-cachesize</varname> flag, those values are used and no
+        internal test is run.
+      </para>
+      </listitem>
+      </orderedlist>
+      </para>
+      <para>
+        Those values are most common on current x86-64 CPUs. Of course, there exist other
+        architecture with different settings. It is quite hard to find out those values
+        cross-platform, even more in compile time. The user can customize those values by
+        passing the corresponding environmental values to the configure script, e.g.
+        <programlisting>
+./configure --with-cachelinesize="32:5"</programlisting>
+        sets the cache line size to 32kB and <varname>__F4RT_LOG_CPU_CACHE_LINE</varname>
+        to 5.
+      </para>
+      <para>
+      <emphasis>Note:</emphasis>
+      <orderedlist>
+      <listitem>
+      <para>
+        Whenever you change <varname>__F4RT_CPU_CACHE_LINE</varname> you should also adjust
+        <varname>__F4RT_LOG_CPU_CACHE_LINE</varname> correspondingly. Otherwise efficient
+        allocations cannot be garantied.
+      </para>
+      </listitem>
+      <listitem>
+      <para>
+        There exists an internal checker for the cache line size in
+        <filename>m4/ax_cache_line_size.m4</filename>. It tries to get the actual values for the
+        cache line during the configure process. If it fails, xmalloc sets the corresponding variables
+        to the above mentioned default values 64 respectively 6.
+      </para>
+      <para>
+        If the user hands over own values to the configure script via the
+        <varname>--with-cachelinesize</varname> flag, those values are used and no
+        internal test is run.
+      </para>
+      </listitem>
+      </orderedlist>
+      </para>
+    </sect3>
+    <sect3>
+      <title>Cache line size</title>
+      <para>
+        The cache line size of a CPU is very important for efficient allocations.
+        xmalloc tries to achieve a high cache locality without wasting too much
+        space. For this xmalloc depends on two macros called
+        <varname>__F4RT_CPU_CACHE_LINE</varname> and
+        <varname>__F4RT_LOG_CPU_CACHE_LINE</varname>. The coresponding values
+        are given in kB. For default the configure script of xmalloc sets them to
+        <programlisting>
+__F4RT_CPU_CACHE_LINE     = 64
+__F4RT_LOG_CPU_CACHE_LINE =  6</programlisting>
+      </para>
+      <para>
+        Those values are most common on current x86-64 CPUs. Of course, there exist other
+        architecture with different settings. It is quite hard to find out those values
+        cross-platform, even more in compile time. The user can customize those values by
+        passing the corresponding environmental values to the configure script, e.g.
+        <programlisting>
+./configure --with-cachelinesize="32:5"</programlisting>
+        sets the cache line size to 32kB and <varname>__F4RT_LOG_CPU_CACHE_LINE</varname>
+        to 5.
+      </para>
+      <para>
+      <emphasis>Note:</emphasis>
+      <orderedlist>
+      <listitem>
+      <para>
+        Whenever you change <varname>__F4RT_CPU_CACHE_LINE</varname> you should also adjust
+        <varname>__F4RT_LOG_CPU_CACHE_LINE</varname> correspondingly. Otherwise efficient
+        allocations cannot be garantied.
+      </para>
+      </listitem>
+      <listitem>
+      <para>
+        There exists an internal checker for the cache line size in
+        <filename>m4/ax_cache_line_size.m4</filename>. It tries to get the actual values for the
+        cache line during the configure process. If it fails, xmalloc sets the corresponding variables
+        to the above mentioned default values 64 respectively 6.
+      </para>
+      <para>
+        If the user hands over own values to the configure script via the
+        <varname>--with-cachelinesize</varname> flag, those values are used and no
+        internal test is run.
+      </para>
+      </listitem>
+      </orderedlist>
+      </para>
+    </sect3>
+    </sect2>
+  </sect1>
+</article>
