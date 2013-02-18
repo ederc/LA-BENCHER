@@ -19,25 +19,34 @@
 
 #include "f4rt-config.h"
 
-#if defined(__F4RT_HAVE_AVX)
+#ifdef __F4RT_HAVE_AVX
 #include <immintrin.h>
-#elif defined(__F4RT_HAVE_AES)
+#endif
+#ifdef __F4RT_HAVE_AES
 #include <wmmintrin.h>
-#elif defined(__F4RT_HAVE_SSE4A)
+#endif
+#ifdef __F4RT_HAVE_SSE4A
 #include <ammintrin.h>
-#elif defined(__F4RT_HAVE_SSE4_2)
+#endif
+#ifdef __F4RT_HAVE_SSE42
 #include <nmmintrin.h>
-#elif defined(__F4RT_HAVE_SSE4_1)
+#endif
+#ifdef __F4RT_HAVE_SSE41
 #include <smmintrin.h>
-#elif defined(__F4RT_HAVE_SSSE3)
+#endif
+#ifdef __F4RT_HAVE_SSSE3
 #include <tmmintrin.h>
-#elif defined(__F4RT_HAVE_SSE3)
+#endif
+#ifdef __F4RT_HAVE_SSE3
 #include <emmintrin.h>
-#elif defined(__F4RT_HAVE_SSE2)
+#endif
+#ifdef __F4RT_HAVE_SSE2
 #include <emmintrin.h>
-#elif defined(__F4RT_HAVE_SSE)
+#endif
+#ifdef __F4RT_HAVE_SSE
 #include <xmmintrin.h>
-#elif defined(__F4RT_HAVE_MMX)
+#endif
+#ifdef __F4RT_HAVE_MMX
 #include <mmintrin.h>
 #endif
 
@@ -47,15 +56,16 @@
 extern "C" {
 #endif
 
-#ifdef __F4RT_HAVE_SSE2 
+#ifdef __F4RT_HAVE_SSE41
 /**
  * \fn  static inline void _add_mm128_epi32(
  *        uint32_t *dst,
  *        uint32_t const *src
  *      )
  *
- * \brief Adds 32 bit unsigned integers stored in a 128 bit vector using 
- * MMX/SSE intrinsics. 
+ * \brief Adds 16 bit unsigned integers stored in a 128 bit vector using 
+ * MMX/SSE intrinsics. Those integers are stored in vectors of uint32_t, for the
+ * sake of forbidding overflows.
  *
  * \param dst first vector and destination of the result
  *
@@ -63,29 +73,74 @@ extern "C" {
  *
  * \note Both vectors need to be 16 bit aligned, otherwise correctness cannot be
  * guaranteed.
+ * Moreover, the integers in the vectors need to be <=2^31, otherwise an
+ * overflow could occur: 2^31 + 2^31 = 2 * 2^31 = 2^32.
  */
 static inline void _add_mm128_epi32(
     uint32_t * dst,
     uint32_t * const src
 ) {
-  /*
-  const unsigned int __attribute__ ((aligned(16))) src1[4] = { 
-    src1_1,
-    src1_2,
-    src1_3,
-    src1_4
-  };
-  unsigned int __attribute__ ((aligned(16))) src2[4] = { 
-    src2_1,
-    src2_2,
-    src2_3,
-    src2_4
-  };
-*/
-  //unsigned int __attribute__ ((aligned(16))) dst[4];
   __m128i __src  = _mm_load_si128((__m128i*)src);
   __m128i __dst  = _mm_load_si128((__m128i*)dst);
   __dst   = _mm_add_epi32(__src,__dst);
+  _mm_store_si128((__m128i*)dst, __dst);
+}
+
+/**
+ * \fn  static inline void _mul_mm128_epi32(
+ *        int32_t *dst,
+ *        int32_t const *src
+ *      )
+ *
+ * \brief Multiplies 32 bit signed integers stored in a 128 bit vector using 
+ * MMX/SSE intrinsics. Those integers are stored in vectors of int32_t, for the
+ * sake of forbidding overflows.
+ *
+ * \param dst first vector and destination of the result
+ *
+ * \param src second vector, multiplied to dst
+ *
+ * \note Both vectors need to be 16 bit aligned, otherwise correctness cannot be
+ * guaranteed.
+ * Moreover, the integers in the vectors need to be <=2^16, otherwise an
+ * overflow could occur: 2^16 * 2^16 = 2^(16+16) = 2^32.
+ */
+static inline void _mul_mm128_epi32(
+    int32_t * dst,
+    int32_t * const src
+) {
+  __m128i __src  = _mm_load_si128((__m128i*)src);
+  __m128i __dst  = _mm_load_si128((__m128i*)dst);
+  __dst   = _mm_mul_epi32(__src,__dst);
+  _mm_store_si128((__m128i*)dst, __dst);
+}
+
+/**
+ * \fn  static inline void _mullo_mm128_epi32(
+ *        uint32_t *dst,
+ *        uint32_t const *src
+ *      )
+ *
+ * \brief Multiplies 32 bit unsigned integers stored in a 128 bit vector using 
+ * MMX/SSE intrinsics. Those integers are stored in vectors of uint32_t, for the
+ * sake of forbidding overflows.
+ *
+ * \param dst first vector and destination of the result
+ *
+ * \param src second vector, multiplied to dst
+ *
+ * \note Both vectors need to be 16 bit aligned, otherwise correctness cannot be
+ * guaranteed.
+ * Moreover, the integers in the vectors need to be <=2^16, otherwise an
+ * overflow could occur: 2^16 * 2^16 = 2^(16+16) = 2^32.
+ */
+static inline void _mullo_mm128_epi32(
+    uint32_t * dst,
+    uint32_t * const src
+) {
+  __m128i __src  = _mm_load_si128((__m128i*)src);
+  __m128i __dst  = _mm_load_si128((__m128i*)dst);
+  __dst   = _mm_mullo_epi32(__src,__dst);
   _mm_store_si128((__m128i*)dst, __dst);
 }
 
