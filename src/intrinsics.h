@@ -29,10 +29,8 @@
 #include <nmmintrin.h>
 #elif defined(__F4RT_HAVE_SSE4_1)
 #include <smmintrin.h>
-/*
 #elif defined(__F4RT_HAVE_SSSE3)
 #include <tmmintrin.h>
-*/
 #elif defined(__F4RT_HAVE_SSE3)
 #include <emmintrin.h>
 #elif defined(__F4RT_HAVE_SSE2)
