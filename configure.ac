@@ -87,7 +87,7 @@ AC_STDC_HEADERS
 #LT_INIT()
 LT_INIT([disable-shared])
 AM_PROG_CC_C_O
-#AC_PROG_CXX
+AC_PROG_CXX
 
 # check assert setting
 AC_HEADER_ASSERT
