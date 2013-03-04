@@ -91,6 +91,11 @@ void Matrix::mult(const Matrix& A, const Matrix& B) {
   n = B.nRows();
   l = nRows()*nCols();
   entries.resize(l);
+  std::cout << " --- Start Matrix Multiplication --- " << std::endl;
+  timeval start, stop;
+  clock_t cStart, cStop;
+  gettimeofday(&start, NULL);
+  cStart  = clock();
 #if __F4RT_DEBUG
   std::cout << "A => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
@@ -113,6 +118,26 @@ void Matrix::mult(const Matrix& A, const Matrix& B) {
     }
   }
 }
+/*
+  for (uint32 i = 0; i < A.nRows(); ++i) {
+    for (uint32 j = 0; j < B.nRows(); ++j) {
+#if __F4RT_DEBUG
+      std::cout << i << "--" << j << std::endl;
+#endif
+      for (uint32 k = 0; k < B.nCols(); k++) {
+#if __F4RT_DEBUG
+        std::cout << "A: " << A(i,k) << " B: " << B(j,k) << std::endl;
+#endif
+        (*this)(i,j) += A(i,k) * B(j,k);
+      }
+    }
+  }
+*/
+  gettimeofday(&stop, NULL);
+  cStop = clock();
+  std::cout << " --- End Matrix Multiplication --- " << std::endl;
+  std::cout << "REAL TIME for Matrix Multiplication: " << stop.tv_sec - start.tv_sec << " seconds." << std::endl;
+  std::cout << "CPU  TIME for Matrix Multiplication: " << (cStop - cStart) / CLOCKS_PER_SEC << " seconds." << std::endl;
 }
 
 void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = false) {

@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <getopt.h>
+
 #include "matrix.h"
 
 #define PACKAGE "dense-mult-omp"
@@ -17,6 +19,9 @@ void print_help(int exval) {
  printf("  -v              set verbose flag\n");
  printf("  -g              generate a new random uint16 matrix\n");
  printf("  -f FILE         set intput file\n");
+ printf("  -m              if input file is set, multiply matrix with its own transpose\n");
+ printf("  -p              if matrix multiplication took place, print of resulting matrix\n");
+ printf("                  (no printing of resulting matrix by default)\n");
 
  exit(exval);
 }
@@ -47,7 +52,7 @@ void prepareMult(Matrix& A, Matrix& B, char* str) {
   B.copy(A);
 }
 
-void multMatrices(char* str) {
+void multMatrices(char* str, int print) {
   Matrix A, B, C;
 
   // read files, stores matrices, etc
@@ -56,14 +61,18 @@ void multMatrices(char* str) {
   // C = A*B^T
   C.mult(A, B);
   std::cout << "mult done " << std::endl;
-  C.print();
+  if (print)
+    C.print();
   // clear memory
   A.clear();
   B.clear();
+  C.clear();
 }
 
 int main(int argc, char *argv[]) {
  int opt;
+ char* fileName;
+ int print = 0, multiply  = 0;;
 
  /* 
  // no arguments given
@@ -73,7 +82,7 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvgf:o:")) != -1) {
+ while((opt = getopt(argc, argv, "hVvgf:pmo:")) != -1) {
   switch(opt) {
     case 'g': 
       genMatrix();
@@ -89,7 +98,14 @@ int main(int argc, char *argv[]) {
       printf("%s: Verbose option is set `%c'\n", PACKAGE, optopt);
       break;
     case 'f':
-      multMatrices(optarg);
+      fileName  = strdup(optarg);
+      //multMatrices(optarg);
+      break;
+    case 'm':
+      multiply  = 1;
+      break;
+    case 'p':
+      print   = 1;
       break;
     case 'o':
       printf("Output: %s\n", optarg);
@@ -103,12 +119,15 @@ int main(int argc, char *argv[]) {
       print_help(1);
    }
  }
+
  /* 
  // print all remaining options
  */
  for(; optind < argc; optind++)
   printf("argument: %s\n", argv[optind]);
 
+  if (multiply && fileName)
+    multMatrices(fileName, print);  
 
  return 0;
 }

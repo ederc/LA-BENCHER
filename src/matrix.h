@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <string>
 #include <sstream>
-#include <time.h>
+#include <sys/time.h>
 #include <cassert>
 //#include "auxiliary.h"
 
