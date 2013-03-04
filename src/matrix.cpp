@@ -1,5 +1,6 @@
 #include "matrix.h"
 
+#define __F4RT_DEBUG  0
 namespace {
   template<class T>
   T readOne(FILE* file) {
@@ -31,8 +32,8 @@ namespace {
       std::cerr << "Error while writing to file." << std::endl;
   }
 
-  uint16 getRandom() {
-    return std::rand();
+  uint32 getRandom() {
+    return std::rand()%65536;
   }
 
   void check(const Matrix& A, const Matrix& B) {
@@ -82,6 +83,34 @@ void Matrix::print() {
   }
 }
 
+// multiplies A*B^T and stores it in *this
+void Matrix::mult(const Matrix& A, const Matrix& B) {
+  // assertion seems strange, but remember that we compute A*B^T
+  assert (A.nCols() == B.nCols());
+  m = A.nRows();
+  n = B.nRows();
+  l = nRows()*nCols();
+  entries.resize(l);
+#if __F4RT_DEBUG
+  std::cout << "A => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
+  std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
+  std::cout << "C => " << nRows() << "-" << nCols() << "-" << nEntries() << std::endl;
+#endif
+  for (uint32 i = 0; i < A.nRows(); ++i) {
+    for (uint32 j = 0; j < B.nRows(); ++j) {
+#if __F4RT_DEBUG
+      std::cout << i << "--" << j << std::endl;
+#endif
+      for (uint32 k = 0; k < B.nCols(); k++) {
+#if __F4RT_DEBUG
+        std::cout << "A: " << A(i,k) << " B: " << B(j,k) << std::endl;
+#endif
+        (*this)(i,j) += A(i,k) * B(j,k);
+      }
+    }
+  }
+}
+
 void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = false) {
   m = nr;
   n = nc;
@@ -112,13 +141,14 @@ void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = f
     strTime.append("0");
   strTime.append(std::to_string(now->tm_sec));
 
-  fileName << "random-uint16-mat-" << m << "-" << n << "-" << strTime << ".mat";
+  fileName << "random-uint32-mat-" << m << "-" << n << "-" << strTime << ".mat";
 
   FILE* file  = fopen(fileName.str().c_str(), "wb");
   writeOne(m, file);
   writeOne(n, file);
   
-  // generate a matrix of size m*n with random entries of type uint16
+  // generate a matrix of size m*n with random entries of type uint32 (but
+  // being unsigned integer < 2^16 in order to get a correct multiplication)
   //std::vector<uint16> v;
   entries.resize(m*n);
   srand(time(NULL));
@@ -152,5 +182,7 @@ void Matrix::copy(const Matrix& M) {
   n = M.n;
   l = M.l;
   entries.resize(M.entries.size());
+  for (uint64 i=0; i < nEntries(); ++i) 
+    entries[i]  = M.entries[i];
   return;
 }

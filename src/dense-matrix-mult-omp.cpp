@@ -36,19 +36,27 @@ void genMatrix() {
   std::cout << "Matrix generated." << std::endl;
 }
 
-void multMatrices(char* str) {
+void prepareMult(Matrix& A, Matrix& B, char* str) {
   std::cout << str << std::endl;
   FILE* file  = fopen(str,"rb");
-  Matrix A, B;
-  
   // take A from file
   A.read(file);
+
   // let B be just a copy of A
   // we will then multiply A*B^T
   B.copy(A);
+}
 
+void multMatrices(char* str) {
+  Matrix A, B, C;
 
+  // read files, stores matrices, etc
+  prepareMult(A, B, str);
 
+  // C = A*B^T
+  C.mult(A, B);
+  std::cout << "mult done " << std::endl;
+  C.print();
   // clear memory
   A.clear();
   B.clear();

@@ -49,6 +49,8 @@ doc/index.html
 doc/*.html
 src/f4rt
 tests/unit/*
+!tests/unit/Makefile.am
 !tests/unit/*.c
 tests/basic/*
+!tests/basic/Makefile.am
 !tests/basic/*.c
