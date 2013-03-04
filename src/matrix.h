@@ -20,7 +20,6 @@ typedef signed int int32;
 typedef signed short int16;
 typedef signed char int8;
 
-
 /// Dense matrix
 class Matrix {
   uint32 m;
@@ -28,7 +27,6 @@ class Matrix {
   uint64 l;
   std::vector<uint16> entries;
   
-  void read(FILE* file);
   void write(FILE* file);
 public:
   Matrix() : m(0), n(0) {}
@@ -65,6 +63,10 @@ public:
   }
 
   void generateRandomMatrix(const uint32 m, const uint32 n, bool cmp);
+
+  void copy(const Matrix& M);
+
+  void read(FILE* file);
 
   void print();
 };

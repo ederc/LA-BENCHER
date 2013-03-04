@@ -17,7 +17,6 @@ void print_help(int exval) {
  printf("  -v              set verbose flag\n");
  printf("  -g              generate a new random uint16 matrix\n");
  printf("  -f FILE         set intput file\n");
- printf("  -o FILE         set output file\n\n");
 
  exit(exval);
 }
@@ -35,6 +34,24 @@ void genMatrix() {
   std::cin >> cmp;
   A.generateRandomMatrix(m,n,cmp);
   std::cout << "Matrix generated." << std::endl;
+}
+
+void multMatrices(char* str) {
+  std::cout << str << std::endl;
+  FILE* file  = fopen(str,"rb");
+  Matrix A, B;
+  
+  // take A from file
+  A.read(file);
+  // let B be just a copy of A
+  // we will then multiply A*B^T
+  B.copy(A);
+
+
+
+  // clear memory
+  A.clear();
+  B.clear();
 }
 
 int main(int argc, char *argv[]) {
@@ -64,7 +81,7 @@ int main(int argc, char *argv[]) {
       printf("%s: Verbose option is set `%c'\n", PACKAGE, optopt);
       break;
     case 'f':
-      printf("%s: Filename %s\n", PACKAGE, optarg);
+      multMatrices(optarg);
       break;
     case 'o':
       printf("Output: %s\n", optarg);

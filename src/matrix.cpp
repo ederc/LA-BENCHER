@@ -35,7 +35,7 @@ namespace {
     return std::rand();
   }
 
-  void check(const Matrix A, const Matrix B) {
+  void check(const Matrix& A, const Matrix& B) {
     std::cout << "Checking generated matrix with data written to file." << std::endl;
     for (size_t i = 0; i < A.nRows(); ++i)
       for (size_t j = 0; j < A.nCols(); ++j) 
@@ -135,9 +135,22 @@ void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = f
     B.read(file);
     fclose(file);
     check(*this, B);
+    int printMatrices = 0;
+    std::cout << "Matrices coincide. Print them? (1=yes, 0=no) ";
+    std::cin >> printMatrices;
+    if (printMatrices)
+      B.print();
     B.clear();
   }
 
   // delete matrix
   entries.clear();
+}
+
+void Matrix::copy(const Matrix& M) {
+  m = M.m;
+  n = M.n;
+  l = M.l;
+  entries.resize(M.entries.size());
+  return;
 }
