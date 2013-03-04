@@ -68,7 +68,7 @@ void Matrix::print() {
   if (m*n > 1000) {
     int pr;
     std::cout << "NOTE: The matrix consists of " << m*n << " entries." << std::endl;
-    std::cout << "      Do you really want to print it? (1=yes, else=no)" << std::endl;
+    std::cout << "      Do you really want to print it? (1=yes, else=no) ";
     std::cin >> pr;
     if (pr != 1)
       return;
@@ -135,9 +135,15 @@ void Matrix::mult(const Matrix& A, const Matrix& B) {
 */
   gettimeofday(&stop, NULL);
   cStop = clock();
+
+  // compute FLOPS:
+  // assume addition and multiplication in the mult kernel are 2 operations
+  // done A.nRows() * B.nRows() * B.nCols()
+  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
   std::cout << " --- End Matrix Multiplication --- " << std::endl;
   std::cout << "REAL TIME for Matrix Multiplication: " << stop.tv_sec - start.tv_sec << " seconds." << std::endl;
   std::cout << "CPU  TIME for Matrix Multiplication: " << (cStop - cStart) / CLOCKS_PER_SEC << " seconds." << std::endl;
+  std::cout << "GFLOPS:                              " << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std::endl;
 }
 
 void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = false) {
