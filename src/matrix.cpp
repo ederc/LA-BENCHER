@@ -96,6 +96,9 @@ void Matrix::mult(const Matrix& A, const Matrix& B) {
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << nRows() << "-" << nCols() << "-" << nEntries() << std::endl;
 #endif
+#pragma omp parallel
+{
+#pragma omp for
   for (uint32 i = 0; i < A.nRows(); ++i) {
     for (uint32 j = 0; j < B.nRows(); ++j) {
 #if __F4RT_DEBUG
@@ -109,6 +112,7 @@ void Matrix::mult(const Matrix& A, const Matrix& B) {
       }
     }
   }
+}
 }
 
 void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = false) {

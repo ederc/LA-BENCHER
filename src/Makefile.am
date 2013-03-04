@@ -48,5 +48,5 @@ f4rt_CPPFLAGS= $(AM_CPPFLAGS)
 f4rt_SOURCES= intrinsics.c intrinsics.h
 f4rt_LDADD=libf4rt.la
 
-dense_mult_omp_CXXFLAGS= $(AM_CPPFLAGS) -std=gnu++0x -Wall
+dense_mult_omp_CXXFLAGS= $(AM_CPPFLAGS) -std=gnu++0x -Wall -fopenmp
 dense_mult_omp_SOURCES= dense-matrix-mult-omp.cpp matrix.cpp
