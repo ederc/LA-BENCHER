@@ -1,4 +1,7 @@
-#include <matrix-tbb.h>
+#include <matrix.h>
+
+#define BLOCK_SIZE    2
+#define __F4RT_DEBUG  0
 
 // multiplies A*B^T and stores it in *this
 void multTBB(Matrix& C, const Matrix& A, const Matrix& B) {
@@ -19,11 +22,22 @@ void multTBB(Matrix& C, const Matrix& A, const Matrix& B) {
   const int padding = __F4RT_CPU_CACHE_LINE / sizeof(uint32);
   std::cout << "padding " << padding << std::endl;
   sum.resize(padding * A.nRows() * B.nRows());
-  
-  // do matrix multiplication of submatrices of size in the order of 32x32
-  parallel_for  ( blocked_range2d<size_t>(0, B.nRows(), 32, 0 , B.nRows(), 32), 
-                  MatrixMultiply2D(C,A,B)
-                );
+  //
+  // do matrix multiplication of submatrices of size in the order of 
+  // BLOCK_SIZE
+  tbb::parallel_for(tbb::blocked_range<size_t>(0, B.nRows(), BLOCK_SIZE),
+      [&](const tbb::blocked_range<size_t>& r)
+  {
+    for( size_t i=r.begin(); i!=r.end(); ++i )
+      for( size_t j=0; j!=B.nRows(); ++j ) {
+        uint32 sum = 0;
+        for( size_t k=0; k<B.nCols(); ++k )
+          sum += A(i,k) * A(j,k);
+        C(i,j) = sum;
+      }
+    
+  });
+
   gettimeofday(&stop, NULL);
   cStop = clock();
 

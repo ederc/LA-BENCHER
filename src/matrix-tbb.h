@@ -9,17 +9,35 @@ class MatrixMultiply2D {
   Matrix _a, _b, _c;
   uint32 _a_rows, _b_rows, _cols;
   public:
-  void operator()( const blocked_range2d<size_t>& r ) const {
-    Matrix __a = _a, __b = _b, __c = _c;
+  void operator()( const blocked_range2d<size_t>& r ){
+    //Matrix __a = _a, __b = _b, __c = _c;
     for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i )
       for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ) {
         uint32 sum = 0;
         for( size_t k=0; k<_cols; ++k )
-          sum += __a(i,k) * __b(j,k);
-        __c(i,j) = sum;
+          sum += _a(i,k) * _b(j,k);
+        _c(i,j) = sum;
       }
   }
   MatrixMultiply2D(Matrix& C, const Matrix& A, const Matrix& B) :
+    _a(A), _b(B), _c(C), _a_rows(A.nRows()), _b_rows(B.nRows()), _cols(B.nCols()) {}
+};
+
+class MatrixMultiply1D {
+  Matrix _a, _b, _c;
+  uint32 _a_rows, _b_rows, _cols;
+  public:
+  void operator()( const blocked_range<size_t>& r ) {
+    //Matrix A = _a, B = _b, C = _c;
+    for( size_t i=r.begin(); i!=r.end(); ++i )
+      for( size_t j=_b_rows; j!=_b_rows; ++j ) {
+        uint32 sum = 0;
+        for( size_t k=0; k<_cols; ++k )
+          sum += _a(i,k) * _b(j,k);
+        _c(i,j) = sum;
+      }
+  }
+  MatrixMultiply1D(Matrix& C, const Matrix& A, const Matrix& B) :
     _a(A), _b(B), _c(C), _a_rows(A.nRows()), _b_rows(B.nRows()), _cols(B.nCols()) {}
 };
 

@@ -53,10 +53,12 @@ void prepareMult(Matrix& A, Matrix& B, char* str) {
 }
 
 void multMatrices(char* str, int print) {
-  Matrix A, B, C;
+  Matrix A, B;
 
   // read files, stores matrices, etc
   prepareMult(A, B, str);
+  
+  Matrix C(A.nRows(), B.nRows());
 
   // C = A*B^T
   multTBB(C, A, B);

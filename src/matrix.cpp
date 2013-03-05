@@ -226,4 +226,3 @@ void Matrix::copy(const Matrix& M) {
     entries[i]  = M.entries[i];
   return;
 }
-

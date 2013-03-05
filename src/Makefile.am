@@ -12,14 +12,12 @@ SUBDIRS=
 BASIC_HDRS =								\
 	../include/f4rt-config.h 	\
 	intrinsics.h							\
-	matrix-tbb.h							\
 	matrix.h
 
 SOURCES=										\
 	intrinsics.c							\
 	dense-matrix-mult-omp.cpp	\
 	dense-matrix-mult-tbb.cpp	\
-	matrix-tbb.cpp						\
 	matrix.cpp
 
 pkginclude_HEADERS =	\
