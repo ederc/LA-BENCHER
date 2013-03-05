@@ -59,7 +59,7 @@ void multMatrices(char* str, int print) {
   prepareMult(A, B, str);
 
   // C = A*B^T
-  C.mult(A, B);
+  C.multOmp(A, B);
   if (print)
     C.print();
   // clear memory

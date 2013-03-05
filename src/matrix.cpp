@@ -84,7 +84,7 @@ void Matrix::print() {
 }
 
 // multiplies A*B^T and stores it in *this
-void Matrix::mult(const Matrix& A, const Matrix& B) {
+void Matrix::multOmp(const Matrix& A, const Matrix& B) {
   // assertion seems strange, but remember that we compute A*B^T
   assert (A.nCols() == B.nCols());
   m = A.nRows();
@@ -226,3 +226,4 @@ void Matrix::copy(const Matrix& M) {
     entries[i]  = M.entries[i];
   return;
 }
+

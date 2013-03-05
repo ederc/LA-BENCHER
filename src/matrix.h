@@ -64,6 +64,10 @@ public:
     return entries[i + (j * m)];
   }
 
+  void resize(uint64 val) {
+    entries.resize(val);
+  }
+
   void generateRandomMatrix(const uint32 m, const uint32 n, bool cmp);
 
   void copy(const Matrix& M);
@@ -72,5 +76,6 @@ public:
 
   void print();
 
-  void mult(const Matrix& A, const Matrix& B);
+  void multOmp(const Matrix& A, const Matrix& B);
+
 };
