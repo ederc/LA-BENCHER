@@ -9,6 +9,7 @@
 #include <sstream>
 #include <sys/time.h>
 #include <cassert>
+#include <f4rt-config.h>
 //#include "auxiliary.h"
 
 typedef unsigned long long uint64;

@@ -60,7 +60,6 @@ void multMatrices(char* str, int print) {
 
   // C = A*B^T
   C.mult(A, B);
-  std::cout << "mult done " << std::endl;
   if (print)
     C.print();
   // clear memory

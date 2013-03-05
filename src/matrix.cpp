@@ -101,7 +101,11 @@ void Matrix::mult(const Matrix& A, const Matrix& B) {
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << nRows() << "-" << nCols() << "-" << nEntries() << std::endl;
 #endif
-#pragma omp parallel
+  std::vector<uint32> sum;
+  const int padding = __F4RT_CPU_CACHE_LINE / sizeof(uint32);
+  std::cout << "padding " << padding << std::endl;
+  sum.resize(padding*m*n);
+#pragma omp parallel shared(sum)
 {
 #pragma omp for
   for (uint32 i = 0; i < A.nRows(); ++i) {
@@ -113,8 +117,9 @@ void Matrix::mult(const Matrix& A, const Matrix& B) {
 #if __F4RT_DEBUG
         std::cout << "A: " << A(i,k) << " B: " << B(j,k) << std::endl;
 #endif
-        (*this)(i,j) += A(i,k) * B(j,k);
+        sum[padding*(i + (j*m))]  += A(i,k) * B(j,k);
       }
+      (*this)(i,j)  = sum[padding*(i + (j*m))];
     }
   }
 }
