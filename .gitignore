@@ -11,6 +11,7 @@
 *.lo
 *.res
 .libs
+*.backup
 _configs.sed
 compile
 config.h
@@ -39,7 +40,7 @@ m4/lt~obsolete.m4
 m4/ltoptions.m4
 m4/ltsugar.m4
 m4/ltversion.m4
-src/dense-mult-omp
+src/dense-mult
 src/libf4rt.la
 src/random*
 include/f4rt-config.h

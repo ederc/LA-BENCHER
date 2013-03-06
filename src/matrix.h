@@ -1,3 +1,6 @@
+#ifndef F4RT_MATRIX_H
+#define F4RT_MATRIX_H
+
 #include <map>
 #include <cmath>
 #include <algorithm>
@@ -80,3 +83,4 @@ public:
   void multOmp(const Matrix& A, const Matrix& B);
 
 };
+#endif
