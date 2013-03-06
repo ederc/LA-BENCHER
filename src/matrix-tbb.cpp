@@ -16,11 +16,12 @@ void multTBB(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
+  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
   tbb::task_scheduler_init init(nthrds);
+  tbb::affinity_partitioner ap;
   // do matrix multiplication of submatrices of size in the order of 
   // BLOCK_SIZE
   gettimeofday(&start, NULL);
@@ -36,7 +37,7 @@ void multTBB(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
         C(i,j) = sum;
       }
     
-  });
+  }, ap);
 
   gettimeofday(&stop, NULL);
   cStop = clock();
