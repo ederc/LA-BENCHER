@@ -31,13 +31,13 @@ class Matrix {
   uint32 m;
   uint32 n;
   uint64 l;
-  std::vector<uint32> entries;
+  std::vector<float> entries;
   
   void write(FILE* file);
 public:
   Matrix() : m(0), n(0) {}
   Matrix(size_t m_, size_t n_) : m(m_), n(n_), l(m_*n_), entries(m_*n_) {}
-  Matrix(size_t m_, size_t n_, uint32 val) : m(m_), n(n_), l(m_*n_), entries(m_*n_, val) {}
+  Matrix(size_t m_, size_t n_, float val) : m(m_), n(n_), l(m_*n_), entries(m_*n_, val) {}
 
   void clear() {
     m = n = l = 0;
@@ -56,15 +56,15 @@ public:
     return l;
   }
 
-  uint32* column(size_t j) {
+  float* column(size_t j) {
     return &*(entries.begin() + j*m);
   } 
   
-  uint32& operator()(size_t i, size_t j)  {
+  float& operator()(size_t i, size_t j)  {
     return entries[i + (j * m)];
   }
   
-  const uint32& operator()(size_t i, size_t j) const  {
+  const float& operator()(size_t i, size_t j) const  {
     return entries[i + (j * m)];
   }
 

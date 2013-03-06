@@ -18,7 +18,7 @@ void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  const int padding = __F4RT_CPU_CACHE_LINE / sizeof(uint32);
+  const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
   gettimeofday(&start, NULL);
   cStart  = clock();
 #pragma omp parallel num_threads(nthrds)
@@ -26,7 +26,7 @@ void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
 #pragma omp for
   for (uint32 i = 0; i < A.nRows(); ++i) {
     for (uint32 j = 0; j < B.nRows(); ++j) {
-      uint32 sum;
+      float sum = 0;
 #if __F4RT_DEBUG
       std::cout << i << "--" << j << std::endl;
 #endif
@@ -47,7 +47,7 @@ void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
   std::cout << "----------------------------------------" << std::endl;
-  std::cout << "Method:      Intel TBB" << std::endl;
+  std::cout << "Method:      Open MP" << std::endl;
   std::cout << "# Threads:   " << nthrds << std::endl;
   std::cout << "Block size:  " << BLOCK_SIZE << std::endl;
   std::cout << "Real time:   " << stop.tv_sec - start.tv_sec << " sec" << std::endl;

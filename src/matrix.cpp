@@ -32,8 +32,8 @@ namespace {
       std::cerr << "Error while writing to file." << std::endl;
   }
 
-  uint32 getRandom() {
-    return std::rand()%65536;
+  float getRandom() {
+    return static_cast<float>(std::rand());
   }
 
   void check(const Matrix& A, const Matrix& B) {
@@ -63,8 +63,8 @@ void Matrix::write(FILE* file) {
 }
 
 void Matrix::print() {
-  std::cout << "#rows" << std::setw(10) << m << std::endl;
-  std::cout << "#cols" << std::setw(10) << n << std::endl;
+  std::cout << "#rows" << std::setw(15) << m << std::endl;
+  std::cout << "#cols" << std::setw(15) << n << std::endl;
   if (m*n > 1000) {
     int pr;
     std::cout << "NOTE: The matrix consists of " << m*n << " entries." << std::endl;
@@ -81,74 +81,6 @@ void Matrix::print() {
     std::cout  << std::setw(5) << entries[i+m*j];
     std::cout << std::endl;
   }
-}
-
-// multiplies A*B^T and stores it in *this
-void Matrix::multOmp(const Matrix& A, const Matrix& B) {
-  // assertion seems strange, but remember that we compute A*B^T
-  assert (A.nCols() == B.nCols());
-  m = A.nRows();
-  n = B.nRows();
-  l = nRows()*nCols();
-  entries.resize(l);
-  std::cout << " --- Start Matrix Multiplication --- " << std::endl;
-  timeval start, stop;
-  clock_t cStart, cStop;
-  gettimeofday(&start, NULL);
-  cStart  = clock();
-#if __F4RT_DEBUG
-  std::cout << "A => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
-  std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
-  std::cout << "C => " << nRows() << "-" << nCols() << "-" << nEntries() << std::endl;
-#endif
-  std::vector<uint32> sum;
-  const int padding = __F4RT_CPU_CACHE_LINE / sizeof(uint32);
-  std::cout << "padding " << padding << std::endl;
-  sum.resize(padding*m*n);
-#pragma omp parallel shared(sum)
-{
-#pragma omp for
-  for (uint32 i = 0; i < A.nRows(); ++i) {
-    for (uint32 j = 0; j < B.nRows(); ++j) {
-#if __F4RT_DEBUG
-      std::cout << i << "--" << j << std::endl;
-#endif
-      for (uint32 k = 0; k < B.nCols(); k++) {
-#if __F4RT_DEBUG
-        std::cout << "A: " << A(i,k) << " B: " << B(j,k) << std::endl;
-#endif
-        sum[padding*(i + (j*m))]  += A(i,k) * B(j,k);
-      }
-      (*this)(i,j)  = sum[padding*(i + (j*m))];
-    }
-  }
-}
-/*
-  for (uint32 i = 0; i < A.nRows(); ++i) {
-    for (uint32 j = 0; j < B.nRows(); ++j) {
-#if __F4RT_DEBUG
-      std::cout << i << "--" << j << std::endl;
-#endif
-      for (uint32 k = 0; k < B.nCols(); k++) {
-#if __F4RT_DEBUG
-        std::cout << "A: " << A(i,k) << " B: " << B(j,k) << std::endl;
-#endif
-        (*this)(i,j) += A(i,k) * B(j,k);
-      }
-    }
-  }
-*/
-  gettimeofday(&stop, NULL);
-  cStop = clock();
-
-  // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
-  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  std::cout << " --- End Matrix Multiplication --- " << std::endl;
-  std::cout << "REAL TIME for Matrix Multiplication: " << stop.tv_sec - start.tv_sec << " seconds." << std::endl;
-  std::cout << "CPU  TIME for Matrix Multiplication: " << (cStop - cStart) / CLOCKS_PER_SEC << " seconds." << std::endl;
-  std::cout << "GFLOPS:                              " << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std::endl;
 }
 
 void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = false) {
@@ -181,7 +113,7 @@ void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = f
     strTime.append("0");
   strTime.append(std::to_string(now->tm_sec));
 
-  fileName << "random-uint32-mat-" << m << "-" << n << "-" << strTime << ".mat";
+  fileName << "random-float-mat-" << m << "-" << n << "-" << strTime << ".mat";
 
   FILE* file  = fopen(fileName.str().c_str(), "wb");
   writeOne(m, file);
