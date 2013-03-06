@@ -11,9 +11,6 @@
 
 
 void print_help(int exval) {
- printf("%s,%s show working getopt example\n", PACKAGE, VERSION); 
- printf("%s [-h] [-V] [-f FILE] [-o FILE]\n\n", PACKAGE);
-
  printf("DESCRIPTION\n");
  printf("       This program is used as a test for parallelization libraries like\n");
  printf("       OpenMP or Intel TBB. Its main feature is to multiply 2 dense matrices\n");
@@ -36,6 +33,10 @@ void print_help(int exval) {
  printf("                 (no printing of resulting matrix by default)\n");
  printf("       -t        number of threads to be used (default: all possible ones)\n");
  printf("       -m        method to be used: 0=TBB, 1=OpenMP (default: TBB)\n");
+ printf("       -b        sets the block size/grain of task scheduler; note this only works\n");
+ printf("                 with TBB right now (default = 2)\n");
+ printf("       -a        sets CPU affinity of task scheduler; note this only works\n");
+ printf("                 with TBB right now\n");
 
  exit(exval);
 }
@@ -65,7 +66,7 @@ void prepareMult(Matrix& A, Matrix& B, char* str) {
   B.copy(A);
 }
 
-void multMatrices(char* str, int nthrds, int method, int print) {
+void multMatrices(char* str, int nthrds, int method, int affinity, int blocksize, int print) {
   Matrix A, B;
 
   // read files, stores matrices, etc
@@ -74,10 +75,14 @@ void multMatrices(char* str, int nthrds, int method, int print) {
   Matrix C(A.nRows(), B.nRows());
 
   // C = A*B^T
-  if (!method)
-    multTBB(C, A, B, nthrds);
-  else
+  if (!method) {
+    if (affinity == 1)
+      multTBBAffine(C, A, B, nthrds, blocksize);
+    else
+      multTBBAuto(C, A, B, nthrds, blocksize);
+  } else {
     multOMP(C, A, B, nthrds);
+  }
   if (print)
     C.print();
   // clear memory
@@ -89,7 +94,8 @@ void multMatrices(char* str, int nthrds, int method, int print) {
 int main(int argc, char *argv[]) {
  int opt;
  char* fileName;
- int print = 0, multiply  = 0, nthrds = 0, method = 0;
+ int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
+     blocksize = 2;
 
  /* 
  // no arguments given
@@ -99,7 +105,7 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvgf:pt:m:co:")) != -1) {
+ while((opt = getopt(argc, argv, "hVvgf:pt:m:cb:ao:")) != -1) {
   switch(opt) {
     case 'g': 
       genMatrix();
@@ -123,6 +129,15 @@ int main(int argc, char *argv[]) {
       break;
     case 'p':
       print   = 1;
+      break;
+    case 'a':
+      affinity  = 1;
+      break;
+    case 'b':
+      blocksize = atoi(strdup(optarg));
+      if (blocksize == 0)
+        blocksize = 1;
+      break;
     case 't':
       nthrds  = atoi(strdup(optarg));
       break;
@@ -149,7 +164,7 @@ int main(int argc, char *argv[]) {
   printf("argument: %s\n", argv[optind]);
 
   if (multiply && fileName)
-    multMatrices(fileName, nthrds, method, print);  
+    multMatrices(fileName, nthrds, method, affinity, blocksize, print);  
 
  return 0;
 }
