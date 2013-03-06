@@ -46,12 +46,12 @@ void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  std::cout << "----------------------------------------" << std::endl;
+  std::cout << "----------------------------------------------" << std::endl;
   std::cout << "Method:      Open MP" << std::endl;
   std::cout << "# Threads:   " << nthrds << std::endl;
   std::cout << "Block size:  " << BLOCK_SIZE << std::endl;
   std::cout << "Real time:   " << stop.tv_sec - start.tv_sec << " sec" << std::endl;
   std::cout << "CPU time:    " << (cStop - cStart) / CLOCKS_PER_SEC << " sec" << std::    endl;
   std::cout << "GFLOPS/sec:  " << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
-  std::cout << "----------------------------------------" << std::endl;
+  std::cout << "----------------------------------------------" << std::endl;
 }

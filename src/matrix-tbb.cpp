@@ -43,14 +43,14 @@ void multTBBAuto(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int bl
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  std::cout << "----------------------------------------" << std::endl;
-  std::cout << "Method:      Intel TBB" << std::endl;
+  std::cout << "----------------------------------------------" << std::endl;
+  std::cout << "Method:      Intel TBB 1D auto partitioner" << std::endl;
   std::cout << "# Threads:   " << nthrds << std::endl;
   std::cout << "Block size:  " << blocksize << std::endl;
   std::cout << "Real time:   " << stop.tv_sec - start.tv_sec << " sec" << std::endl;
   std::cout << "CPU time:    " << (cStop - cStart) / CLOCKS_PER_SEC << " sec" << std::    endl;
   std::cout << "GFLOPS/sec:  " << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
-  std::cout << "----------------------------------------" << std::endl;
+  std::cout << "----------------------------------------------" << std::endl;
 }
 
 // multiplies A*B^T and stores it in *this
@@ -95,14 +95,14 @@ void multTBBAffine(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int 
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  std::cout << "----------------------------------------" << std::endl;
-  std::cout << "Method:      Intel TBB" << std::endl;
+  std::cout << "----------------------------------------------" << std::endl;
+  std::cout << "Method:      Intel TBB 1D affinity partitioner" << std::endl;
   std::cout << "# Threads:   " << nthrds << std::endl;
   std::cout << "Block size:  " << blocksize << std::endl;
   std::cout << "Real time:   " << stop.tv_sec - start.tv_sec << " sec" << std::endl;
   std::cout << "CPU time:    " << (cStop - cStart) / CLOCKS_PER_SEC << " sec" << std::    endl;
   std::cout << "GFLOPS/sec:  " << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
-  std::cout << "----------------------------------------" << std::endl;
+  std::cout << "----------------------------------------------" << std::endl;
 }
 
 // multiplies A*B^T and stores it in *this
@@ -147,14 +147,14 @@ void multTBBAuto2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int 
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  std::cout << "----------------------------------------" << std::endl;
-  std::cout << "Method:      Intel TBB" << std::endl;
+  std::cout << "----------------------------------------------" << std::endl;
+  std::cout << "Method:      Intel TBB 2D auto partitioner" << std::endl;
   std::cout << "# Threads:   " << nthrds << std::endl;
   std::cout << "Block size:  " << blocksize << std::endl;
   std::cout << "Real time:   " << stop.tv_sec - start.tv_sec << " sec" << std::endl;
   std::cout << "CPU time:    " << (cStop - cStart) / CLOCKS_PER_SEC << " sec" << std::    endl;
   std::cout << "GFLOPS/sec:  " << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
-  std::cout << "----------------------------------------" << std::endl;
+  std::cout << "----------------------------------------------" << std::endl;
 }
 
 // multiplies A*B^T and stores it in *this
@@ -180,17 +180,17 @@ void multTBBAffine2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, in
   // blocksize
   gettimeofday(&start, NULL);
   cStart  = clock();
-  tbb::parallel_for(tbb::blocked_range<size_t>(0, B.nRows(), blocksize),
-      [&](const tbb::blocked_range<size_t>& r)
+  tbb::parallel_for(tbb::blocked_range2d<size_t>(0, A.nRows(), blocksize, 0, B.nRows(), blocksize),
+      [&](const tbb::blocked_range2d<size_t>& r)
   {
-    for( size_t i=r.begin(); i!=r.end(); ++i )
-      for( size_t j=0; j!=B.nRows(); ++j ) {
+    for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i ) {
+      for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
         float sum = 0;
         for( size_t k=0; k<B.nCols(); ++k )
           sum += A(i,k) * A(j,k);
         C(i,j) = sum;
       }
-    
+    }
   }, ap);
 
   gettimeofday(&stop, NULL);
@@ -200,12 +200,12 @@ void multTBBAffine2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, in
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  std::cout << "----------------------------------------" << std::endl;
-  std::cout << "Method:      Intel TBB" << std::endl;
+  std::cout << "----------------------------------------------" << std::endl;
+  std::cout << "Method:      Intel TBB 2D affinity partitioner" << std::endl;
   std::cout << "# Threads:   " << nthrds << std::endl;
   std::cout << "Block size:  " << blocksize << std::endl;
   std::cout << "Real time:   " << stop.tv_sec - start.tv_sec << " sec" << std::endl;
   std::cout << "CPU time:    " << (cStop - cStart) / CLOCKS_PER_SEC << " sec" << std::    endl;
   std::cout << "GFLOPS/sec:  " << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
-  std::cout << "----------------------------------------" << std::endl;
+  std::cout << "----------------------------------------------" << std::endl;
 }

@@ -35,6 +35,8 @@ void print_help(int exval) {
  printf("       -m        method to be used: 0=TBB, 1=OpenMP (default: TBB)\n");
  printf("       -b        sets the block size/grain of task scheduler; note this only works\n");
  printf("                 with TBB right now (default = 2)\n");
+ printf("       -d        sets the dimension of the parallel for loop; note this only works\n");
+ printf("                 with TBB right now (possible values: 1, 2; default = 1)\n");
  printf("       -a        sets CPU affinity of task scheduler; note this only works\n");
  printf("                 with TBB right now\n");
 
@@ -66,7 +68,7 @@ void prepareMult(Matrix& A, Matrix& B, char* str) {
   B.copy(A);
 }
 
-void multMatrices(char* str, int nthrds, int method, int affinity, int blocksize, int print) {
+void multMatrices(char* str, int nthrds, int method, int affinity, int blocksize, int dimension, int print) {
   Matrix A, B;
 
   // read files, stores matrices, etc
@@ -76,10 +78,17 @@ void multMatrices(char* str, int nthrds, int method, int affinity, int blocksize
 
   // C = A*B^T
   if (!method) {
-    if (affinity == 1)
-      multTBBAffine(C, A, B, nthrds, blocksize);
-    else
-      multTBBAuto(C, A, B, nthrds, blocksize);
+    if (dimension == 1) {
+      if (affinity == 1)
+        multTBBAffine(C, A, B, nthrds, blocksize);
+      else
+        multTBBAuto(C, A, B, nthrds, blocksize);
+    } else {
+      if (affinity == 1)
+        multTBBAffine2d(C, A, B, nthrds, blocksize);
+      else
+        multTBBAuto2d(C, A, B, nthrds, blocksize);
+    }
   } else {
     multOMP(C, A, B, nthrds);
   }
@@ -95,7 +104,7 @@ int main(int argc, char *argv[]) {
  int opt;
  char* fileName;
  int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
-     blocksize = 2;
+     blocksize = 2, dimension = 1;
 
  /* 
  // no arguments given
@@ -105,7 +114,7 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvgf:pt:m:cb:ao:")) != -1) {
+ while((opt = getopt(argc, argv, "hVvgf:pt:m:cd:b:ao:")) != -1) {
   switch(opt) {
     case 'g': 
       genMatrix();
@@ -138,6 +147,13 @@ int main(int argc, char *argv[]) {
       if (blocksize == 0)
         blocksize = 1;
       break;
+    case 'd':
+      dimension = atoi(strdup(optarg));
+      if (dimension == 0)
+        dimension = 1;
+      if (dimension > 2)
+        dimension = 2;
+      break;
     case 't':
       nthrds  = atoi(strdup(optarg));
       break;
@@ -164,7 +180,7 @@ int main(int argc, char *argv[]) {
   printf("argument: %s\n", argv[optind]);
 
   if (multiply && fileName)
-    multMatrices(fileName, nthrds, method, affinity, blocksize, print);  
+    multMatrices(fileName, nthrds, method, affinity, blocksize, dimension, print);  
 
  return 0;
 }
