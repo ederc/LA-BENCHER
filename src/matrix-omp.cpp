@@ -1,11 +1,10 @@
 #include <matrix.h>
 
-#define BLOCK_SIZE    2
 #define __F4RT_DEBUG  0
 
 
 // multiplies A*B^T and stores it in *this
-void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
+void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize) {
   // assertion seems strange, but remember that we compute A*B^T
   assert (A.nCols() == B.nRows());
   int thrdCounter = nthrds;
@@ -19,16 +18,17 @@ void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
   gettimeofday(&start, NULL);
   cStart  = clock();
-#pragma omp parallel num_threads(nthrds)
+  if (nthrds > 0)
+    omp_set_num_threads(nthrds);
+#pragma omp parallel shared(A,B,C)
 {
   #pragma omp master
   {
-    thrdCounter = omp_get_num_threads( );
+    thrdCounter = omp_get_num_threads();
   }
-#pragma omp for
+#pragma omp for schedule(guided,blocksize) collapse(2)
   for (uint32 i = 0; i < A.nRows(); ++i) {
     for (uint32 j = 0; j < B.nCols(); ++j) {
       float sum = 0;
@@ -46,9 +46,9 @@ void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
   std::cout << "----------------------------------------------" << std::endl;
-  std::cout << "Method:      Open MP" << std::endl;
+  std::cout << "Method:      Open MP collapse(2)" << std::endl;
   std::cout << "# Threads:   " << thrdCounter << std::endl;
-  std::cout << "Block size:  " << BLOCK_SIZE << std::endl;
+  std::cout << "Block size:  " << blocksize << std::endl;
   std::cout << "Real time:   " << stop.tv_sec - start.tv_sec << " sec" << std::endl;
   std::cout << "CPU time:    " << (cStop - cStart) / CLOCKS_PER_SEC << " sec" << std::    endl;
   std::cout << "GFLOPS/sec:  " << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;

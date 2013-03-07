@@ -11,8 +11,14 @@ void multTBBAuto(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int bl
 void multTBBAffine(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
 
 // multiplies A*B^T and stores it in *this
+void multTBBSimple(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
+
+// multiplies A*B^T and stores it in *this
 void multTBBAuto2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
 
 // multiplies A*B^T and stores it in *this
 void multTBBAffine2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
+
+// multiplies A*B^T and stores it in *this
+void multTBBSimple2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
 #endif

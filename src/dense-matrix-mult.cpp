@@ -40,6 +40,8 @@ void print_help(int exval) {
  printf("                 with TBB right now (possible values: 1, 2; default = 1)\n");
  printf("       -a        sets CPU affinity of task scheduler; note this only works\n");
  printf("                 with TBB right now\n");
+ printf("       -s        sets simple task scheduler; note this only works\n");
+ printf("                 with TBB right now\n");
 
  exit(exval);
 }
@@ -75,18 +77,28 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, con
   // C = A*B^T
   if (!method) {
     if (dimension == 1) {
-      if (affinity == 1)
+      if (affinity == 1) {
         multTBBAffine(C, A, B, nthrds, blocksize);
-      else
-        multTBBAuto(C, A, B, nthrds, blocksize);
+      } else {
+        if (affinity == 2) {
+          multTBBSimple(C, A, B, nthrds, blocksize);
+        } else {
+          multTBBAuto(C, A, B, nthrds, blocksize);
+        }
+      }
     } else {
-      if (affinity == 1)
+      if (affinity == 1) {
         multTBBAffine2d(C, A, B, nthrds, blocksize);
-      else
-        multTBBAuto2d(C, A, B, nthrds, blocksize);
+      } else {
+        if (affinity == 2) {
+          multTBBSimple2d(C, A, B, nthrds, blocksize);
+        } else {
+          multTBBAuto2d(C, A, B, nthrds, blocksize);
+        }
+      }
     }
   } else {
-    multOMP(C, A, B, nthrds);
+    multOMP(C, A, B, nthrds, blocksize);
   }
 }
 
@@ -149,7 +161,7 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvgA:B:pt:m:cd:b:ao:")) != -1) {
+ while((opt = getopt(argc, argv, "hVvgA:B:pt:m:cd:b:aso:")) != -1) {
   switch(opt) {
     case 'g': 
       genMatrix();
@@ -180,6 +192,9 @@ int main(int argc, char *argv[]) {
       break;
     case 'a':
       affinity  = 1;
+      break;
+    case 's':
+      affinity  = 2;
       break;
     case 'b':
       blocksize = atoi(strdup(optarg));
