@@ -77,6 +77,8 @@ public:
 
   void copy(const Matrix& M);
 
+  void transpose(const Matrix& M);
+
   void read(FILE* file);
 
   void print();

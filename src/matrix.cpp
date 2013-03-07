@@ -115,7 +115,7 @@ void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = f
 
   fileName << "random-float-mat-" << m << "-" << n << "-" << strTime << ".mat";
 
-  FILE* file  = fopen(fileName.str().c_str(), "wb");
+  FILE* file  = fopen(fileName.str().c_str(), "ab");
   writeOne(m, file);
   writeOne(n, file);
   
@@ -156,5 +156,18 @@ void Matrix::copy(const Matrix& M) {
   entries.resize(M.entries.size());
   for (uint64 i=0; i < nEntries(); ++i) 
     entries[i]  = M.entries[i];
+  return;
+}
+
+void Matrix::transpose(const Matrix& M) {
+  m = M.n;
+  n = M.m;
+  l = M.l;
+  entries.resize(M.entries.size());
+  for (uint32 i=0; i<M.nRows(); ++i) {
+    for (uint32 j=0; j<M.nCols(); ++j) {
+      (*this)(j,i)  = M(i,j);
+    }
+  }
   return;
 }

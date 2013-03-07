@@ -27,7 +27,8 @@ void print_help(int exval) {
 
  printf("       -v        set verbose flag\n");
  printf("       -g        generate a new random uint16 matrix\n");
- printf("       -f FILE   set intput file\n");
+ printf("       -A FILE   set first intput file; if only -A is set but not -B then A*A^T is computed.\n");
+ printf("       -B FILE   set second intput file\n");
  printf("       -c        if input file is set, multiply matrix with its own transpose\n");
  printf("       -p        if matrix multiplication took place, print of resulting matrix\n");
  printf("                 (no printing of resulting matrix by default)\n");
@@ -46,15 +47,16 @@ void print_help(int exval) {
 void genMatrix() {
   uint32 m, n;
   bool cmp;
-  std::cout << "Generate new random matrix with entries of type uint16." << std::endl;
-  std::cout << "Number of rows (<4294967296): ";
+  std::cout << "Generate new random matrix with entries of type float." << std::endl;
+  std::cout << "Number of rows (<2^32): ";
   std::cin >> m;
-  std::cout << "Number of cols (<4294967296): ";
+  std::cout << "Number of cols (<2^32): ";
   std::cin >> n;
   Matrix A;
   std::cout << "Check if matrix is stored correctly? (1=yes, 0=no)  ";
   std::cin >> cmp;
   A.generateRandomMatrix(m,n,cmp);
+  A.clear();
   std::cout << "Matrix generated." << std::endl;
 }
 
@@ -65,17 +67,11 @@ void prepareMult(Matrix& A, Matrix& B, char* str) {
 
   // let B be just a copy of A
   // we will then multiply A*B^T
-  B.copy(A);
+  B.transpose(A);
 }
 
-void multMatrices(char* str, int nthrds, int method, int affinity, int blocksize, int dimension, int print) {
-  Matrix A, B;
-
-  // read files, stores matrices, etc
-  prepareMult(A, B, str);
-  
-  Matrix C(A.nRows(), B.nRows());
-
+void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, const int blocksize,
+              const int method, const int dimension, const int affinity) {
   // C = A*B^T
   if (!method) {
     if (dimension == 1) {
@@ -92,6 +88,45 @@ void multMatrices(char* str, int nthrds, int method, int affinity, int blocksize
   } else {
     multOMP(C, A, B, nthrds);
   }
+}
+
+void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, int blocksize, int dimension, int print) {
+  Matrix A, B;
+
+  // read files, stores matrices, etc
+  FILE* file1  = fopen(str1,"rb");
+  A.read(file1);
+  FILE* file2  = fopen(str2,"rb");
+  B.read(file2);
+  
+  // check dimensions
+  if (A.nCols() != B.nRows()) {
+    fprintf(stderr, "Dimensions of A and B are not correct!\nProgram exiting now!\n");
+    exit(EXIT_FAILURE);
+  }
+
+  Matrix C(A.nRows(), B.nCols());
+
+  multiply(C, A, B, nthrds, blocksize, method, dimension, affinity);
+
+  if (print)
+    C.print();
+  // clear memory
+  A.clear();
+  B.clear();
+  C.clear();
+}
+
+void multEqualMatrices(char* str, int nthrds, int method, int affinity, int blocksize, int dimension, int print) {
+  Matrix A, B;
+
+  // read files, stores matrices, etc
+  prepareMult(A, B, str);
+  
+  Matrix C(A.nRows(), B.nRows());
+
+  multiply(C, A, B, nthrds, blocksize, method, dimension, affinity);
+
   if (print)
     C.print();
   // clear memory
@@ -102,7 +137,7 @@ void multMatrices(char* str, int nthrds, int method, int affinity, int blocksize
 
 int main(int argc, char *argv[]) {
  int opt;
- char* fileName;
+ char *fileNameA = NULL, *fileNameB = NULL;
  int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
      blocksize = 2, dimension = 1;
 
@@ -114,7 +149,7 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvgf:pt:m:cd:b:ao:")) != -1) {
+ while((opt = getopt(argc, argv, "hVvgA:B:pt:m:cd:b:ao:")) != -1) {
   switch(opt) {
     case 'g': 
       genMatrix();
@@ -129,8 +164,12 @@ int main(int argc, char *argv[]) {
     case 'v':
       printf("%s: Verbose option is set `%c'\n", PACKAGE, optopt);
       break;
-    case 'f':
-      fileName  = strdup(optarg);
+    case 'A':
+      fileNameA  = strdup(optarg);
+      //multMatrices(optarg);
+      break;
+    case 'B':
+      fileNameB  = strdup(optarg);
       //multMatrices(optarg);
       break;
     case 'c':
@@ -179,8 +218,12 @@ int main(int argc, char *argv[]) {
  for(; optind < argc; optind++)
   printf("argument: %s\n", argv[optind]);
 
-  if (multiply && fileName)
-    multMatrices(fileName, nthrds, method, affinity, blocksize, dimension, print);  
-
+  if (multiply && fileNameA) {
+    if (fileNameB) {
+      multMatrices(fileNameA, fileNameB, nthrds, method, affinity, blocksize, dimension, print);  
+    } else {
+      multEqualMatrices(fileNameA, nthrds, method, affinity, blocksize, dimension, print);  
+    }
+  }
  return 0;
 }

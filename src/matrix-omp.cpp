@@ -7,8 +7,8 @@
 // multiplies A*B^T and stores it in *this
 void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
   // assertion seems strange, but remember that we compute A*B^T
-  assert (A.nCols() == B.nCols());
-  C.resize(A.nRows()*B.nRows());
+  assert (A.nCols() == B.nRows());
+  C.resize(A.nRows()*B.nCols());
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
   clock_t cStart, cStop;
@@ -25,16 +25,10 @@ void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
 {
 #pragma omp for
   for (uint32 i = 0; i < A.nRows(); ++i) {
-    for (uint32 j = 0; j < B.nRows(); ++j) {
+    for (uint32 j = 0; j < B.nCols(); ++j) {
       float sum = 0;
-#if __F4RT_DEBUG
-      std::cout << i << "--" << j << std::endl;
-#endif
-      for (uint32 k = 0; k < B.nCols(); k++) {
-#if __F4RT_DEBUG
-        std::cout << "A: " << A(i,k) << " B: " << B(j,k) << std::endl;
-#endif
-        sum += A(i,k) * B(j,k);
+      for (uint32 k = 0; k < B.nRows(); k++) {
+        sum += A(i,k) * B(k,j);
       }
       C(i,j)  = sum;
     }

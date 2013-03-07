@@ -5,8 +5,8 @@
 // multiplies A*B^T and stores it in *this
 void multTBBAuto(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize) {
   // assertion seems strange, but remember that we compute A*B^T
-  assert (A.nCols() == B.nCols());
-  C.resize(A.nRows()*B.nRows());
+  assert (A.nCols() == B.nRows());
+  C.resize(A.nRows()*B.nCols());
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
   clock_t cStart, cStop;
@@ -28,10 +28,10 @@ void multTBBAuto(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int bl
       [&](const tbb::blocked_range<size_t>& r)
   {
     for( size_t i=r.begin(); i!=r.end(); ++i )
-      for( size_t j=0; j!=B.nRows(); ++j ) {
+      for( size_t j=0; j!=B.nCols(); ++j ) {
         float sum = 0;
-        for( size_t k=0; k<B.nCols(); ++k )
-          sum += A(i,k) * A(j,k);
+        for( size_t k=0; k<B.nRows(); ++k )
+          sum += A(i,k) * B(k,j);
         C(i,j) = sum;
       }
   });
@@ -56,8 +56,8 @@ void multTBBAuto(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int bl
 // multiplies A*B^T and stores it in *this
 void multTBBAffine(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize) {
   // assertion seems strange, but remember that we compute A*B^T
-  assert (A.nCols() == B.nCols());
-  C.resize(A.nRows()*B.nRows());
+  assert (A.nCols() == B.nRows());
+  C.resize(A.nRows()*B.nCols());
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
   clock_t cStart, cStop;
@@ -80,10 +80,10 @@ void multTBBAffine(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int 
       [&](const tbb::blocked_range<size_t>& r)
   {
     for( size_t i=r.begin(); i!=r.end(); ++i )
-      for( size_t j=0; j!=B.nRows(); ++j ) {
+      for( size_t j=0; j!=B.nCols(); ++j ) {
         float sum = 0;
-        for( size_t k=0; k<B.nCols(); ++k )
-          sum += A(i,k) * A(j,k);
+        for( size_t k=0; k<B.nRows(); ++k )
+          sum += A(i,k) * B(k,j);
         C(i,j) = sum;
       }
   }, ap);
@@ -108,8 +108,8 @@ void multTBBAffine(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int 
 // multiplies A*B^T and stores it in *this
 void multTBBAuto2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize) {
   // assertion seems strange, but remember that we compute A*B^T
-  assert (A.nCols() == B.nCols());
-  C.resize(A.nRows()*B.nRows());
+  assert (A.nCols() == B.nRows());
+  C.resize(A.nRows()*B.nCols());
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
   clock_t cStart, cStop;
@@ -127,14 +127,14 @@ void multTBBAuto2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int 
   // blocksize
   gettimeofday(&start, NULL);
   cStart  = clock();
-  tbb::parallel_for(tbb::blocked_range2d<size_t>(0, A.nRows(), blocksize, 0, B.nRows(), blocksize),
+  tbb::parallel_for(tbb::blocked_range2d<size_t>(0, A.nRows(), blocksize, 0, B.nCols(), blocksize),
       [&](const tbb::blocked_range2d<size_t>& r)
   {
     for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i ) {
       for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
         float sum = 0;
-        for( size_t k=0; k<B.nCols(); ++k )
-          sum += A(i,k) * A(j,k);
+        for( size_t k=0; k<B.nRows(); ++k )
+          sum += A(i,k) * B(k,j);
         C(i,j) = sum;
       }
     }
@@ -160,8 +160,8 @@ void multTBBAuto2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int 
 // multiplies A*B^T and stores it in *this
 void multTBBAffine2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize) {
   // assertion seems strange, but remember that we compute A*B^T
-  assert (A.nCols() == B.nCols());
-  C.resize(A.nRows()*B.nRows());
+  assert (A.nCols() == B.nRows());
+  C.resize(A.nRows()*B.nCols());
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
   clock_t cStart, cStop;
@@ -180,14 +180,14 @@ void multTBBAffine2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, in
   // blocksize
   gettimeofday(&start, NULL);
   cStart  = clock();
-  tbb::parallel_for(tbb::blocked_range2d<size_t>(0, A.nRows(), blocksize, 0, B.nRows(), blocksize),
+  tbb::parallel_for(tbb::blocked_range2d<size_t>(0, A.nRows(), blocksize, 0, B.nCols(), blocksize),
       [&](const tbb::blocked_range2d<size_t>& r)
   {
     for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i ) {
       for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
         float sum = 0;
-        for( size_t k=0; k<B.nCols(); ++k )
-          sum += A(i,k) * A(j,k);
+        for( size_t k=0; k<B.nRows(); ++k )
+          sum += A(i,k) * B(k,j);
         C(i,j) = sum;
       }
     }
