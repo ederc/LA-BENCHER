@@ -8,6 +8,7 @@
 void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
   // assertion seems strange, but remember that we compute A*B^T
   assert (A.nCols() == B.nRows());
+  int thrdCounter = nthrds;
   C.resize(A.nRows()*B.nCols());
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
@@ -23,6 +24,10 @@ void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
   cStart  = clock();
 #pragma omp parallel num_threads(nthrds)
 {
+  #pragma omp master
+  {
+    thrdCounter = omp_get_num_threads( );
+  }
 #pragma omp for
   for (uint32 i = 0; i < A.nRows(); ++i) {
     for (uint32 j = 0; j < B.nCols(); ++j) {
@@ -42,7 +47,7 @@ void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds) {
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
   std::cout << "----------------------------------------------" << std::endl;
   std::cout << "Method:      Open MP" << std::endl;
-  std::cout << "# Threads:   " << nthrds << std::endl;
+  std::cout << "# Threads:   " << thrdCounter << std::endl;
   std::cout << "Block size:  " << BLOCK_SIZE << std::endl;
   std::cout << "Real time:   " << stop.tv_sec - start.tv_sec << " sec" << std::endl;
   std::cout << "CPU time:    " << (cStop - cStart) / CLOCKS_PER_SEC << " sec" << std::    endl;
