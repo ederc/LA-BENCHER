@@ -13,6 +13,7 @@ BASIC_HDRS =								\
 	../include/f4rt-config.h 	\
 	intrinsics.h							\
 	matrix-omp.h							\
+	matrix-seq.h							\
 	matrix-tbb.h							\
 	matrix.h									
 
@@ -20,6 +21,7 @@ SOURCES=										\
 	intrinsics.c							\
 	dense-matrix-mult.cpp			\
 	matrix-omp.cpp						\
+	matrix-seq.cpp						\
 	matrix-tbb.cpp						\
 	matrix.cpp
 
@@ -51,4 +53,4 @@ f4rt_SOURCES= intrinsics.c intrinsics.h
 f4rt_LDADD=libf4rt.la
 
 dense_mult_CXXFLAGS= $(AM_CPPFLAGS) -ltbb -std=gnu++0x -fopenmp -Wall 
-dense_mult_SOURCES= dense-matrix-mult.cpp matrix.cpp matrix-tbb.cpp matrix-omp.cpp
+dense_mult_SOURCES= dense-matrix-mult.cpp matrix.cpp matrix-tbb.cpp matrix-omp.cpp matrix-seq.cpp

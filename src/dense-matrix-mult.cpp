@@ -5,6 +5,7 @@
 
 #include "matrix-tbb.h"
 #include "matrix-omp.h"
+#include "matrix-seq.h"
 
 #define PACKAGE "dense-mult"
 #define VERSION "0.0.1"
@@ -33,9 +34,12 @@ void print_help(int exval) {
  printf("       -p        if matrix multiplication took place, print of resulting matrix\n");
  printf("                 (no printing of resulting matrix by default)\n");
  printf("       -t        number of threads to be used (default: all possible ones)\n");
- printf("       -m        method to be used: 0=TBB, 1=OpenMP (default: TBB)\n");
- printf("       -b        sets the block size/grain of task scheduler; note this only works\n");
- printf("                 with TBB right now (default = 2)\n");
+ printf("       -m        method to be used: \n");
+ printf("                 0 = TBB,\n");
+ printf("                 1 = OpenMP\n");
+ printf("                 2 = Sequential\n");
+ printf("                 Note: By default TBB is used\n");
+ printf("       -b        sets the block size/grain of task scheduler; default = 2\n");
  printf("       -d        sets the dimension of the parallel for loop; note this only works\n");
  printf("                 with TBB right now (possible values: 1, 2; default = 1)\n");
  printf("       -a        sets CPU affinity of task scheduler; note this only works\n");
@@ -75,7 +79,7 @@ void prepareMult(Matrix& A, Matrix& B, char* str) {
 void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, const int blocksize,
               const int method, const int dimension, const int affinity) {
   // C = A*B^T
-  if (!method) {
+  if (method == 0) { // TBB
     if (dimension == 1) {
       if (affinity == 1) {
         multTBBAffine(C, A, B, nthrds, blocksize);
@@ -97,9 +101,11 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, con
         }
       }
     }
-  } else {
-    multOMP(C, A, B, nthrds, blocksize);
   }
+  if (method == 1) // OpenMP
+    multOMP(C, A, B, nthrds, blocksize);
+  if (method == 2) // plain sequential w/o scheduler overhead
+    multSEQ(C, A, B, blocksize);
 }
 
 void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, int blocksize, int dimension, int print) {
