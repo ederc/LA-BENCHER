@@ -27,6 +27,7 @@ UNIT_TESTS =						\
 	_add_mm128_epi32			\
 	_mullo_mm128_epi32		\
 	_dense_mat_transpose	\
+	_dense_mat_copy				\
 	_dense_mat_check
 
 BENCHMARKS =            
@@ -41,6 +42,8 @@ _mullo_mm128_epi32_SOURCES =		\
 		_mullo_mm128_epi32.c
 _dense_mat_transpose_SOURCES =	\
 		_dense_mat_transpose.cpp
+_dense_mat_copy_SOURCES =				\
+		_dense_mat_copy.cpp
 _dense_mat_check_SOURCES =			\
 		_dense_mat_check.cpp
 
