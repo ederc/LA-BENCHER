@@ -5,20 +5,26 @@
 #include <matrix.h>
 
 // multiplies A*B^T and stores it in *this
-void multTBBAuto(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
+void multTBBAuto( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
+                  int blocksize, int impose);
 
 // multiplies A*B^T and stores it in *this
-void multTBBAffine(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
+void multTBBAffine( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
+                    int blocksize, int impose);
 
 // multiplies A*B^T and stores it in *this
-void multTBBSimple(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
+void multTBBSimple( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
+                    int blocksize, int impose);
 
 // multiplies A*B^T and stores it in *this
-void multTBBAuto2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
+void multTBBAuto2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
+                    int blocksize, int impose);
 
 // multiplies A*B^T and stores it in *this
-void multTBBAffine2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
+void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
+                      int blocksize, int impose);
 
 // multiplies A*B^T and stores it in *this
-void multTBBSimple2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize);
+void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
+                      int blocksize, int impose);
 #endif

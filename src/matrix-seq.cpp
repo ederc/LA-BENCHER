@@ -19,7 +19,6 @@ void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int imp
   C.resize(l*m);
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
-  unsigned long long ctr = 0;
   clock_t cStart, cStop;
   float sum = 0;
 #if __F4RT_DEBUG
@@ -37,7 +36,6 @@ void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int imp
         for (uint32 k = 0; k < n; k++) {
           // sum += A(i,k) * B(j,k);
           sum += A.entries[k+i*n] * B.entries[k+j*n];
-          ctr++;
         }
         C.entries[j+i*m]  = (float) (sum);
       }
@@ -49,7 +47,6 @@ void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int imp
         for (uint32 k = 0; k < n; k++) {
           // sum += A(i,k) * B(k,j);
           sum += A.entries[k+i*n] * B.entries[j+k*m];
-          ctr++;
         }
         C.entries[j+i*m]  = (float) (sum);
       }
@@ -61,16 +58,20 @@ void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int imp
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  std::cout << "----------------------------------------------" << std::endl;
+  std::cout << "---------------------------------------------------" << std::endl;
+  std::cout << "Method:           Raw sequential" << std::endl;
+  std::cout << "Cache improved:   ";
   if (impose == 1)
-    std::cout << "Method:      Sequential imposed" << std::endl;
+    std::cout << "1" << std::endl;
   else
-    std::cout << "Method:      Sequential" << std::endl;
-  std::cout << "Counter:     " << ctr << std::endl;
-  std::cout << "# Threads:   1" << std::endl;
-  std::cout << "Block size:  " << blocksize << std::endl;
-  std::cout << "Real time:   " << stop.tv_sec - start.tv_sec << " sec" << std::endl;
-  std::cout << "CPU time:    " << (cStop - cStart) / CLOCKS_PER_SEC << " sec" << std::    endl;
-  std::cout << "GFLOPS/sec:  " << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
-  std::cout << "----------------------------------------------" << std::endl;
+    std::cout << "0" << std::endl;
+  std::cout << "# Threads:        1" << std::endl;
+  std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
+    << std::endl;
+  std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
+    << " sec" << std::    endl;
+  std::cout << "GFLOPS/sec:       " 
+    << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
+  std::cout << "---------------------------------------------------" << std::endl;
 }

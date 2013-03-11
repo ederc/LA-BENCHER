@@ -83,28 +83,28 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, con
   if (method == 0) { // TBB
     if (dimension == 1) {
       if (affinity == 1) {
-        multTBBAffine(C, A, B, nthrds, blocksize);
+        multTBBAffine(C, A, B, nthrds, blocksize, impose);
       } else {
         if (affinity == 2) {
-          multTBBSimple(C, A, B, nthrds, blocksize);
+          multTBBSimple(C, A, B, nthrds, blocksize, impose);
         } else {
-          multTBBAuto(C, A, B, nthrds, blocksize);
+          multTBBAuto(C, A, B, nthrds, blocksize, impose);
         }
       }
     } else {
       if (affinity == 1) {
-        multTBBAffine2d(C, A, B, nthrds, blocksize);
+        multTBBAffine2d(C, A, B, nthrds, blocksize, impose);
       } else {
         if (affinity == 2) {
-          multTBBSimple2d(C, A, B, nthrds, blocksize);
+          multTBBSimple2d(C, A, B, nthrds, blocksize, impose);
         } else {
-          multTBBAuto2d(C, A, B, nthrds, blocksize);
+          multTBBAuto2d(C, A, B, nthrds, blocksize, impose);
         }
       }
     }
   }
   if (method == 1) // OpenMP
-    multOMP(C, A, B, nthrds, blocksize);
+    multOMP(C, A, B, nthrds, blocksize, impose);
   if (method == 2) // plain sequential w/o scheduler overhead
     multSEQ(C, A, B, blocksize, impose);
 }
