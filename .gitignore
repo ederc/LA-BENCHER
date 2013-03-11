@@ -52,6 +52,8 @@ src/f4rt
 tests/unit/*
 !tests/unit/Makefile.am
 !tests/unit/*.c
+!tests/unit/*.cpp
 tests/basic/*
 !tests/basic/Makefile.am
 !tests/basic/*.c
+!tests/basic/*.cpp

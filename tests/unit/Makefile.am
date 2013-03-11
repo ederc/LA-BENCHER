@@ -23,9 +23,11 @@ endif
 # Note that among the available groups are NONCOMPILING_TESTS and FAILING_TESTS, which
 # will be ignored by "make check" and can be temporary storage for problematic tests.
 # a benchmarker, not to be included in check.
-UNIT_TESTS =					\
-	_add_mm128_epi32		\
-	_mullo_mm128_epi32
+UNIT_TESTS =						\
+	_add_mm128_epi32			\
+	_mullo_mm128_epi32		\
+	_dense_mat_transpose	\
+	_dense_mat_check
 
 BENCHMARKS =            
 
@@ -33,9 +35,13 @@ EXTRA_PROGRAMS = $(NON_COMPILING_TESTS) $(BENCHMARKS)
 
 check_PROGRAMS = $(UNIT_TESTS)
 
-_add_mm128_epi32_SOURCES =		\
+_add_mm128_epi32_SOURCES =			\
 		_add_mm128_epi32.c
-_mullo_mm128_epi32_SOURCES =	\
+_mullo_mm128_epi32_SOURCES =		\
 		_mullo_mm128_epi32.c
+_dense_mat_transpose_SOURCES =	\
+		_dense_mat_transpose.cpp
+_dense_mat_check_SOURCES =			\
+		_dense_mat_check.cpp
 
 noinst_HEADERS =	

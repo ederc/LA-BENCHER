@@ -85,8 +85,9 @@ public:
   void read(FILE* file);
 
   void print();
-
-  void multOmp(const Matrix& A, const Matrix& B);
-
 };
+
+int check(const Matrix& A, const Matrix& B, int unittest);
+
+float getRandom();
 #endif

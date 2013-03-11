@@ -31,18 +31,25 @@ namespace {
     if (fwrite(v.data(), sizeof(T), v.size(), file) != v.size())
       std::cerr << "Error while writing to file." << std::endl;
   }
+}
 
-  float getRandom() {
-    return static_cast<float>(std::rand());
-  }
-
-  void check(const Matrix& A, const Matrix& B) {
+// not coincide: return 1
+// coincide:     return 0
+int check(const Matrix& A, const Matrix& B, int unittest = 0) {
+  if (!unittest)
     std::cout << "Checking generated matrix with data written to file." << std::endl;
-    for (size_t i = 0; i < A.nRows(); ++i)
-      for (size_t j = 0; j < A.nCols(); ++j) 
-        if (A(i,j) != B(i,j))
-        std::cerr << "Error: Matrices do not coincide at position (" << i << "," << j << ")" << std::endl;
-  }
+  for (size_t i = 0; i < A.nRows(); ++i)
+    for (size_t j = 0; j < A.nCols(); ++j) 
+      if (A(i,j) != B(i,j)) {
+        if (!unittest)
+          std::cerr << "Error: Matrices do not coincide at position (" << i << "," << j << ")" << std::endl;
+        return 1;
+      }
+  return 0;
+}
+
+float getRandom() {
+  return static_cast<float>(std::rand());
 }
 
 void Matrix::read(FILE* file) {
