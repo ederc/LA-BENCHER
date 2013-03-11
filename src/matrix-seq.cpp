@@ -58,6 +58,10 @@ void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int imp
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = stop.tv_sec - start.tv_sec;
+  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
+  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Raw sequential" << std::endl;
   std::cout << "Cache improved:   ";
@@ -67,11 +71,16 @@ void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int imp
     std::cout << "0" << std::endl;
   std::cout << "# Threads:        1" << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
   std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
     << std::endl;
   std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
     << " sec" << std::    endl;
-  std::cout << "GFLOPS/sec:       " 
+  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
+    std::cout << "CPU/real time:    " << std::setprecision(4) 
+      << ratio << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
     << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }

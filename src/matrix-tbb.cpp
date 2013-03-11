@@ -66,6 +66,10 @@ void multTBBAuto( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = stop.tv_sec - start.tv_sec;
+  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
+  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D auto partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -75,11 +79,16 @@ void multTBBAuto( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "0" << std::endl;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
   std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
     << std::endl;
   std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
     << " sec" << std::    endl;
-  std::cout << "GFLOPS/sec:       " 
+  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
+    std::cout << "CPU/real time:    " << std::setprecision(4) 
+      << ratio << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
     << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
@@ -148,6 +157,10 @@ void multTBBAffine( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = stop.tv_sec - start.tv_sec;
+  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
+  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D affinity partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -157,11 +170,16 @@ void multTBBAffine( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "0" << std::endl;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
   std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
     << std::endl;
   std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
     << " sec" << std::    endl;
-  std::cout << "GFLOPS/sec:       " 
+  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
+    std::cout << "CPU/real time:    " << std::setprecision(4) 
+      << ratio << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
     << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
@@ -231,6 +249,10 @@ void multTBBSimple( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = stop.tv_sec - start.tv_sec;
+  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
+  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D simple partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -240,11 +262,16 @@ void multTBBSimple( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "0" << std::endl;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
   std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
     << std::endl;
   std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
     << " sec" << std::    endl;
-  std::cout << "GFLOPS/sec:       " 
+  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
+    std::cout << "CPU/real time:    " << std::setprecision(4) 
+      << ratio << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
     << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
@@ -315,6 +342,10 @@ void multTBBAuto2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = stop.tv_sec - start.tv_sec;
+  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
+  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D auto partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -324,11 +355,16 @@ void multTBBAuto2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "0" << std::endl;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
   std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
     << std::endl;
   std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
     << " sec" << std::    endl;
-  std::cout << "GFLOPS/sec:       " 
+  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
+    std::cout << "CPU/real time:    " << std::setprecision(4) 
+      << ratio << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
     << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
@@ -399,6 +435,10 @@ void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = stop.tv_sec - start.tv_sec;
+  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
+  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D affinity partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -408,11 +448,16 @@ void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "0" << std::endl;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
   std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
     << std::endl;
   std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
     << " sec" << std::    endl;
-  std::cout << "GFLOPS/sec:       " 
+  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
+    std::cout << "CPU/real time:    " << std::setprecision(4) 
+      << ratio << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
     << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
@@ -483,6 +528,10 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = stop.tv_sec - start.tv_sec;
+  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
+  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D simple partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -492,11 +541,16 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "0" << std::endl;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
   std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
     << std::endl;
   std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
     << " sec" << std::    endl;
-  std::cout << "GFLOPS/sec:       " 
+  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
+    std::cout << "CPU/real time:    " << std::setprecision(4) 
+      << ratio << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
     << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
