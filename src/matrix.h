@@ -30,13 +30,13 @@ typedef signed char int8;
 
 /// Dense matrix
 class Matrix {
+public:
   uint32 m;
   uint32 n;
   uint64 l;
   std::vector<float> entries;
   
   void write(FILE* file);
-public:
   Matrix() : m(0), n(0) {}
   Matrix(size_t m_, size_t n_) : m(m_), n(n_), l(m_*n_), entries(m_*n_) {}
   Matrix(size_t m_, size_t n_, float val) : m(m_), n(n_), l(m_*n_), entries(m_*n_, val) {}
@@ -63,11 +63,11 @@ public:
   } 
   
   float& operator()(size_t i, size_t j)  {
-    return entries[i + (j * m)];
+    return entries[j+ (i*n)];
   }
   
   const float& operator()(size_t i, size_t j) const  {
-    return entries[i + (j * m)];
+    return entries[j + (i * n)];
   }
 
   void resize(uint64 val) {
@@ -77,6 +77,8 @@ public:
   void generateRandomMatrix(const uint32 m, const uint32 n, bool cmp);
 
   void copy(const Matrix& M);
+
+  void transpose();
 
   void transpose(const Matrix& M);
 

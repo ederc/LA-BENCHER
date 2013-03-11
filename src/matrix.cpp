@@ -76,9 +76,9 @@ void Matrix::print() {
   uint32 i,j;
   for (i = 0; i < m; ++i) {
     for (j = 0; j < n-1; ++j) {
-      std::cout  << std::setw(5) << entries[i+m*j] << " | ";
+      std::cout  << std::setw(5) << entries[j+i*n] << " | ";
     }
-    std::cout  << std::setw(5) << entries[i+m*j];
+    std::cout  << std::setw(5) << entries[j+i*n];
     std::cout << std::endl;
   }
 }
@@ -159,6 +159,24 @@ void Matrix::copy(const Matrix& M) {
   return;
 }
 
+// self-transpose
+void Matrix::transpose() {
+  uint32 tempRows = n;
+  uint32 tempCols = m;
+  std::vector<float> tempEntries;
+  tempEntries.resize(entries.size());
+  for (uint32 i=0; i<m; ++i) {
+    for (uint32 j=0; j<n; ++j) {
+      //tempEntries[i+j*m]  = (*this)(i,j);
+      tempEntries[i+j*m]  = entries[j+i*n];
+    }
+  }
+  m = tempRows;
+  n = tempCols;
+  entries.clear();
+  entries  = tempEntries;
+  return;
+}
 void Matrix::transpose(const Matrix& M) {
   m = M.n;
   n = M.m;

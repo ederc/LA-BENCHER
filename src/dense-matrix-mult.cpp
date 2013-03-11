@@ -23,29 +23,30 @@ void print_help(int exval) {
  printf("       input matrices.\n\n");
 
  printf("OPTIONS\n");
- printf("       -h        print this help and exit\n");
- printf("       -V        print version and exit\n\n");
-
- printf("       -v        set verbose flag\n");
- printf("       -g        generate a new random uint16 matrix\n");
  printf("       -A FILE   set first intput file; if only -A is set but not -B then A*A^T is computed.\n");
  printf("       -B FILE   set second intput file\n");
+ printf("       -a        sets CPU affinity of task scheduler; note this only works\n");
+ printf("                 with TBB right now\n");
+ printf("       -b        sets the block size/grain of task scheduler; default = 2\n");
  printf("       -c        if input file is set, multiply matrix with its own transpose\n");
- printf("       -p        if matrix multiplication took place, print of resulting matrix\n");
- printf("                 (no printing of resulting matrix by default)\n");
- printf("       -t        number of threads to be used (default: all possible ones)\n");
+ printf("       -d        sets the dimension of the parallel for loop; note this only works\n");
+ printf("                 with TBB right now (possible values: 1, 2; default = 1)\n");
+ printf("       -g        generate a new random uint16 matrix\n");
+ printf("       -h        print this help and exit\n");
+ printf("       -i        impose, i.e. cheat: Transpose B before multiplication and use\n");
+ printf("                 better cache locality\n");
  printf("       -m        method to be used: \n");
  printf("                 0 = TBB,\n");
  printf("                 1 = OpenMP\n");
  printf("                 2 = Sequential\n");
  printf("                 Note: By default TBB is used\n");
- printf("       -b        sets the block size/grain of task scheduler; default = 2\n");
- printf("       -d        sets the dimension of the parallel for loop; note this only works\n");
- printf("                 with TBB right now (possible values: 1, 2; default = 1)\n");
- printf("       -a        sets CPU affinity of task scheduler; note this only works\n");
- printf("                 with TBB right now\n");
+ printf("       -p        if matrix multiplication took place, print of resulting matrix\n");
+ printf("                 (no printing of resulting matrix by default)\n");
  printf("       -s        sets simple task scheduler; note this only works\n");
  printf("                 with TBB right now\n");
+ printf("       -t        number of threads to be used (default: all possible ones)\n");
+ printf("       -V        print version and exit\n\n");
+ printf("       -v        set verbose flag\n");
 
  exit(exval);
 }
@@ -77,7 +78,7 @@ void prepareMult(Matrix& A, Matrix& B, char* str) {
 }
 
 void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, const int blocksize,
-              const int method, const int dimension, const int affinity) {
+              const int method, const int dimension, const int affinity, int impose) {
   // C = A*B^T
   if (method == 0) { // TBB
     if (dimension == 1) {
@@ -105,10 +106,11 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, con
   if (method == 1) // OpenMP
     multOMP(C, A, B, nthrds, blocksize);
   if (method == 2) // plain sequential w/o scheduler overhead
-    multSEQ(C, A, B, blocksize);
+    multSEQ(C, A, B, blocksize, impose);
 }
 
-void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, int blocksize, int dimension, int print) {
+void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, int blocksize, 
+                  int dimension, int impose, int print) {
   Matrix A, B;
 
   // read files, stores matrices, etc
@@ -116,16 +118,27 @@ void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, 
   A.read(file1);
   FILE* file2  = fopen(str2,"rb");
   B.read(file2);
-  
-  // check dimensions
-  if (A.nCols() != B.nRows()) {
-    fprintf(stderr, "Dimensions of A and B are not correct!\nProgram exiting now!\n");
-    exit(EXIT_FAILURE);
-  }
 
+
+  if (impose == 1) {
+    B.transpose();
+    // check dimensions
+    if (A.nCols() != B.nCols()) {
+      fprintf(stderr, "Dimensions of A and B are not correct!\nProgram exiting now!\n");
+      exit(EXIT_FAILURE);
+    }
+  } else {
+    // check dimensions
+    if (A.nCols() != B.nRows()) {
+      fprintf(stderr, "Dimensions of A and B are not correct!\nProgram exiting now!\n");
+      exit(EXIT_FAILURE);
+    }
+  }
+  
+  //B.print();
   Matrix C(A.nRows(), B.nCols());
 
-  multiply(C, A, B, nthrds, blocksize, method, dimension, affinity);
+  multiply(C, A, B, nthrds, blocksize, method, dimension, affinity, impose);
 
   if (print)
     C.print();
@@ -135,15 +148,22 @@ void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, 
   C.clear();
 }
 
-void multEqualMatrices(char* str, int nthrds, int method, int affinity, int blocksize, int dimension, int print) {
+void multEqualMatrices( char* str, int nthrds, int method, int affinity, int blocksize, 
+                        int dimension, int impose, int print) {
   Matrix A, B;
 
   // read files, stores matrices, etc
-  prepareMult(A, B, str);
+  FILE* file  = fopen(str,"rb");
+  // take A from file
+  A.read(file);
+
+  // let B be just a copy of A
+  // we will then multiply A*B^T
+  B.transpose(A);
   
   Matrix C(A.nRows(), B.nRows());
 
-  multiply(C, A, B, nthrds, blocksize, method, dimension, affinity);
+  multiply(C, A, B, nthrds, blocksize, method, dimension, affinity,impose);
 
   if (print)
     C.print();
@@ -157,7 +177,7 @@ int main(int argc, char *argv[]) {
  int opt;
  char *fileNameA = NULL, *fileNameB = NULL;
  int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
-     blocksize = 2, dimension = 1;
+     blocksize = 2, dimension = 1, impose = 0;
 
  /* 
  // no arguments given
@@ -167,7 +187,7 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvgA:B:pt:m:cd:b:aso:")) != -1) {
+ while((opt = getopt(argc, argv, "hVvgA:B:pt:m:cd:b:aiso:")) != -1) {
   switch(opt) {
     case 'g': 
       genMatrix();
@@ -201,6 +221,9 @@ int main(int argc, char *argv[]) {
       break;
     case 's':
       affinity  = 2;
+      break;
+    case 'i':
+      impose  = 1;
       break;
     case 'b':
       blocksize = atoi(strdup(optarg));
@@ -241,9 +264,9 @@ int main(int argc, char *argv[]) {
 
   if (multiply && fileNameA) {
     if (fileNameB) {
-      multMatrices(fileNameA, fileNameB, nthrds, method, affinity, blocksize, dimension, print);  
+      multMatrices(fileNameA, fileNameB, nthrds, method, affinity, blocksize, dimension, impose, print);  
     } else {
-      multEqualMatrices(fileNameA, nthrds, method, affinity, blocksize, dimension, print);  
+      multEqualMatrices(fileNameA, nthrds, method, affinity, blocksize, dimension, impose, print);  
     }
   }
  return 0;
