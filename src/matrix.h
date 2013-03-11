@@ -74,7 +74,7 @@ public:
     entries.resize(val);
   }
 
-  void generateRandomMatrix(const uint32 m, const uint32 n, bool cmp);
+  void generateRandomMatrix(const uint32 m, const uint32 n, bool cmp, bool timestamp);
 
   void copy(const Matrix& M);
 

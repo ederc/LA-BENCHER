@@ -65,9 +65,9 @@ void genMatrix(int rows=0, int cols=0) {
     std::cin >> n;
     std::cout << "Check if matrix is stored correctly? (1=yes, 0=no)  ";
     std::cin >> cmp;
-    A.generateRandomMatrix(m,n,cmp);
+    A.generateRandomMatrix(m,n,cmp,1);
   } else {
-    A.generateRandomMatrix(rows,cols,0);
+    A.generateRandomMatrix(rows,cols,0,0);
   }
   A.clear();
   std::cout << "Matrix generated." << std::endl;

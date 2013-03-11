@@ -64,7 +64,8 @@ if not os.path.exists(folder_name):
 os.chdir(os.getwcd()+"/"+folder_name)
 
 #generate random matrices
-os.system('../dense-mult ')
+os.system('../../src/dense-mult -g -R '+args.rowsa+' -C '+args.colsa)
+os.system('../../src/dense-mult -g -R '+args.colsa+' -C '+args.rowsb)
 os.system('Singular -q > '+args.output+'.tmp.ideal')
 
 f = open("bench-"+str(hash_value),"w")

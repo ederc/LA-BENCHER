@@ -90,37 +90,42 @@ void Matrix::print() {
   }
 }
 
-void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = false) {
+void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = false, 
+                                  bool timestamp = false) {
   m = nr;
   n = nc;
   std::ostringstream fileName;
   // generate current time for fileName
-  std::string strTime;
-  time_t t = time(0);   // get time now
-  struct tm * now = localtime( & t );
-  strTime.append(std::to_string(now->tm_year + 1900));
-  strTime.append("-");
-  if (now->tm_mon+1 < 10)
-    strTime.append("0");
-  strTime.append(std::to_string(now->tm_mon + 1));
-  strTime.append("-");
-  if (now->tm_mday < 10)
-    strTime.append("0");
-  strTime.append(std::to_string(now->tm_mday));
-  strTime.append("-");
-  if (now->tm_hour < 10)
-    strTime.append("0");
-  strTime.append(std::to_string(now->tm_hour));
-  strTime.append("-");
-  if (now->tm_min < 10)
-    strTime.append("0");
-  strTime.append(std::to_string(now->tm_min));
-  strTime.append("-");
-  if (now->tm_sec < 10)
-    strTime.append("0");
-  strTime.append(std::to_string(now->tm_sec));
+  if (timestamp) {
+    std::string strTime;
+    time_t t = time(0);   // get time now
+    struct tm * now = localtime( & t );
+    strTime.append(std::to_string(now->tm_year + 1900));
+    strTime.append("-");
+    if (now->tm_mon+1 < 10)
+      strTime.append("0");
+    strTime.append(std::to_string(now->tm_mon + 1));
+    strTime.append("-");
+    if (now->tm_mday < 10)
+      strTime.append("0");
+    strTime.append(std::to_string(now->tm_mday));
+    strTime.append("-");
+    if (now->tm_hour < 10)
+      strTime.append("0");
+    strTime.append(std::to_string(now->tm_hour));
+    strTime.append("-");
+    if (now->tm_min < 10)
+      strTime.append("0");
+    strTime.append(std::to_string(now->tm_min));
+    strTime.append("-");
+    if (now->tm_sec < 10)
+      strTime.append("0");
+    strTime.append(std::to_string(now->tm_sec));
 
-  fileName << "random-float-mat-" << m << "-" << n << "-" << strTime << ".mat";
+    fileName << "random-float-mat-" << m << "-" << n << "-" << strTime << ".mat";
+  } else {
+    fileName << "random-float-mat-" << m << "-" << n << ".mat";
+  }
 
   FILE* file  = fopen(fileName.str().c_str(), "ab");
   writeOne(m, file);
