@@ -25,13 +25,14 @@ void print_help(int exval) {
  printf("OPTIONS\n");
  printf("       -A FILE   set first intput file; if only -A is set but not -B then A*A^T is computed.\n");
  printf("       -B FILE   set second intput file\n");
+ printf("       -C        number of cols of matrix to be generated\n");
  printf("       -a        sets CPU affinity of task scheduler; note this only works\n");
  printf("                 with TBB right now\n");
  printf("       -b        sets the block size/grain of task scheduler; default = 2\n");
  printf("       -c        if input file is set, multiply matrix with its own transpose\n");
  printf("       -d        sets the dimension of the parallel for loop; note this only works\n");
  printf("                 with TBB right now (possible values: 1, 2; default = 1)\n");
- printf("       -g        generate a new random uint16 matrix\n");
+ printf("       -g        generate a new random float matrix\n");
  printf("       -h        print this help and exit\n");
  printf("       -i        impose, i.e. cheat: Transpose B before multiplication and use\n");
  printf("                 better cache locality\n");
@@ -42,6 +43,7 @@ void print_help(int exval) {
  printf("                 Note: By default TBB is used\n");
  printf("       -p        if matrix multiplication took place, print of resulting matrix\n");
  printf("                 (no printing of resulting matrix by default)\n");
+ printf("       -R        number of rows of matrix to be generated\n");
  printf("       -s        sets simple task scheduler; note this only works\n");
  printf("                 with TBB right now\n");
  printf("       -t        number of threads to be used (default: all possible ones)\n");
@@ -51,18 +53,22 @@ void print_help(int exval) {
  exit(exval);
 }
 
-void genMatrix() {
+void genMatrix(int rows=0, int cols=0) {
   uint32 m, n;
   bool cmp;
-  std::cout << "Generate new random matrix with entries of type float." << std::endl;
-  std::cout << "Number of rows (<2^32): ";
-  std::cin >> m;
-  std::cout << "Number of cols (<2^32): ";
-  std::cin >> n;
   Matrix A;
-  std::cout << "Check if matrix is stored correctly? (1=yes, 0=no)  ";
-  std::cin >> cmp;
-  A.generateRandomMatrix(m,n,cmp);
+  if (rows == 0 || cols == 0) {
+    std::cout << "Generate new random matrix with entries of type float." << std::endl;
+    std::cout << "Number of rows (<2^32): ";
+    std::cin >> m;
+    std::cout << "Number of cols (<2^32): ";
+    std::cin >> n;
+    std::cout << "Check if matrix is stored correctly? (1=yes, 0=no)  ";
+    std::cin >> cmp;
+    A.generateRandomMatrix(m,n,cmp);
+  } else {
+    A.generateRandomMatrix(rows,cols,0);
+  }
   A.clear();
   std::cout << "Matrix generated." << std::endl;
 }
@@ -177,7 +183,8 @@ int main(int argc, char *argv[]) {
  int opt;
  char *fileNameA = NULL, *fileNameB = NULL;
  int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
-     blocksize = 2, dimension = 1, impose = 0;
+     blocksize = 2, dimension = 1, impose = 0, rows = 0, cols = 0,
+     generate = 0;
 
  /* 
  // no arguments given
@@ -187,10 +194,10 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvgA:B:pt:m:cd:b:aiso:")) != -1) {
+ while((opt = getopt(argc, argv, "hVvgA:B:C:pt:m:cd:b:aR:iso:")) != -1) {
   switch(opt) {
     case 'g': 
-      genMatrix();
+      generate = 1;
       break;
     case 'h':
       print_help(0);
@@ -209,6 +216,9 @@ int main(int argc, char *argv[]) {
     case 'B':
       fileNameB  = strdup(optarg);
       //multMatrices(optarg);
+      break;
+    case 'C':
+      cols = atoi(strdup(optarg));
       break;
     case 'c':
       multiply  = 1;
@@ -243,6 +253,9 @@ int main(int argc, char *argv[]) {
     case 'm':
       method  = atoi(strdup(optarg));
       break;
+    case 'R':
+      rows = atoi(strdup(optarg));
+      break;
     case 'o':
       printf("Output: %s\n", optarg);
       break;
@@ -260,8 +273,11 @@ int main(int argc, char *argv[]) {
  // print all remaining options
  */
  for(; optind < argc; optind++)
-  printf("argument: %s\n", argv[optind]);
-
+ printf("argument: %s\n", argv[optind]);
+   
+  if (generate == 1) {
+    genMatrix(rows,cols);
+  }
   if (multiply && fileNameA) {
     if (fileNameB) {
       multMatrices(fileNameA, fileNameB, nthrds, method, affinity, blocksize, dimension, impose, print);  
