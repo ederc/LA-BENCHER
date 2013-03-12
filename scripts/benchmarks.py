@@ -87,9 +87,15 @@ print(strstr+' -i -m 2 >> bench-'+str(hash_value)+'...')
 os.system(strstr+' -i -m 2 >> bench-'+str(hash_value))
 print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# OpenMP computations
+# OpenMP computations 1D
 for i in threads:
-  print(strstr+' -i -m 1 -t '+str(2**i)+' >> bench-'+str(hash_value)+'...')
+  print(strstr+' -i -m 1 -d 1 -t '+str(2**i)+' >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -i -m 1 -t '+str(2**i)+' >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+# OpenMP computations 2D
+for i in threads:
+  print(strstr+' -i -m 1 -d 2 -t '+str(2**i)+' >> bench-'+str(hash_value)+'...')
   os.system(strstr+' -i -m 1 -t '+str(2**i)+' >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
