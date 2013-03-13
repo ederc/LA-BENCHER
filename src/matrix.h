@@ -15,6 +15,7 @@
 #include <tbb/tbb.h>
 #include <pthread.h>
 #include <omp.h>
+#include <kaapi++>
 #include <f4rt-config.h>
 //#include "auxiliary.h"
 

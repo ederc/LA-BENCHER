@@ -5,6 +5,7 @@
 
 #include "matrix-tbb.h"
 #include "matrix-omp.h"
+//#include "matrix-kaapi.h"
 #include "matrix-seq.h"
 
 #define PACKAGE "dense-mult"
@@ -30,8 +31,8 @@ void print_help(int exval) {
  printf("                 with TBB right now\n");
  printf("       -b        sets the block size/grain of task scheduler; default = 2\n");
  printf("       -c        if input file is set, multiply matrix with its own transpose\n");
- printf("       -d        sets the dimension of the parallel for loop; note this only works\n");
- printf("                 with TBB right now (possible values: 1, 2; default = 1)\n");
+ printf("       -d        sets the dimension of the parallel for loop\n");
+ printf("                 (values: 1, 2; default = 1)\n");
  printf("       -g        generate a new random float matrix\n");
  printf("       -h        print this help and exit\n");
  printf("       -i        impose, i.e. cheat: Transpose B before multiplication and use\n");
@@ -109,10 +110,18 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, con
       }
     }
   }
-  if (method == 1) // OpenMP
-    multOMP(C, A, B, nthrds, blocksize, impose);
+  if (method == 1) { // OpenMP
+    if (dimension == 1)
+      multOMP1d(C, A, B, nthrds, blocksize, impose);
+    if (dimension == 2)
+      multOMP2d(C, A, B, nthrds, blocksize, impose);
+  }
   if (method == 2) // plain sequential w/o scheduler overhead
     multSEQ(C, A, B, blocksize, impose);
+  /*
+  if (method == 3) // xkaapi 
+    multKAAPI(C, A, B, blocksize, impose);
+    */
 }
 
 void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, int blocksize, 

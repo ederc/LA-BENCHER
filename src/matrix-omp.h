@@ -4,5 +4,8 @@
 #include <matrix.h>
 
 // multiplies A*B^T and stores it in *this
-void multOMP(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose);
+void multOMP1d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose);
+
+// multiplies A*B^T and stores it in *this
+void multOMP2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose);
 #endif
