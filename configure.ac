@@ -61,7 +61,7 @@ AC_CACHE_CHECK([whether $1 is compilable],
 
 
 AC_PREREQ(2.50)
-AC_INIT(f4rt,0.0.1,ederc@mathematik.uni-kl.de)
+AC_INIT(F4RT,0.0.1,ederc@mathematik.uni-kl.de)
 AM_INIT_AUTOMAKE([1.8 gnu no-dependencies])
 AM_CONFIG_HEADER([include/f4rt-config.h])
 AX_PREFIX_CONFIG_H(include/f4rt-config.h, __F4RT)
@@ -207,6 +207,14 @@ AC_ARG_WITH(papi,
     AS_HELP_STRING([--with-papi@<:@=PATH@:>@], [The PAPI install prefix, if configure can't find it.]),
     [x_config_papi=$withval])
 
+dnl Search for Open MP
+AX_OPENMP()
+
+dnl Search for Intel TBB
+AC_CHECK_LIB([tbb], [main], [
+    AC_DEFINE([HAVE_INTEL_TBB],[],"Intel TBB available.")
+    LIBS="-ltbb $LIBS"
+    ], [echo "libtbb not found."])
 
 dnl Do not silence irrelevant compiler warnings by default, since enabling this
 dnl option incurs a performance penalty.
@@ -348,7 +356,7 @@ case "${host}" in
 	RPATH='-Wl,-R,$(1)'
 	dnl Solaris needs this for sigwait().
 	CPPFLAGS="$CPPFLAGS -D_POSIX_PTHREAD_SEMANTICS"
-	LIBS="$LIBS -lposix4 -lsocket -lnsl"
+	LIBS="-lposix4 -lsocket -lnsl $LIBS"
 	;;
   *-ibm-aix*)
 	if "$LG_SIZEOF_PTR" = "8"; then
@@ -407,7 +415,7 @@ AC_SUBST([CC_MM])
 
 if test "x$abi" != "xpecoff"; then
   dnl Heap profiling uses the log(3) function.
-  LIBS="$LIBS -lm"
+  LIBS="-lm $LIBS"
 fi
 
 X_COMPILABLE([__attribute__ syntax],
@@ -458,7 +466,7 @@ if test "x$abi" != "xpecoff" ; then
   AC_CHECK_HEADERS([pthread.h], , [AC_MSG_ERROR([pthread.h is missing])])
   dnl Some systems may embed pthreads functionality in libc; check for libpthread
   dnl first, but try libc too before failing.
-  AC_CHECK_LIB([pthread], [pthread_create], [LIBS="$LIBS -lpthread"],
+  AC_CHECK_LIB([pthread], [pthread_create], [LIBS="-lpthread $LIBS"],
                [AC_SEARCH_LIBS([pthread_create], , ,
                                AC_MSG_ERROR([libpthread is missing]))])
 fi
@@ -510,7 +518,7 @@ if test "x$enable_lazy_lock" = "x1" ; then
   if test "x$abi" != "xpecoff" ; then
     AC_CHECK_HEADERS([dlfcn.h], , [AC_MSG_ERROR([dlfcn.h is missing])])
     AC_CHECK_FUNC([dlsym], [],
-      [AC_CHECK_LIB([dl], [dlsym], [LIBS="$LIBS -ldl"],
+      [AC_CHECK_LIB([dl], [dlsym], [LIBS="-ldl $LIBS"],
                     [AC_MSG_ERROR([libdl is missing])])
       ])
   fi
@@ -962,8 +970,8 @@ AM_CONDITIONAL(BUILD_DOCS,[test x$XMLTO != x])
 AM_CONDITIONAL(BUILD_REFS,[test x$DOXYGEN != x])
 
 # this is bogus so far as I can tell.  -bds
-AM_CXXFLAGS=
-AM_CFLAGS="${CFLAGS} ${SIMD_FLAGS} ${OPENMP_CFLAGS}"
+AM_CXXFLAGS="${CFLAGS} ${SIMD_FLAGS} ${OPENMP_CFLAGS} ${LIBS}"
+AM_CFLAGS="${CFLAGS} ${SIMD_FLAGS} ${OPENMP_CFLAGS} ${LIBS}"
 AM_CDEBUGFLAGS="${CDEBUGFLAGS} ${DEBUG_FLAGS} ${SIMD_FLAGS} ${OPENMP_CFLAGS}"
 AC_SUBST([AM_CXXFLAGS])
 AC_SUBST([AM_CFLAGS])

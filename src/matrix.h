@@ -1,6 +1,7 @@
 #ifndef F4RT_MATRIX_H
 #define F4RT_MATRIX_H
 
+#include <f4rt-config.h>
 #include <map>
 #include <cmath>
 #include <algorithm>
@@ -14,9 +15,10 @@
 #include <cassert>
 #include <tbb/tbb.h>
 #include <pthread.h>
+#ifdef __F4RT_HAVE_OPENMP
 #include <omp.h>
+#endif
 //#include <kaapi++>
-#include <f4rt-config.h>
 //#include "auxiliary.h"
 
 typedef unsigned long long uint64;

@@ -2,10 +2,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <getopt.h>
+#include "f4rt-config.h"
 
+#ifdef __F4RT_HAVE_INTEL_TBB
 #include "matrix-tbb.h"
+#endif
+#ifdef __F4RT_HAVE_OPENMP
 #include "matrix-omp.h"
-//#include "matrix-kaapi.h"
+#endif
+#ifdef __F4RT_HAVE_KAAPI
+#include "matrix-kaapi.h"
+#endif
 #include "matrix-seq.h"
 
 #define PACKAGE "dense-mult"
@@ -88,6 +95,7 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, con
               const int method, const int dimension, const int affinity, int impose) {
   // C = A*B^T
   if (method == 0) { // TBB
+#ifdef __F4RT_HAVE_INTEL_TBB
     if (dimension == 1) {
       if (affinity == 1) {
         multTBBAffine(C, A, B, nthrds, blocksize, impose);
@@ -109,12 +117,19 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, con
         }
       }
     }
+#else
+    multSEQ(C, A, B, blocksize, impose);
+#endif
   }
   if (method == 1) { // OpenMP
+#ifdef __F4RT_HAVE_OPENMP    
     if (dimension == 1)
       multOMP1d(C, A, B, nthrds, blocksize, impose);
     if (dimension == 2)
       multOMP2d(C, A, B, nthrds, blocksize, impose);
+#else
+    multSEQ(C, A, B, blocksize, impose);
+#endif
   }
   if (method == 2) // plain sequential w/o scheduler overhead
     multSEQ(C, A, B, blocksize, impose);

@@ -6,5 +6,5 @@ includedir=@includedir@
 Name: F4RT
 Description: F4 Reduction Tools.
 Version: @PACKAGE_VERSION@
-Libs: -L${libdir} -lm4ri -lm
-Cflags: -I${includedir}/f4rt @AM_CFLAGS@ -ltbb -std=gnu++0x -fopenmp -Wall
+Libs: -L${libdir} -lf4rt -lm
+Cflags: -I${includedir}/f4rt @AM_CFLAGS@ 

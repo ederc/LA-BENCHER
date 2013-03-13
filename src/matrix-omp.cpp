@@ -2,6 +2,7 @@
 
 #define __F4RT_DEBUG  0
 
+#ifdef __F4RT_HAVE_OPENMP
 // multiplies A*B^T and stores it in *this
 void multOMP1d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose) {
   uint32 l, m, n;
@@ -199,3 +200,4 @@ if (impose == 1) {
     << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
+#endif
