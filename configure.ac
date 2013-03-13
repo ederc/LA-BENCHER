@@ -969,9 +969,9 @@ AC_SUBST([AM_CXXFLAGS])
 AC_SUBST([AM_CFLAGS])
 AC_SUBST([AM_CDEBUGFLAGS])
 
-
 AC_OUTPUT([
 Makefile
+f4rt.pc
 f4rt-config
 src/Makefile
 tests/Makefile

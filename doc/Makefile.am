@@ -1,6 +1,6 @@
 # Copyright 2012 Christian Eder
 # 
-# This file is part of XMALLOC, licensed under the GNU General Public
+# This file is part of F4RT, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
 if BUILD_DOCS
@@ -12,17 +12,14 @@ REFDOC_TARGETS = html/index.html
 endif
 
 DOC_HTML = 							\
-	$(srcdir)/index.html	\
-	$(srcdir)/apa.html		\
-	$(srcdir)/apb.html		\
-	$(srcdir)/apc.html
+	$(srcdir)/index.html
 
 all all-local: $(DOC_TARGETS) $(REFDOC_TARGETS)
 
-docdir = $(datadir)/doc/xmalloc-$(VERSION)
+docdir = $(datadir)/doc/f4rt-$(VERSION)
 doc_DATA = caution.png note.png docbook.css
 
-refdocdir = $(datadir)/doc/xmalloc-$(VERSION)/reference
+refdocdir = $(datadir)/doc/f4rt-$(VERSION)/reference
 refdoc_DATA = $(REFDOC_TARGETS)
 
 doc: $(srcdir)/config.xsl $(srcdir)/index.xml
@@ -45,7 +42,7 @@ install-data-local:
 
 uninstall-hook:
 	rm -rf $(DESTDIR)$(refdocdir)
-	rm -rf $(DESTDIR)$(docdir)
+	rm -rf $(DESTDIR)$docdir)
 
 clean-local:
 	rm -rf $(builddir)/html $(builddir)/latex

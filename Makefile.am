@@ -5,6 +5,10 @@
 
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
 
+pkgincludesubdir = $(includedir)/f4rt
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = f4rt.pc
+
 SUBDIRS= . m4 src doc tests
 OBJEXT=".lo .o"
 ACLOCAL_AMFLAGS=-I m4

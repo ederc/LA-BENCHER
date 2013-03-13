@@ -25,6 +25,7 @@ configure
 Makefile.in
 Makefile
 depend
+f4rt.pc
 tags
 missing
 libtool
