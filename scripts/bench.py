@@ -61,14 +61,14 @@ else:
     exp += 1
 
 # list of all methods
-methods = ['Raw sequential','Open MP collapse(1)','Open MP collapse(2)',
+methods = ['Raw sequential','Open MP collapse(1) outer loop',
+'Open MP collapse(1) inner loop','Open MP collapse(2)',
 'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
 'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
 'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
 
-coloring = ['k-','b--','b-.','g--','g-.','g:','r--','r-.','r:']
 # lists for all methods we have, those are lists of lists:
-# E.g. time_series[i] is a list of len(threads) elements of the timings
+# e.g. time_series[i] is a list of len(threads) elements of the timings
 # of methods[i]. 
 time_series = list()
 gflops_series = list()
@@ -106,54 +106,87 @@ f.write(thrds_str+'\n')
 f.close()
 
 # sequential computation
-print(strstr+' -i -m0 >> '+bench_file+'...')
-os.system(strstr+' -i -m0 >> '+bench_file)
+print(strstr+' -m0 >> '+bench_file+'...')
+os.system(strstr+' -m0 >> '+bench_file)
 print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# OpenMP computations 1D
+# OpenMP computations 1D outer
 for i in threads:
-  print(strstr+' -i -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value))
+  print(strstr+' -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+# OpenMP computations 1D inner
+for i in threads:
+  print(strstr+' -m1 -d 1 -i -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -m1 -d 1 -i -t '+str(i)+' >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # OpenMP computations 2D
 for i in threads:
-  print(strstr+' -i -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value))
+  print(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # TBB computations 1D auto
 for i in threads:
-  print(strstr+' -i -m2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m2 -t '+str(i)+' >> bench-'+str(hash_value))
+  print(strstr+' -m2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -m2 -t '+str(i)+' >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # TBB computations 1D affinity
 for i in threads:
-  print(strstr+' -i -m2 -t '+str(i)+' -a >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m2 -t '+str(i)+' -a >> bench-'+str(hash_value))
+  print(strstr+' -m2 -t '+str(i)+' -a >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -m2 -t '+str(i)+' -a >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # TBB computations 1D simple
 for i in threads:
-  print(strstr+' -i -m2 -t '+str(i)+' -s >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m2 -t '+str(i)+' -s >> bench-'+str(hash_value))
+  print(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # TBB computations 2D auto
 for i in threads:
-  print(strstr+' -i -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value))
+  print(strstr+' -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # TBB computations 2D affinity
 for i in threads:
-  print(strstr+' -i -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value))
+  print(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # TBB computations 2D simple
 for i in threads:
-  print(strstr+' -i -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value))
+  print(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+file_name = 'bench-'+str(hash_value)
+# read lines of the benchmark files
+f = open(file_name)
+
+
+# get threads for plot, stored in the first line of bench file
+plot_threads = f.readline().strip().replace(' ','').split(',')
+# for compatibility to the other scripts just store this again
+threads = plot_threads
+threads = list(map(lambda x: int(x) - 1, threads))
+lines = f.readlines()
+f.close()
+
+
+for l in lines:
+  for i in range(0,len(methods)):  
+    if l.find(methods[i]) != -1:
+      tmp = i
+  if l.find('Real time:') != -1:
+    time_series[tmp].append(\
+        l.replace('Real time:','').replace('sec','').strip())
+  if l.find('GFLOPS/sec:') != -1:
+    # if the value is inf for infinity due to short computation time, we set
+    # the GFLOPS value to be -1
+    gflops_series[tmp].append(\
+        l.replace('GFLOPS/sec:','').replace('inf','-1').strip())

@@ -42,8 +42,9 @@ void print_help(int exval) {
  printf("                 (values: 1, 2; default = 1)\n");
  printf("       -g        generate a new random float matrix\n");
  printf("       -h        print this help and exit\n");
- printf("       -i        impose, i.e. cheat: Transpose B before multiplication and use\n");
- printf("                 better cache locality\n");
+ printf("       -i        If parallel scheduler is used with option -d1, then the\n");
+ printf("                 -i flag triggers collapsing on one loop level deeper.\n");
+ printf("                 Without this flag, collapsing is done w.r.t. the outer loop.\n");
  printf("       -m        method to be used: \n");
  printf("                 0 = Sequential\n");
 #ifdef __F4RT_HAVE_OPENMP
@@ -56,6 +57,8 @@ void print_help(int exval) {
  printf("                 3 = KAAPI\n");
 #endif
  printf("                 Note: By default the sequential implementation is used\n");
+ printf("       -N        Not transposing: B is NOT transposed before multiplication,\n");
+ printf("                 thus the computation has a way worse cache locality\n");
  printf("       -p        if matrix multiplication took place, print of resulting matrix\n");
  printf("                 (no printing of resulting matrix by default)\n");
  printf("       -R        number of rows of matrix to be generated\n");
@@ -98,8 +101,9 @@ void prepareMult(Matrix& A, Matrix& B, char* str) {
   B.transpose(A);
 }
 
-void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, const int blocksize,
-              const int method, const int dimension, const int affinity, int impose) {
+void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
+              const int blocksize, const int method, const int dimension, 
+              const int affinity, int impose, int outerloop) {
   // C = A*B^T
   if (method == 2) { // TBB
 #ifdef __F4RT_HAVE_INTEL_TBB
@@ -130,8 +134,12 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, con
   }
   if (method == 1) { // OpenMP
 #ifdef __F4RT_HAVE_OPENMP    
-    if (dimension == 1)
-      multOMP1d(C, A, B, nthrds, blocksize, impose);
+    if (dimension == 1) {
+      if (outerloop == 1)
+        multOMP1dOuter(C, A, B, nthrds, blocksize, impose);
+      else
+        multOMP1dInner(C, A, B, nthrds, blocksize, impose);
+    }
     if (dimension == 2)
       multOMP2d(C, A, B, nthrds, blocksize, impose);
 #else
@@ -149,7 +157,7 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, con
 }
 
 void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, int blocksize, 
-                  int dimension, int impose, int print) {
+                  int dimension, int impose, int outerloop, int print) {
   Matrix A, B;
 
   // read files, stores matrices, etc
@@ -177,7 +185,7 @@ void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, 
   //B.print();
   Matrix C(A.nRows(), B.nCols());
 
-  multiply(C, A, B, nthrds, blocksize, method, dimension, affinity, impose);
+  multiply(C, A, B, nthrds, blocksize, method, dimension, affinity, impose, outerloop);
 
   if (print)
     C.print();
@@ -188,7 +196,7 @@ void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, 
 }
 
 void multEqualMatrices( char* str, int nthrds, int method, int affinity, int blocksize, 
-                        int dimension, int impose, int print) {
+                        int dimension, int impose, int outerloop, int print) {
   Matrix A, B;
 
   // read files, stores matrices, etc
@@ -202,7 +210,7 @@ void multEqualMatrices( char* str, int nthrds, int method, int affinity, int blo
   
   Matrix C(A.nRows(), B.nRows());
 
-  multiply(C, A, B, nthrds, blocksize, method, dimension, affinity,impose);
+  multiply(C, A, B, nthrds, blocksize, method, dimension, affinity, impose, outerloop);
 
   if (print)
     C.print();
@@ -216,8 +224,8 @@ int main(int argc, char *argv[]) {
  int opt;
  char *fileNameA = NULL, *fileNameB = NULL;
  int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
-     blocksize = 2, dimension = 1, impose = 0, rows = 0, cols = 0,
-     generate = 0;
+     blocksize = 2, dimension = 1, impose = 1, rows = 0, cols = 0,
+     generate = 0, outerloop = 1;
 
  /* 
  // no arguments given
@@ -227,7 +235,7 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvgA:B:C:pt:m:cd:b:aR:iso:")) != -1) {
+ while((opt = getopt(argc, argv, "hVvgA:B:C:pt:m:cd:b:aR:Nsi")) != -1) {
   switch(opt) {
     case 'g': 
       generate = 1;
@@ -265,8 +273,8 @@ int main(int argc, char *argv[]) {
     case 's':
       affinity  = 2;
       break;
-    case 'i':
-      impose  = 1;
+    case 'N':
+      impose  = 0;
       break;
     case 'b':
       blocksize = atoi(strdup(optarg));
@@ -289,8 +297,8 @@ int main(int argc, char *argv[]) {
     case 'R':
       rows = atoi(strdup(optarg));
       break;
-    case 'o':
-      printf("Output: %s\n", optarg);
+    case 'i':
+      outerloop = 0;
       break;
     case ':':
       fprintf(stderr, "%s: Error - Option `%c' needs a value\n\n", PACKAGE, optopt);
@@ -313,9 +321,11 @@ int main(int argc, char *argv[]) {
   }
   if (multiply && fileNameA) {
     if (fileNameB) {
-      multMatrices(fileNameA, fileNameB, nthrds, method, affinity, blocksize, dimension, impose, print);  
+      multMatrices( fileNameA, fileNameB, nthrds, method, affinity, blocksize,
+                    dimension, impose, outerloop,print);  
     } else {
-      multEqualMatrices(fileNameA, nthrds, method, affinity, blocksize, dimension, impose, print);  
+      multEqualMatrices(fileNameA, nthrds, method, affinity, blocksize, 
+                        dimension, impose, outerloop, print);  
     }
   }
  return 0;
