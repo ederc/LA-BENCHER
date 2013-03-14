@@ -207,6 +207,12 @@ AC_ARG_WITH(papi,
     AS_HELP_STRING([--with-papi@<:@=PATH@:>@], [The PAPI install prefix, if configure can't find it.]),
     [x_config_papi=$withval])
 
+dnl Search for hwloc
+AC_CHECK_LIB([hwloc], [main], [
+    AC_DEFINE([HAVE_HWLOC],[],"hwloc available.")
+    LIBS="-lhwloc $LIBS"
+    ], [echo "libhwloc not found."])
+
 dnl Search for Open MP
 AX_OPENMP()
 
@@ -215,6 +221,24 @@ AC_CHECK_LIB([tbb], [main], [
     AC_DEFINE([HAVE_INTEL_TBB],[],"Intel TBB available.")
     LIBS="-ltbb $LIBS"
     ], [echo "libtbb not found."])
+
+dnl Search for KAAPI
+AC_CHECK_LIB([kaapi], [main], [
+    AC_DEFINE([HAVE_KAAPI],[],"KAAPI available.")
+    LIBS="-lkaapi $LIBS"
+    ], [echo "libkaapi not found."])
+
+dnl Search for KAAPIC
+AC_CHECK_LIB([kaapic], [main], [
+    AC_DEFINE([HAVE_KAAPIC],[],"KAAPIC available.")
+    LIBS="-lkaapic $LIBS"
+    ], [echo "libkaapic not found."])
+
+dnl Search for KAAPI++
+AC_CHECK_LIB([kaapi++], [main], [
+    AC_DEFINE([HAVE_KAAPIPP],[],"KAAPI++ available.")
+    LIBS="-lkaapi++ $LIBS"
+    ], [echo "libkaapi++ not found."])
 
 dnl Do not silence irrelevant compiler warnings by default, since enabling this
 dnl option incurs a performance penalty.

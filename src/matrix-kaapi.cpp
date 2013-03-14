@@ -2,6 +2,7 @@
 
 #define __F4RT_DEBUG  0
 
+#if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
 // multiplies A*B^T and stores it in *this
 void multKAAPI( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
                 int blocksize, int impose) {
@@ -101,3 +102,4 @@ if (impose == 1) {
     << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
+#endif

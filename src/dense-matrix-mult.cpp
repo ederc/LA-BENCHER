@@ -10,7 +10,7 @@
 #ifdef __F4RT_HAVE_OPENMP
 #include "matrix-omp.h"
 #endif
-#ifdef __F4RT_HAVE_KAAPI
+#if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
 #include "matrix-kaapi.h"
 #endif
 #include "matrix-seq.h"
@@ -45,10 +45,17 @@ void print_help(int exval) {
  printf("       -i        impose, i.e. cheat: Transpose B before multiplication and use\n");
  printf("                 better cache locality\n");
  printf("       -m        method to be used: \n");
- printf("                 0 = TBB,\n");
+ printf("                 0 = Sequential\n");
+#ifdef __F4RT_HAVE_OPENMP
  printf("                 1 = OpenMP\n");
- printf("                 2 = Sequential\n");
- printf("                 Note: By default TBB is used\n");
+#endif
+#ifdef __F4RT_HAVE_INTEL_TBB
+ printf("                 2 = TBB\n");
+#endif
+#if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
+ printf("                 3 = KAAPI\n");
+#endif
+ printf("                 Note: By default the sequential implementation is used\n");
  printf("       -p        if matrix multiplication took place, print of resulting matrix\n");
  printf("                 (no printing of resulting matrix by default)\n");
  printf("       -R        number of rows of matrix to be generated\n");
@@ -94,7 +101,7 @@ void prepareMult(Matrix& A, Matrix& B, char* str) {
 void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, const int blocksize,
               const int method, const int dimension, const int affinity, int impose) {
   // C = A*B^T
-  if (method == 0) { // TBB
+  if (method == 2) { // TBB
 #ifdef __F4RT_HAVE_INTEL_TBB
     if (dimension == 1) {
       if (affinity == 1) {
@@ -131,12 +138,14 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds, con
     multSEQ(C, A, B, blocksize, impose);
 #endif
   }
-  if (method == 2) // plain sequential w/o scheduler overhead
+  if (method == 0) // plain sequential w/o scheduler overhead
     multSEQ(C, A, B, blocksize, impose);
-  /*
   if (method == 3) // xkaapi 
+#if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
     multKAAPI(C, A, B, blocksize, impose);
-    */
+#else
+    multSEQ(C, A, B, blocksize, impose);
+#endif
 }
 
 void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, int blocksize, 

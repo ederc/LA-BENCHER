@@ -107,57 +107,57 @@ f.write(thrds_str+'\n')
 f.close()
 
 # sequential computation
-print(strstr+' -i -m 2 >> '+bench_file+'...')
-os.system(strstr+' -i -m 2 >> '+bench_file)
-print 'done at '+time.strftime("%a, %d %b %y %h:%m:%s +0000", time.gmtime())
+print(strstr+' -i -m0 >> '+bench_file+'...')
+os.system(strstr+' -i -m0 >> '+bench_file)
+print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# openmp computations 1d
+# OpenMP computations 1D
 for i in threads:
-  print(strstr+' -i -m 1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m 1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value))
-  print 'done at '+time.strftime("%a, %d %b %y %h:%m:%s +0000", time.gmtime())
+  print(strstr+' -i -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -i -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# openmp computations 2d
+# OpenMP computations 2D
 for i in threads:
-  print(strstr+' -i -m 1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m 1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value))
-  print 'done at '+time.strftime("%a, %d %b %y %h:%m:%s +0000", time.gmtime())
+  print(strstr+' -i -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -i -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# tbb computations 1d auto
+# TBB computations 1D auto
 for i in threads:
-  print(strstr+' -i -m 0 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m 0 -t '+str(i)+' >> bench-'+str(hash_value))
-  print 'done at '+time.strftime("%a, %d %b %y %h:%m:%s +0000", time.gmtime())
+  print(strstr+' -i -m2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -i -m2 -t '+str(i)+' >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# tbb computations 1d affinity
+# TBB computations 1D affinity
 for i in threads:
-  print(strstr+' -i -m 0 -t '+str(i)+' -a >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m 0 -t '+str(i)+' -a >> bench-'+str(hash_value))
-  print 'done at '+time.strftime("%a, %d %b %y %h:%m:%s +0000", time.gmtime())
+  print(strstr+' -i -m2 -t '+str(i)+' -a >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -i -m2 -t '+str(i)+' -a >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# tbb computations 1d simple
+# TBB computations 1D simple
 for i in threads:
-  print(strstr+' -i -m 0 -t '+str(i)+' -s >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m 0 -t '+str(i)+' -s >> bench-'+str(hash_value))
-  print 'done at '+time.strftime("%a, %d %b %y %h:%m:%s +0000", time.gmtime())
+  print(strstr+' -i -m2 -t '+str(i)+' -s >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -i -m2 -t '+str(i)+' -s >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# tbb computations 2d auto
+# TBB computations 2D auto
 for i in threads:
-  print(strstr+' -i -m 0 -t '+str(i)+' -d 2 >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m 0 -t '+str(i)+' -d 2 >> bench-'+str(hash_value))
-  print 'done at '+time.strftime("%a, %d %b %y %h:%m:%s +0000", time.gmtime())
+  print(strstr+' -i -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -i -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# tbb computations 2d affinity
+# TBB computations 2D affinity
 for i in threads:
-  print(strstr+' -i -m 0 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m 0 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value))
-  print 'done at '+time.strftime("%a, %d %b %y %h:%m:%s +0000", time.gmtime())
+  print(strstr+' -i -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -i -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# tbb computations 2d simple
+# TBB computations 2D simple
 for i in threads:
-  print(strstr+' -i -m 0 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -i -m 0 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value))
-  print 'done at '+time.strftime("%a, %d %b %y %h:%m:%s +0000", time.gmtime())
+  print(strstr+' -i -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -i -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # read lines of the benchmark files
 f = open('bench-'+str(hash_value))
