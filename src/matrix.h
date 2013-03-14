@@ -13,12 +13,17 @@
 #include <sstream>
 #include <sys/time.h>
 #include <cassert>
+#ifdef __F4RT_HAVE_INTEL_TBB
 #include <tbb/tbb.h>
+#endif
 #include <pthread.h>
 #ifdef __F4RT_HAVE_OPENMP
 #include <omp.h>
 #endif
-//#include <kaapi++>
+#if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
+#include <kaapi.h>
+#include <kaapi++>
+#endif
 //#include "auxiliary.h"
 
 typedef unsigned long long uint64;
