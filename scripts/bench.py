@@ -37,9 +37,9 @@ parser.add_argument('-n', '--colsb', required=True,
     help='Number of cols of matrix B')
 parser.add_argument('-t', '--threads', required=True,
     help='Maximal number of threads to be used')
-parser.add_argument('-b', '--base', default=1,
+parser.add_argument('-b', '--base', default=2,
     help='Base of number of threads, e.g. -b 2 -t 16 would lead to computations\
-in 1,2,4,8,16 threads.')
+in 1,2,4,8,16 threads. Default is 2.')
 parser.add_argument('-hg', '--homog', action="store_true", default=False,
     help='Set this flag if the ideal should be homogenized.\
 Note that this flag increases the number of variables by 1.')
