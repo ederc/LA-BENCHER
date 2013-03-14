@@ -220,6 +220,9 @@ tmp_ticks = ax.yaxis.get_majorticklocs()
 granu = tmp_ticks[len(tmp_ticks)-1] / (len(tmp_ticks)-1) / 5
 ax.yaxis.set_minor_locator(MultipleLocator(granu))
 
+pl.tick_params(axis='both', which='major', labelsize=8)
+pl.tick_params(axis='both', which='minor', labelsize=8)
+
 pl.savefig('timings-plot.pdf',papertype='a4',orientation='landscape')
 
 fig = pl.figure()
@@ -252,5 +255,8 @@ tmp_ticks = ax.yaxis.get_majorticklocs()
 # be set to a positive integer value, we have to take care of this case.
 granu = abs(tmp_ticks[len(tmp_ticks)-1]) / (len(tmp_ticks)-1) / 5
 ax.yaxis.set_minor_locator(MultipleLocator(granu))
+
+pl.tick_params(axis='both', which='major', labelsize=8)
+pl.tick_params(axis='both', which='minor', labelsize=8)
 
 pl.savefig('gflops-plot.pdf',papertype='a4',orientation='landscape')

@@ -105,9 +105,10 @@ ax.legend((methods),'upper right', shadow=True, fancybox=True)
 # take real time of sequential computation to figure out the 
 # granularity of the yaxis
 tmp_ticks = ax.yaxis.get_majorticklocs()
-print tmp_ticks
 granu = tmp_ticks[len(tmp_ticks)-1] / (len(tmp_ticks)-1) / 5
 ax.yaxis.set_minor_locator(MultipleLocator(granu))
+pl.tick_params(axis='both', which='major', labelsize=8)
+pl.tick_params(axis='both', which='minor', labelsize=8)
 
 pl.savefig('timings-plot.pdf',papertype='a4',orientation='landscape')
 
@@ -139,11 +140,13 @@ ax.legend((methods),'upper left', shadow=True, fancybox=True)
 # take gflops of best computation to figure out the 
 # granularity of the yaxis
 tmp_ticks = ax.yaxis.get_majorticklocs()
-print tmp_ticks
 # note that here "abs()" is needed since if computations are too fast we
 # set GFLOPS to -1 instead of infinity. Since the MultipleLocator must
 # be set to a positive integer value, we have to take care of this case.
 granu = abs(tmp_ticks[len(tmp_ticks)-1]) / (len(tmp_ticks)-1) / 5
 ax.yaxis.set_minor_locator(MultipleLocator(granu))
+
+pl.tick_params(axis='both', which='major', labelsize=8)
+pl.tick_params(axis='both', which='minor', labelsize=8)
 
 pl.savefig('gflops-plot.pdf',papertype='a4',orientation='landscape')
