@@ -68,7 +68,6 @@ methods = ['Raw sequential','Open MP collapse(1)','Open MP collapse(2)',
 'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
 'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
 
-coloring = ['k^','b--','b-.','g--','g-.','g:','r--','r-.','r:']
 # lists for all methods we have, those are lists of lists:
 # E.g. time_series[i] is a list of len(threads) elements of the timings
 # of methods[i]. 
@@ -187,10 +186,13 @@ for l in lines:
 
 #plot this data
 
+#line style
+coloring = ['k^','b-','b--','g-','g--','g:','r-','r--','r:']
+
 pl.rc('legend',**{'fontsize':6})
 fig = pl.figure()
 ax = fig.add_subplot(111)
-fig.suptitle('Timing results', fontsize=14, fontweight='bold')
+fig.suptitle('Timings: '+file_name, fontsize=12)
 ax.set_xlabel('Number of threads')
 ax.set_ylabel('Real time in seconds')
 
@@ -227,9 +229,9 @@ pl.savefig('timings-plot.pdf',papertype='a4',orientation='landscape')
 
 fig = pl.figure()
 ax = fig.add_subplot(111)
-fig.suptitle('GFLOPS results', fontsize=14, fontweight='bold')
+fig.suptitle('GFLOPS/sec: '+file_name, fontsize=12)
 ax.set_xlabel('Number of threads')
-ax.set_ylabel('GFLOPS per seconds')
+ax.set_ylabel('GFLOPS per second')
 
 ax = pl.gca() 
 
