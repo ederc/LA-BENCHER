@@ -196,7 +196,8 @@ fig.suptitle('timings: '+file_name, fontsize=10)
 ax.set_xlabel('number of threads', fontsize=8)
 ax.set_ylabel('real time in seconds', fontsize=8)
 
-#pl.grid(true)
+pl.grid(b=True, which='major', color='k', linewidth=0.3)
+pl.grid(b=True, which='minor', color='k', linewidth=0.1, alpha=0.5)
 
 ax = pl.gca() 
 
@@ -234,6 +235,9 @@ ax = fig.add_subplot(111)
 fig.suptitle('gflops/sec: '+file_name, fontsize=10)
 ax.set_xlabel('number of threads', fontsize=8)
 ax.set_ylabel('gflops per second', fontsize=8)
+
+pl.grid(b=True, which='major', color='k', linewidth=0.3)
+pl.grid(b=True, which='minor', color='k', linewidth=0.1, alpha=0.5)
 
 ax = pl.gca() 
 
