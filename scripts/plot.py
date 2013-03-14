@@ -73,12 +73,12 @@ for l in lines:
 #line style
 coloring = ['k^','b-','b--','g-','g--','g:','r-','r--','r:']
 
-pl.rc('legend',**{'fontsize':6})
+pl.rc('legend',**{'fontsize':5})
 fig = pl.figure()
 ax = fig.add_subplot(111)
-fig.suptitle('Timings: '+file_name, fontsize=12)
-ax.set_xlabel('Number of threads')
-ax.set_ylabel('Real time in seconds')
+fig.suptitle('Timings: '+file_name, fontsize=10)
+ax.set_xlabel('Number of threads', fontsize=8)
+ax.set_ylabel('Real time in seconds', fontsize=8)
 
 #pl.grid(True)
 
@@ -108,16 +108,16 @@ ax.legend((methods),'upper right', shadow=True, fancybox=True)
 tmp_ticks = ax.yaxis.get_majorticklocs()
 granu = tmp_ticks[len(tmp_ticks)-1] / (len(tmp_ticks)-1) / 5
 ax.yaxis.set_minor_locator(MultipleLocator(granu))
-pl.tick_params(axis='both', which='major', labelsize=8)
-pl.tick_params(axis='both', which='minor', labelsize=8)
+pl.tick_params(axis='both', which='major', labelsize=6)
+pl.tick_params(axis='both', which='minor', labelsize=6)
 
 pl.savefig('timings-plot.pdf',papertype='a4',orientation='landscape')
 
 fig = pl.figure()
 ax = fig.add_subplot(111)
-fig.suptitle('GFLOPS/sec: '+file_name, fontsize=12)
-ax.set_xlabel('Number of threads')
-ax.set_ylabel('GFLOPS per second')
+fig.suptitle('GFLOPS/sec: '+file_name, fontsize=10)
+ax.set_xlabel('Number of threads', fontsize=8)
+ax.set_ylabel('GFLOPS per second', fontsize=8)
 
 ax = pl.gca() 
 
@@ -147,7 +147,7 @@ tmp_ticks = ax.yaxis.get_majorticklocs()
 granu = abs(tmp_ticks[len(tmp_ticks)-1]) / (len(tmp_ticks)-1) / 5
 ax.yaxis.set_minor_locator(MultipleLocator(granu))
 
-pl.tick_params(axis='both', which='major', labelsize=8)
-pl.tick_params(axis='both', which='minor', labelsize=8)
+pl.tick_params(axis='both', which='major', labelsize=6)
+pl.tick_params(axis='both', which='minor', labelsize=6)
 
 pl.savefig('gflops-plot.pdf',papertype='a4',orientation='landscape')
