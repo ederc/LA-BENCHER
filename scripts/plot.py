@@ -46,14 +46,21 @@ for files in glob.glob("bench-*"):
 
 # read lines of the benchmark files
 f = open(file_name)
+lines = f.readlines()
+f.close()
+
+# get
+# 1. dimensions of benchmark matrices
+# 2. threads for plot, stored in the first line of bench file
+dimensions = lines[0].strip().replace(' ','').split(',')
+# second line are the thread settings used
+plot_threads = lines[1].strip().replace(' ','').split(',')
 
 # get threads for plot, stored in the first line of bench file
-plot_threads = f.readline().strip().replace(' ','').split(',')
+#plot_threads = f.readline().strip().replace(' ','').split(',')
 # for compatibility to the other scripts just store this again
 threads = plot_threads
 threads = list(map(lambda x: int(x) - 1, threads))
-lines = f.readlines()
-f.close()
 
 
 for l in lines:
@@ -78,7 +85,9 @@ pl.rc('legend',**{'fontsize':5})
 fig = pl.figure()
 ax = fig.add_subplot(111)
 fig.suptitle('Timings: '+file_name, fontsize=10)
-ax.set_xlabel('Number of threads', fontsize=8)
+pl.title('Matrix dimensions: '+dimensions[0]+
+' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
+ax.set_xlabel('Number of threads', fontsize=7)
 ax.set_ylabel('Real time in seconds', fontsize=8)
 
 pl.grid(b=True, which='major', color='k', linewidth=0.3)
@@ -118,6 +127,8 @@ pl.savefig('timings-plot.pdf',papertype='a4',orientation='landscape')
 fig = pl.figure()
 ax = fig.add_subplot(111)
 fig.suptitle('GFLOPS/sec: '+file_name, fontsize=10)
+pl.title('Matrix dimensions: '+dimensions[0]+
+' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
 ax.set_xlabel('Number of threads', fontsize=8)
 ax.set_ylabel('GFLOPS per second', fontsize=8)
 

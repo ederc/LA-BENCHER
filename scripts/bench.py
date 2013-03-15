@@ -102,7 +102,8 @@ thrds_str = str(threads)
 thrds_str = thrds_str.replace('[','')
 thrds_str = thrds_str.replace(']','')
 thrds_str = thrds_str
-f.write(thrds_str+'\n')
+f.write(args.rowsa+','+args.colsa+','+args.colsb+'\r\n')
+f.write(thrds_str+'\r\n')
 f.close()
 
 # sequential computation
@@ -163,30 +164,3 @@ for i in threads:
   print(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value)+'...')
   os.system(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
-
-file_name = 'bench-'+str(hash_value)
-# read lines of the benchmark files
-f = open(file_name)
-
-
-# get threads for plot, stored in the first line of bench file
-plot_threads = f.readline().strip().replace(' ','').split(',')
-# for compatibility to the other scripts just store this again
-threads = plot_threads
-threads = list(map(lambda x: int(x) - 1, threads))
-lines = f.readlines()
-f.close()
-
-
-for l in lines:
-  for i in range(0,len(methods)):  
-    if l.find(methods[i]) != -1:
-      tmp = i
-  if l.find('Real time:') != -1:
-    time_series[tmp].append(\
-        l.replace('Real time:','').replace('sec','').strip())
-  if l.find('GFLOPS/sec:') != -1:
-    # if the value is inf for infinity due to short computation time, we set
-    # the GFLOPS value to be -1
-    gflops_series[tmp].append(\
-        l.replace('GFLOPS/sec:','').replace('inf','-1').strip())
