@@ -4,69 +4,6 @@
 #include <matrix.h>
 
 #if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
-static int BLOCSIZE = 1;
-
-/********************************
- * 1 Dimensional implementation
- *******************************/
-
-// Parallel bloc matrix product
-struct TaskMatProduct: public ka::Task<0>::Signature{};
-
-template<>
-struct TaskBodyCPU<TaskMatProduct> {
-  void operator()( 
-    Matrix& C,
-    const Matrix& A,
-    const Matrix& B,
-    const int nthrds,
-    const int blocksize,
-    const int impose
-    ) {
-    uint32 l, m, n;
-    if (impose == 1) {
-      l = A.nRows();
-      m = B.nRows();
-      n = B.nCols();
-    } else {
-      l = A.nRows();
-      m = B.nCols();
-      n = B.nRows();
-    }
-    std::cout << "Matrix Multiplication" << std::endl;
-#if __F4RT_DEBUG
-    std::cout << std::endl;
-    std::cout << "A => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
-    std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
-    std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
-#endif
-    if (impose == 1) {
-      for (size_t i=0; i<l; i += blocksize) {
-        ka::rangeindex ri(i, i+blocksize);
-        for (size_t j=0; j<m; j += blocksize) {
-          ka::rangeindex rj(j, j+blocksize);
-          float sum = 0;
-          for (size_t k=0; k<n; k += 1) {
-            sum += A.entries[k+i*n] * B.entries[k+j*n];
-          }
-          C.entries[j+i*m]  = (float) (sum);
-        }
-      }
-    } else {
-      for (size_t i=0; i<l; i += blocksize) {
-        ka::rangeindex ri(i, i+blocksize);
-        for (size_t j=0; j<m; j += blocksize) {
-          ka::rangeindex rj(j, j+blocksize);
-          float sum = 0;
-          for (size_t k=0; k<n; k += 1) {
-            sum += A.entries[k+i*n] * B.entries[j+k*m];
-          }
-          C.entries[j+i*m]  = (float) (sum);
-        }
-      }
-    }
-  }
-};
 
 /********************************
  * 2 Dimensional implementation
