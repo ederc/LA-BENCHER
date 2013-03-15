@@ -148,12 +148,14 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
   }
   if (method == 0) // plain sequential w/o scheduler overhead
     multSEQ(C, A, B, blocksize, impose);
-  if (method == 3) // xkaapi 
+  if (method == 3) {// xkaapi 
 #if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
-    multKAAPI(C, A, B, blocksize, impose);
+    // TODO: How to enlarge blocksize without corrupting the computation?
+    multKAAPI(C, A, B, nthrds, /*blocksize*/1, impose);
 #else
     multSEQ(C, A, B, blocksize, impose);
 #endif
+  }
 }
 
 void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, int blocksize, 

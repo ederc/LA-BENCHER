@@ -37,6 +37,7 @@ void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int imp
           // sum += A(i,k) * B(j,k);
           sum += A.entries[k+i*n] * B.entries[k+j*n];
         }
+        std::cout << j+i*m << sum << std::endl;
         C.entries[j+i*m]  = (float) (sum);
       }
     }

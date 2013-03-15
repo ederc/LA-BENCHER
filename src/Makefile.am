@@ -12,6 +12,7 @@ SUBDIRS=
 BASIC_HDRS =								\
 	../include/f4rt-config.h 	\
 	intrinsics.h							\
+	matrix-kaapi.h						\
 	matrix-omp.h							\
 	matrix-seq.h							\
 	matrix-tbb.h							\
@@ -20,6 +21,7 @@ BASIC_HDRS =								\
 SOURCES=										\
 	intrinsics.c							\
 	dense-matrix-mult.cpp			\
+	matrix-kaapi.cpp					\
 	matrix-omp.cpp						\
 	matrix-seq.cpp						\
 	matrix-tbb.cpp						\
@@ -53,4 +55,10 @@ f4rt_SOURCES= intrinsics.c intrinsics.h
 f4rt_LDADD=libf4rt.la
 
 dense_mult_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x
-dense_mult_SOURCES= dense-matrix-mult.cpp matrix.cpp matrix-tbb.cpp matrix-omp.cpp matrix-seq.cpp
+dense_mult_SOURCES=  			\
+	dense-matrix-mult.cpp 	\
+	matrix.cpp 							\
+	matrix-kaapi.cpp 				\
+	matrix-omp.cpp 					\
+	matrix-seq.cpp					\
+	matrix-tbb.cpp

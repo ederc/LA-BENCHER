@@ -535,6 +535,7 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   // blocksize
   gettimeofday(&start, NULL);
   cStart  = clock();
+  unsigned long cntr = 0;
   if (impose == 1) {
     tbb::parallel_for(tbb::blocked_range2d<size_t>(0, l, blocksize, 0,
                       m, blocksize),
@@ -543,8 +544,11 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
           for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i )
             for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
               float sum = 0;
-              for( size_t k=0; k<n; ++k )
+              for( size_t k=0; k<n; ++k ) {
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
+                cntr += 2;
+              }
+              std::cout << j+i*m << sum << std::endl;
               C.entries[j+i*m]  = (float) (sum);
             }
         }, sp);
@@ -556,8 +560,10 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
           for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i )
             for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
               float sum = 0;
-              for( size_t k=0; k<n; ++k )
+              for( size_t k=0; k<n; ++k ) {
                 sum += A.entries[k+i*n] * B.entries[j+k*m];
+                cntr += 2;
+              }
               C.entries[j+i*m]  = (float) (sum);
             }
         }, sp);
@@ -576,6 +582,7 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  std::cout << cntr << flops << std::endl;
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
                     (stop.tv_usec - start.tv_usec)) / 1e6;
