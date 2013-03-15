@@ -7,5 +7,5 @@ special Gaussian Elimination steps, e.g. as presented in "Parallel Gaussian
 Elimination for Gröbner bases computations in finite fields" by Faugère and
 Lachartre.
 Note that this library is dedicated to highly use CPU intrinsics and
-parallelization methods. Thus it cannot be guaranteed to be efficient or, even
-more, support older CPUs.
+parallelization methods. Thus it cannot be guaranteed to be efficient on 
+or, even more, support older CPUs.
