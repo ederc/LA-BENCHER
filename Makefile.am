@@ -30,6 +30,7 @@ DISTCLEANFILES= 									\
 	config.guess										\
 	configure.in										\
 	configure												\
+	ltmain.sh												\
 	Makefile.in											\
 	f4rt-config f4rt-config~				\
 	include/f4rt-config.h*					\

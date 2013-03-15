@@ -8,7 +8,7 @@ SCRIPTPATH=`dirname $SCRIPT`
 TESTPATH="$SCRIPTPATH/basic"
 FILES=$(find $TESTPATH -name test-\* -perm /a+x | sort)
 echo "==========================================="
-echo "------ start: basic tests for xmalloc -----"
+echo "-------- start: basic tests for F4RT ------"
 echo "==========================================="
 for f in $FILES
 do

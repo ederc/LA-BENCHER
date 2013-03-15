@@ -1,10 +1,10 @@
 # Copyright 2012 Christian Eder
 # 
-# This file is part of XMALLOC, licensed under the GNU General Public
+# This file is part of F4RT, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
 INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/src -I$(top_builddir)
-AM_CPPFLAGS = -g3 -ggdb -Wall -D__XMALLOC_DEBUG -O0 -fomit-frame-pointer -pthread
+AM_CPPFLAGS = -g3 -ggdb -Wall -D__F4RT_DEBUG -O0 -fomit-frame-pointer -pthread
 
 BENCHMARK_CXXFLAGS = -O2 -pthread
 
@@ -13,9 +13,9 @@ SUBDIRS = unit data
 
 UNIT_DIR=unit
 if ENABLE_DEBUG
-LDADD = $(top_builddir)/src/.libs/libxmalloc_debug.la
+LDADD = $(top_builddir)/src/.libs/libf4rt_debug.la
 else
-LDADD = $(top_builddir)/src/.libs/libxmalloc.la
+LDADD = $(top_builddir)/src/.libs/libf4rt.la
 endif
 
 # Put an entry for your test-mycomponent.C here (or in one of the other test groups).  

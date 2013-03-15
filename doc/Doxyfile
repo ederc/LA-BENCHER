@@ -26,7 +26,7 @@ DOXYFILE_ENCODING      = UTF-8
 # identify the project. Note that if you do not use Doxywizard you need
 # to put quotes around the project name if it contains spaces.
 
-PROJECT_NAME           = "xmalloc"
+PROJECT_NAME           = "F4RT"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number.
 # This could be handy for archiving the generated documentation or
@@ -665,17 +665,13 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = ../include/xmalloc-config.h \
-                         ../src/data.h \
-                         ../src/align.h \
-                         ../src/system.h \
-                         ../src/globals.h \
-                         ../src/page.h \
-                         ../src/bin.h \
-                         ../src/xassert.h \
-                         ../src/threads.h \
-                         ../src/region.h \
-                         ../src/xmalloc.h
+INPUT                  = ../include/f4rt-config.h \
+                         ../src/intrinsics.h \
+                         ../src/matrix.h \
+                         ../src/matrix-seq.h \
+                         ../src/matrix-omp.h \
+                         ../src/matrix-tbb.h \
+                         ../src/matrix-kaapi.h
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is

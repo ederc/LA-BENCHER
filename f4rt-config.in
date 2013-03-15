@@ -1,7 +1,7 @@
 #! /bin/sh
 # Copyright 2012 Christian Eder
 # 
-# This file is part of XMALLOC, licensed under the GNU General Public
+# This file is part of F4RT, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
 
@@ -13,11 +13,11 @@ libdir=@libdir@
 usage()
 {
     cat <<EOF
-Usage: xmalloc-config [OPTION]
+Usage: f4rt-config [OPTION]
 
 Known values for OPTION are:
 
-  --prefix		show XALLOC installation prefix 
+  --prefix		show F4RT installation prefix 
   --libs		print library linking information
   --cflags		print pre-processor and compiler flags
   --help		display this help and exit
@@ -64,7 +64,7 @@ while test $# -gt 0; do
 	;;
 
     --libs)
-	echo -n " -L${libdir} ${libdir}/libxmalloc.a @GMP_LIBS@ @PNG_LIBS@ @M4RI_LIBS@ @BLAS_LIBS@"
+	echo -n " -L${libdir} ${libdir}/libf4rt.a @GMP_LIBS@ @PNG_LIBS@ @M4RI_LIBS@ @BLAS_LIBS@"
 	;;
 
     *)

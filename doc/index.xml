@@ -46,9 +46,9 @@ make install</programlisting>
       <title>Cache size</title>
       <para>
         The cache size of a CPU is very important for efficient allocations.
-        xmalloc tries to use your CPU's cache as efficient as possible. For this it does
+        F4RT tries to use your CPU's cache as efficient as possible. For this it does
         not only try to determine the corresponding sizes ( in bytes ) for the L1
-        and the L2 cache via checking platform-dependent mechanisms. In xmalloc the user
+        and the L2 cache via checking platform-dependent mechanisms. In F4RT the user
         has two other options on tuning the cache usage resp. on setting the values of
         <varname>__F4RT_CPU_L1_CACHE</varname> and
         <varname>__F4RT_LOG_CPU_L2_CACHE</varname>.
@@ -108,7 +108,7 @@ __F4RT_CPU_L2_CACHE=64000</programlisting>
       <para>
         There exists an internal checker for the cache line size in
         <filename>m4/ax_cache_line_size.m4</filename>. It tries to get the actual values for the
-        cache line during the configure process. If it fails, xmalloc sets the corresponding variables
+        cache line during the configure process. If it fails, F4RT sets the corresponding variables
         to the above mentioned default values 64 respectively 6.
       </para>
       <para>
@@ -124,11 +124,11 @@ __F4RT_CPU_L2_CACHE=64000</programlisting>
       <title>Cache line size</title>
       <para>
         The cache line size of a CPU is very important for efficient allocations.
-        xmalloc tries to achieve a high cache locality without wasting too much
-        space. For this xmalloc depends on two macros called
+        F4RT tries to achieve a high cache locality without wasting too much
+        space. For this F4RT depends on two macros called
         <varname>__F4RT_CPU_CACHE_LINE</varname> and
         <varname>__F4RT_LOG_CPU_CACHE_LINE</varname>. The coresponding values
-        are given in kB. For default the configure script of xmalloc sets them to
+        are given in kB. For default the configure script of F4RT sets them to
         <programlisting>
 __F4RT_CPU_CACHE_LINE     = 64
 __F4RT_LOG_CPU_CACHE_LINE =  6</programlisting>
@@ -157,7 +157,7 @@ __F4RT_LOG_CPU_CACHE_LINE =  6</programlisting>
       <para>
         There exists an internal checker for the cache line size in
         <filename>m4/ax_cache_line_size.m4</filename>. It tries to get the actual values for the
-        cache line during the configure process. If it fails, xmalloc sets the corresponding variables
+        cache line during the configure process. If it fails, F4RT sets the corresponding variables
         to the above mentioned default values 64 respectively 6.
       </para>
       <para>

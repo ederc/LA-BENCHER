@@ -7,7 +7,7 @@ SCRIPT=`readlink -f $0`
 SCRIPTPATH=`dirname $SCRIPT`
 TESTPATH="$SCRIPTPATH/unit"
 echo "-------------------------------------------"
-echo "       start: all tests for xmalloc        "
+echo "         start: all tests for F4RT         "
 echo "-------------------------------------------"
 FILES=$(find $TESTPATH -name \_\* -perm /a+x | sort)
 countfailedunit=0
