@@ -63,14 +63,6 @@ void multTBBAuto( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   gettimeofday(&stop, NULL);
   cStop = clock();
 
-  // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
-  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  float epsilon = 0.0000000001;
-  double realtime = stop.tv_sec - start.tv_sec;
-  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
-  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D auto partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -78,19 +70,35 @@ void multTBBAuto( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "1" << std::endl;
   else
     std::cout << "0" << std::endl;
+  // compute FLOPS:
+  // assume addition and multiplication in the mult kernel are 2 operations
+  // done A.nRows() * B.nRows() * B.nCols()
+  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
+                    (stop.tv_usec - start.tv_usec)) / 1e6;
+  double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
+  char buffer[50];
+  // get digits before decimal point of cputime (the longest number) and setw
+  // with it: digits + 1 (point) + 4 (precision) 
+  int digits = sprintf(buffer,"%.0f",cputime);
+  double ratio = cputime/realtime;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
+  std::cout << "Real time:        " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << realtime << " sec" 
     << std::endl;
-  std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
-    << " sec" << std::    endl;
-  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
-    std::cout << "CPU/real time:    " << std::setprecision(4) 
-      << ratio << std::endl;
+  std::cout << "CPU time:         " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << cputime
+    << " sec" << std::endl;
+  if (cputime > epsilon)
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4) 
+      << std::setprecision(4) << std::fixed << ratio << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
-    << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime) 
+    << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
@@ -154,14 +162,6 @@ void multTBBAffine( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   gettimeofday(&stop, NULL);
   cStop = clock();
 
-  // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
-  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  float epsilon = 0.0000000001;
-  double realtime = stop.tv_sec - start.tv_sec;
-  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
-  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D affinity partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -169,19 +169,35 @@ void multTBBAffine( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "1" << std::endl;
   else
     std::cout << "0" << std::endl;
+  // compute FLOPS:
+  // assume addition and multiplication in the mult kernel are 2 operations
+  // done A.nRows() * B.nRows() * B.nCols()
+  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
+                    (stop.tv_usec - start.tv_usec)) / 1e6;
+  double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
+  char buffer[50];
+  // get digits before decimal point of cputime (the longest number) and setw
+  // with it: digits + 1 (point) + 4 (precision) 
+  int digits = sprintf(buffer,"%.0f",cputime);
+  double ratio = cputime/realtime;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
+  std::cout << "Real time:        " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << realtime << " sec" 
     << std::endl;
-  std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
-    << " sec" << std::    endl;
-  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
-    std::cout << "CPU/real time:    " << std::setprecision(4) 
-      << ratio << std::endl;
+  std::cout << "CPU time:         " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << cputime
+    << " sec" << std::endl;
+  if (cputime > epsilon)
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4) 
+      << std::setprecision(4) << std::fixed << ratio << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
-    << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime) 
+    << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
@@ -246,14 +262,6 @@ void multTBBSimple( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   gettimeofday(&stop, NULL);
   cStop = clock();
 
-  // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
-  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  float epsilon = 0.0000000001;
-  double realtime = stop.tv_sec - start.tv_sec;
-  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
-  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D simple partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -261,19 +269,35 @@ void multTBBSimple( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "1" << std::endl;
   else
     std::cout << "0" << std::endl;
+  // compute FLOPS:
+  // assume addition and multiplication in the mult kernel are 2 operations
+  // done A.nRows() * B.nRows() * B.nCols()
+  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
+                    (stop.tv_usec - start.tv_usec)) / 1e6;
+  double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
+  char buffer[50];
+  // get digits before decimal point of cputime (the longest number) and setw
+  // with it: digits + 1 (point) + 4 (precision) 
+  int digits = sprintf(buffer,"%.0f",cputime);
+  double ratio = cputime/realtime;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
+  std::cout << "Real time:        " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << realtime << " sec" 
     << std::endl;
-  std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
-    << " sec" << std::    endl;
-  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
-    std::cout << "CPU/real time:    " << std::setprecision(4) 
-      << ratio << std::endl;
+  std::cout << "CPU time:         " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << cputime
+    << " sec" << std::endl;
+  if (cputime > epsilon)
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4) 
+      << std::setprecision(4) << std::fixed << ratio << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
-    << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime) 
+    << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
@@ -339,14 +363,6 @@ void multTBBAuto2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   gettimeofday(&stop, NULL);
   cStop = clock();
 
-  // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
-  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  float epsilon = 0.0000000001;
-  double realtime = stop.tv_sec - start.tv_sec;
-  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
-  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D auto partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -354,19 +370,35 @@ void multTBBAuto2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "1" << std::endl;
   else
     std::cout << "0" << std::endl;
+  // compute FLOPS:
+  // assume addition and multiplication in the mult kernel are 2 operations
+  // done A.nRows() * B.nRows() * B.nCols()
+  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
+                    (stop.tv_usec - start.tv_usec)) / 1e6;
+  double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
+  char buffer[50];
+  // get digits before decimal point of cputime (the longest number) and setw
+  // with it: digits + 1 (point) + 4 (precision) 
+  int digits = sprintf(buffer,"%.0f",cputime);
+  double ratio = cputime/realtime;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
+  std::cout << "Real time:        " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << realtime << " sec" 
     << std::endl;
-  std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
-    << " sec" << std::    endl;
-  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
-    std::cout << "CPU/real time:    " << std::setprecision(4) 
-      << ratio << std::endl;
+  std::cout << "CPU time:         " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << cputime
+    << " sec" << std::endl;
+  if (cputime > epsilon)
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4) 
+      << std::setprecision(4) << std::fixed << ratio << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
-    << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime) 
+    << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
@@ -432,14 +464,6 @@ void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   gettimeofday(&stop, NULL);
   cStop = clock();
 
-  // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
-  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  float epsilon = 0.0000000001;
-  double realtime = stop.tv_sec - start.tv_sec;
-  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
-  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D affinity partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -447,19 +471,35 @@ void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "1" << std::endl;
   else
     std::cout << "0" << std::endl;
+  // compute FLOPS:
+  // assume addition and multiplication in the mult kernel are 2 operations
+  // done A.nRows() * B.nRows() * B.nCols()
+  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
+                    (stop.tv_usec - start.tv_usec)) / 1e6;
+  double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
+  char buffer[50];
+  // get digits before decimal point of cputime (the longest number) and setw
+  // with it: digits + 1 (point) + 4 (precision) 
+  int digits = sprintf(buffer,"%.0f",cputime);
+  double ratio = cputime/realtime;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
+  std::cout << "Real time:        " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << realtime << " sec" 
     << std::endl;
-  std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
-    << " sec" << std::    endl;
-  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
-    std::cout << "CPU/real time:    " << std::setprecision(4) 
-      << ratio << std::endl;
+  std::cout << "CPU time:         " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << cputime
+    << " sec" << std::endl;
+  if (cputime > epsilon)
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4) 
+      << std::setprecision(4) << std::fixed << ratio << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
-    << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime) 
+    << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
@@ -525,14 +565,6 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   gettimeofday(&stop, NULL);
   cStop = clock();
 
-  // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
-  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  float epsilon = 0.0000000001;
-  double realtime = stop.tv_sec - start.tv_sec;
-  double cputime  = (cStop - cStart) / CLOCKS_PER_SEC;
-  double ratio = cputime/realtime;
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D simple partitioner" << std::endl;
   std::cout << "Cache improved:   ";
@@ -540,19 +572,35 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     std::cout << "1" << std::endl;
   else
     std::cout << "0" << std::endl;
+  // compute FLOPS:
+  // assume addition and multiplication in the mult kernel are 2 operations
+  // done A.nRows() * B.nRows() * B.nCols()
+  double flops = 2 * A.nRows() * B.nRows() * B.nCols();
+  float epsilon = 0.0000000001;
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
+                    (stop.tv_usec - start.tv_usec)) / 1e6;
+  double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
+  char buffer[50];
+  // get digits before decimal point of cputime (the longest number) and setw
+  // with it: digits + 1 (point) + 4 (precision) 
+  int digits = sprintf(buffer,"%.0f",cputime);
+  double ratio = cputime/realtime;
   std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << stop.tv_sec - start.tv_sec << " sec" 
+  std::cout << "Real time:        " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << realtime << " sec" 
     << std::endl;
-  std::cout << "CPU time:         " << (cStop - cStart) / CLOCKS_PER_SEC 
-    << " sec" << std::    endl;
-  if ((int)((cStop - cStart) / CLOCKS_PER_SEC) > epsilon)
-    std::cout << "CPU/real time:    " << std::setprecision(4) 
-      << ratio << std::endl;
+  std::cout << "CPU time:         " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << cputime
+    << " sec" << std::endl;
+  if (cputime > epsilon)
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4) 
+      << std::setprecision(4) << std::fixed << ratio << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setprecision(4) 
-    << flops / (1000000000 * (stop.tv_sec - start.tv_sec)) << std:: endl;
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime) 
+    << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
 #endif
