@@ -23,7 +23,7 @@ parser.add_argument('-d', '--directory', required=True,
 args = parser.parse_args()
 
 # list of all methods
-methods = ['Raw sequential','Open MP collapse(1) outer loop',
+methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
 'Open MP collapse(1) inner loop','Open MP collapse(2)',
 'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
 'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
@@ -82,7 +82,7 @@ for l in lines:
 #plot this data
 
 #line style
-coloring = ['k^','b-','b--','g-','m-','m--','m:','r-','r--','r:']
+coloring = ['k^','y-','b-','b--','g-','m-','m--','m:','r-','r--','r:']
 
 pl.rc('legend',**{'fontsize':5})
 fig = pl.figure()

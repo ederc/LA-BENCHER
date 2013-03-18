@@ -66,7 +66,7 @@ else:
     exp += 1
 
 # list of all methods
-methods = ['Raw sequential','Open MP collapse(1) outer loop',
+methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
 'Open MP collapse(1) inner loop','Open MP collapse(2)',
 'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
 'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
@@ -115,6 +115,12 @@ f.close()
 print(strstr+' -m0 >> '+bench_file+'...')
 os.system(strstr+' -m0 >> '+bench_file)
 print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+# pThread computations 1D outer
+for i in threads:
+  print(strstr+' -m4 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+  os.system(strstr+' -m4 -t '+str(i)+' >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # OpenMP computations 1D outer
 for i in threads:
@@ -206,7 +212,7 @@ for l in lines:
 #plot this data
 
 #line style
-coloring = ['k^','b-','b--','g-','m-','m--','m:','r-','r--','r:']
+coloring = ['k^','c-','b-','b--','g-','m-','m--','m:','r-','r--','r:']
 
 pl.rc('legend',**{'fontsize':5})
 fig = pl.figure()
