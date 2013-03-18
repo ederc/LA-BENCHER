@@ -4,6 +4,9 @@
 #include <getopt.h>
 #include "f4rt-config.h"
 
+#ifdef __F4RT_HAVE_PTHREAD_H
+#include "matrix-pthreads.h"
+#endif
 #ifdef __F4RT_HAVE_INTEL_TBB
 #include "matrix-tbb.h"
 #endif
@@ -55,6 +58,9 @@ void print_help(int exval) {
 #endif
 #if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
  printf("                 3 = KAAPI\n");
+#endif
+#ifdef __F4RT_HAVE_PTHREAD_H
+ printf("                 4 = pThread\n");
 #endif
  printf("                 Note: By default the sequential implementation is used\n");
  printf("       -N        Not transposing: B is NOT transposed before multiplication,\n");
@@ -157,6 +163,13 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
     if (dimension == 2) {
       multKAAPIC2d(C, A, B, nthrds, blocksize, impose);
     }
+#else
+    multSEQ(C, A, B, blocksize, impose);
+#endif
+  }
+  if (method == 4) { // pthreads
+#ifdef __F4RT_HAVE_PTHREAD_H
+    multPT(C, A, B, nthrds, blocksize, impose);
 #else
     multSEQ(C, A, B, blocksize, impose);
 #endif

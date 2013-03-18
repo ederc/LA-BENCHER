@@ -14,6 +14,7 @@ BASIC_HDRS =								\
 	intrinsics.h							\
 	matrix-kaapi.h						\
 	matrix-omp.h							\
+	matrix-pthreads.h					\
 	matrix-seq.h							\
 	matrix-tbb.h							\
 	matrix.h									
@@ -23,6 +24,7 @@ SOURCES=										\
 	dense-matrix-mult.cpp			\
 	matrix-kaapi.cpp					\
 	matrix-omp.cpp						\
+	matrix-pthreads.cpp				\
 	matrix-seq.cpp						\
 	matrix-tbb.cpp						\
 	matrix.cpp
@@ -60,5 +62,6 @@ dense_mult_SOURCES=  			\
 	matrix.cpp 							\
 	matrix-kaapi.cpp 				\
 	matrix-omp.cpp 					\
+	matrix-pthreads.cpp 		\
 	matrix-seq.cpp					\
 	matrix-tbb.cpp

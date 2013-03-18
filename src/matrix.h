@@ -16,7 +16,9 @@
 #ifdef __F4RT_HAVE_INTEL_TBB
 #include <tbb/tbb.h>
 #endif
+#ifdef __F4RT_HAVE_PTHREAD_H
 #include <pthread.h>
+#endif
 #ifdef __F4RT_HAVE_OPENMP
 #include <omp.h>
 #endif
