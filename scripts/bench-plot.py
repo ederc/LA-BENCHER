@@ -7,6 +7,9 @@ import shutil
 import argparse
 import time
 import math
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
 import pylab as pl
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
