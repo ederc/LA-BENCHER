@@ -13,13 +13,8 @@ static void multMat2dInnerImpose(
   for (size_t j = start; j < end; ++j) {
     float sum = 0;
     for (size_t k = 0; k < n; ++n) {
-      std::cout << "i " << i << std::endl;
-      std::cout << "j " << j << std::endl;
-      std::cout << "k " << k << std::endl;
-      std::cout << "end " << end << std::endl;
       sum += a_floats[k+i*n] * b_floats[k+j*n];
     }
-    std::cout << j+i*(end+1) << "." << sum << "LL" << std::endl;
     c_floats[j+i*(end+1)]  = (float) (sum);
   }
 }
@@ -43,13 +38,8 @@ static void multMat2dInner(
   for (size_t j = start; j < end; ++j) {
     float sum = 0;
     for (size_t k = 0; k < n; ++n) {
-      std::cout << "i " << i << std::endl;
-      std::cout << "j " << j << std::endl;
-      std::cout << "k " << k << std::endl;
-      std::cout << "end " << end << std::endl;
       sum += a_floats[k+i*n] * b_floats[j+k*(end+1)];
     }
-    std::cout << j+i*(end+1) << "." << sum << "LL" << std::endl;
     c_floats[j+i*(end+1)]  = (float) (sum);
   }
 }
