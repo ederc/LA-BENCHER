@@ -548,7 +548,7 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
                 cntr += 2;
               }
-              std::cout << j+i*m << sum << std::endl;
+              //std::cout << j+i*m << sum << std::endl;
               C.entries[j+i*m]  = (float) (sum);
             }
         }, sp);
@@ -582,7 +582,6 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
   double flops = 2 * A.nRows() * B.nRows() * B.nCols();
-  std::cout << cntr << flops << std::endl;
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
                     (stop.tv_usec - start.tv_usec)) / 1e6;

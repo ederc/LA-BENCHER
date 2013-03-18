@@ -151,7 +151,12 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
   if (method == 3) {// xkaapi 
 #if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
     // TODO: How to enlarge blocksize without corrupting the computation?
-    multKAAPI(C, A, B, nthrds, /*blocksize*/1, impose);
+    if (dimension == 1) {
+      multKAAPIC1d(C, A, B, nthrds, blocksize, impose);
+    }
+    if (dimension == 2) {
+      multKAAPIC2d(C, A, B, nthrds, blocksize, impose);
+    }
 #else
     multSEQ(C, A, B, blocksize, impose);
 #endif
