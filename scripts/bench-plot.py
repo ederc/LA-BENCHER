@@ -68,7 +68,7 @@ else:
 # list of all methods
 methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
 'Open MP collapse(1) inner loop','Open MP collapse(2)',
-'KAAPIC 1D',
+'KAAPIC 1D','KAAPIC 2D',
 'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
 'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
 'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
@@ -147,6 +147,12 @@ for i in threads:
   os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
+# KAAPIC computations 2D
+for i in threads:
+  print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2>> bench-'+str(hash_value)+'...')
+  os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
 # TBB computations 1D auto
 for i in threads:
   print(strstr+' -m2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
@@ -219,7 +225,10 @@ for l in lines:
 #plot this data
 
 #line style
-coloring = ['k^','c-','b-','b--','g-','y-','m-','m--','m:','r-','r--','r:']
+coloring = ['k','c','b','b','g','y','#ff2c2c','m','m','m','r','r','r']
+styles = ['None','-','-','--','-','-','-','-','--',':','-','--',':']
+markers = ['^','None','None','None','None','None','None','None','None',
+  'None','None','None','None']
 
 pl.rc('legend',**{'fontsize':5})
 fig = pl.figure()
@@ -248,7 +257,8 @@ ax.xaxis.set_ticklabels(tick_lbs)
 
 p = [None]*len(methods)
 for i in range(0,len(methods)):
-  p[i], = ax.plot(threads[0:len(time_series[i])], time_series[i], coloring[i], label=i)
+  p[i], = ax.plot(threads[0:len(time_series[i])], time_series[i], c=coloring[i],
+      ls=styles[i], marker=markers[i], markersize='10', label=i)
 # set 0 as min value for y and 1 as min value for x (threads)
 #pl.xlim(xmin=1)
 pl.ylim(ymin=0)
@@ -288,7 +298,8 @@ ax.xaxis.set_ticklabels(tick_lbs)
 
 p = [None]*len(methods)
 for i in range(0,len(methods)):
-  p[i], = ax.plot(threads[0:len(gflops_series[i])], gflops_series[i],coloring[i], label=i)
+  p[i], = ax.plot(threads[0:len(gflops_series[i])], gflops_series[i], c=coloring[i],
+      ls=styles[i], marker=markers[i], markersize='10', label=i)
 # set 0 as min value for y and 1 as min value for x (threads)
 #pl.xlim(xmin=1)
 pl.ylim(ymin=0)
