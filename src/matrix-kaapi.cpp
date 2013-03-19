@@ -8,14 +8,15 @@
  ******************************/
 static void multMat2dInnerImpose(
     size_t start, size_t end, int32_t tid, 
-    uint32 i, uint32 n, 
+    uint32 i, uint32 n, uint32 m,
     float* c_floats, const float* a_floats, const float* b_floats) {
   for (size_t j = start; j < end; ++j) {
     float sum = 0;
-    for (size_t k = 0; k < n; ++n) {
+    for (size_t k = 0; k < n; ++k) {
       sum += a_floats[k+i*n] * b_floats[k+j*n];
     }
-    c_floats[j+i*(end+1)]  = (float) (sum);
+    //std::cout << j+i*m << ". " << sum << std::endl;
+    c_floats[j+i*m]  = (float) (sum);
   }
 }
 
@@ -26,8 +27,8 @@ static void multMat2dOuterImpose(
   for (size_t i = start; i < end; ++i) {
     kaapic_foreach_attr_t attr;
     kaapic_foreach_attr_init(&attr);
-    kaapic_foreach( 0, m, &attr, 5, multMat2dInnerImpose, i, n,
-                    c_floats, a_floats, b_floats);
+    kaapic_foreach( 0, m, &attr, 6, multMat2dInnerImpose, i, n,
+                    m, c_floats, a_floats, b_floats);
   }
 }
 
