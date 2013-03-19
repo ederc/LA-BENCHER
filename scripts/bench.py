@@ -63,6 +63,7 @@ else:
 # list of all methods
 methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
 'Open MP collapse(1) inner loop','Open MP collapse(2)',
+'KAAPIC 1D',
 'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
 'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
 'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
@@ -133,6 +134,12 @@ for i in threads:
 for i in threads:
   print(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
   os.system(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value))
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+# KAAPIC computations 1D
+for i in threads:
+  print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t >> bench-'+str(hash_value)+'...')
+  os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # TBB computations 1D auto
