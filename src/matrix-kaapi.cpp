@@ -2,7 +2,7 @@
 
 #define __F4RT_DEBUG  0
 
-#if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
+#if defined(__F4RT_HAVE_KAAPI)
 /*******************************
  * KAAPIC implementation
  ******************************/

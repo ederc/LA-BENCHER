@@ -13,7 +13,7 @@
 #ifdef __F4RT_HAVE_OPENMP
 #include "matrix-omp.h"
 #endif
-#if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
+#if defined(__F4RT_HAVE_KAAPI)
 #include "matrix-kaapi.h"
 #endif
 #include "matrix-seq.h"
@@ -56,7 +56,7 @@ void print_help(int exval) {
 #ifdef __F4RT_HAVE_INTEL_TBB
  printf("                 2 = TBB\n");
 #endif
-#if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
+#if defined(__F4RT_HAVE_KAAPI)
  printf("                 3 = KAAPI\n");
 #endif
 #ifdef __F4RT_HAVE_PTHREAD_H
@@ -155,7 +155,7 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
   if (method == 0) // plain sequential w/o scheduler overhead
     multSEQ(C, A, B, blocksize, impose);
   if (method == 3) {// xkaapi 
-#if defined(__F4RT_HAVE_KAAPI) && defined(__F4RT_ENABLE_KAAPI)
+#if defined(__F4RT_HAVE_KAAPI)
     // TODO: How to enlarge blocksize without corrupting the computation?
     if (dimension == 1) {
       multKAAPIC1d(C, A, B, nthrds, blocksize, impose);

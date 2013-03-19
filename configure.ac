@@ -228,12 +228,6 @@ AC_CHECK_LIB([kaapi], [main], [
     LIBS="-lkaapi $LIBS"
     ], [echo "libkaapi not found."])
 
-dnl enable KAAPI -- for the time being
-AC_ARG_ENABLE(kaapi,
-  AS_HELP_STRING([--enable-kaapi],
-    [Enables KAAPI dense mult variant.]),[AC_DEFINE(ENABLE_KAAPI, 1,
-      [Enables build KAAPI dense mult variant.])])
-
 dnl Search for KAAPIC
 AC_CHECK_LIB([kaapic], [main], [
     AC_DEFINE([HAVE_KAAPIC],[],"KAAPIC available.")
