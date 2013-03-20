@@ -84,7 +84,7 @@ for l in lines:
 
 #line style
 stride = 1
-coloring = ['k','c','b','b','g','y','y','m','m','m','r','r','r']
+coloring = ['k','c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
 styles = ['None','-','-','--','-','None','-','-','--',':','-','--',':']
 markers = ['^','None','None','None','None','o','s','None','None',
   'None','None','None','None']
