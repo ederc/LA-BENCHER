@@ -83,9 +83,10 @@ for l in lines:
 #plot this data
 
 #line style
-coloring = ['k','c','b','b','g','y','#ff2c2c','m','m','m','r','r','r']
-styles = ['None','-','-','--','-','-','-','-','--',':','-','--',':']
-markers = ['^','None','None','None','None','None','None','None','None',
+stride = 1
+coloring = ['k','c','b','b','g','y','y','m','m','m','r','r','r']
+styles = ['None','-','-','--','-','None','-','-','--',':','-','--',':']
+markers = ['^','None','None','None','None','o','s','None','None',
   'None','None','None','None']
 pl.rc('legend',**{'fontsize':5})
 fig = pl.figure()
@@ -115,7 +116,7 @@ ax.xaxis.set_ticklabels(tick_lbs)
 p = [None]*len(methods)
 for i in range(0,len(methods)):
   p[i], = ax.plot(threads[0:len(time_series[i])], time_series[i], c=coloring[i],
-      ls=styles[i], marker=markers[i], markersize='10', label=i)
+      ls=styles[i], marker=markers[i], markersize='4', markevery=stride, label=i)
 # set 0 as min value for y and 1 as min value for x (threads)
 #pl.xlim(xmin=1)
 pl.ylim(ymin=0)
@@ -156,7 +157,7 @@ ax.xaxis.set_ticklabels(tick_lbs)
 p = [None]*len(methods)
 for i in range(0,len(methods)):
   p[i], = ax.plot(threads[0:len(gflops_series[i])], gflops_series[i], c=coloring[i],
-      ls=styles[i], marker=markers[i], markersize='10', label=i)
+      ls=styles[i], marker=markers[i], markersize='4', label=i)
 # set 0 as min value for y and 1 as min value for x (threads)
 #pl.xlim(xmin=1)
 pl.ylim(ymin=0)

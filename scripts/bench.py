@@ -138,14 +138,14 @@ for i in threads:
 
 # KAAPIC computations 1D
 for i in threads:
-  print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 >> bench-'+str(hash_value)+'...')
-  os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 >> bench-'+str(hash_value))
+  print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+  os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # KAAPIC computations 2D
 for i in threads:
-  print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2>> bench-'+str(hash_value)+'...')
-  os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 >> bench-'+str(hash_value))
+  print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+  os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 -t '+str(i)+' >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # TBB computations 1D auto
