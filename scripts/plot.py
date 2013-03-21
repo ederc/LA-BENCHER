@@ -22,16 +22,6 @@ parser.add_argument('-d', '--directory', required=True,
 
 args = parser.parse_args()
 
-# lists for all methods we have, those are lists of lists:
-# E.g. time_series[i] is a list of len(threads) elements of the timings
-# of methods[i]. 
-time_series = list()
-gflops_series = list()
-
-for i in range(0,len(methods)):
-  time_series.append(list())
-  gflops_series.append(list())
-
 # go to directory
 os.chdir(args.directory)
 
@@ -75,6 +65,16 @@ else :
   'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
   'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
 
+# lists for all methods we have, those are lists of lists:
+# E.g. time_series[i] is a list of len(threads) elements of the timings
+# of methods[i]. 
+time_series = list()
+gflops_series = list()
+
+for i in range(0,len(methods)):
+  time_series.append(list())
+  gflops_series.append(list())
+
 
 for l in lines:
   for i in range(0,len(methods)):  
@@ -94,13 +94,13 @@ for l in lines:
 #line style, sequential method only if start_threads == 1
 if start_threads == 1:
   stride = 1
-  coloring = ['k','c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
+  coloring = ['k','c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
   styles = ['None','-','-','--','-','None','-','-','--',':','-','--',':']
   markers = ['^','None','None','None','None','o','s','None','None',
     'None','None','None','None']
 else:
   stride = 1
-  coloring = ['c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
+  coloring = ['c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
   styles = ['-','-','--','-','None','-','-','--',':','-','--',':']
   markers = ['None','None','None','None','o','s','None','None',
     'None','None','None','None']

@@ -240,13 +240,13 @@ for l in lines:
 #line style, sequential method only if start_threads == 1
 if start_threads == 1:
   stride = 1
-  coloring = ['k','c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
+  coloring = ['k','c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
   styles = ['None','-','-','--','-','None','-','-','--',':','-','--',':']
   markers = ['^','None','None','None','None','o','s','None','None',
     'None','None','None','None']
 else:
   stride = 1
-  coloring = ['c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
+  coloring = ['c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
   styles = ['-','-','--','-','None','-','-','--',':','-','--',':']
   markers = ['None','None','None','None','o','s','None','None',
     'None','None','None','None']
