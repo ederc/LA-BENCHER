@@ -22,14 +22,6 @@ parser.add_argument('-d', '--directory', required=True,
 
 args = parser.parse_args()
 
-# list of all methods
-methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
-'Open MP collapse(1) inner loop','Open MP collapse(2)',
-'KAAPIC 1D','KAAPIC 2D',
-'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
-'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
-'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
-
 # lists for all methods we have, those are lists of lists:
 # E.g. time_series[i] is a list of len(threads) elements of the timings
 # of methods[i]. 
@@ -66,6 +58,23 @@ plot_threads = lines[1].strip().replace(' ','').split(',')
 threads = plot_threads
 threads = list(map(lambda x: int(x) - 1, threads))
 
+start_threads = threads[0]
+# list of all methods, sequential only if start_threads == 1
+if start_threads == 1:
+  methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
+  'Open MP collapse(1) inner loop','Open MP collapse(2)',
+  'KAAPIC 1D','KAAPIC 2D',
+  'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+  'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
+  'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
+else :
+  methods = ['pThread 1D','Open MP collapse(1) outer loop',
+  'Open MP collapse(1) inner loop','Open MP collapse(2)',
+  'KAAPIC 1D','KAAPIC 2D',
+  'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+  'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
+  'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
+
 
 for l in lines:
   for i in range(0,len(methods)):  
@@ -82,12 +91,20 @@ for l in lines:
 
 #plot this data
 
-#line style
-stride = 1
-coloring = ['k','c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
-styles = ['None','-','-','--','-','None','-','-','--',':','-','--',':']
-markers = ['^','None','None','None','None','o','s','None','None',
-  'None','None','None','None']
+#line style, sequential method only if start_threads == 1
+if start_threads == 1:
+  stride = 1
+  coloring = ['k','c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
+  styles = ['None','-','-','--','-','None','-','-','--',':','-','--',':']
+  markers = ['^','None','None','None','None','o','s','None','None',
+    'None','None','None','None']
+else:
+  stride = 1
+  coloring = ['c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
+  styles = ['-','-','--','-','None','-','-','--',':','-','--',':']
+  markers = ['None','None','None','None','o','s','None','None',
+    'None','None','None','None']
+
 pl.rc('legend',**{'fontsize':5})
 fig = pl.figure()
 ax = fig.add_subplot(111)

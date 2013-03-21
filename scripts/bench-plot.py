@@ -40,6 +40,8 @@ parser.add_argument('-m', '--colsa', required=True,
     help='number of cols of matrix a')
 parser.add_argument('-n', '--colsb', required=True,
     help='number of cols of matrix b')
+parser.add_argument('-s', '--startthreads', default=1,
+    help='start of number of threads to be used')
 parser.add_argument('-t', '--threads', required=True,
     help='maximal number of threads to be used')
 parser.add_argument('-b', '--base', default=2,
@@ -55,24 +57,34 @@ args = parser.parse_args()
 threads = list()
 exp = 0
 max_threads = int(args.threads)
+start_threads = int(args.startthreads)
 base = int(args.base)
 if base == 1:
-  while (base) <= max_threads:
-    threads.append(base)
-    base += 1
+  while (start_threads) <= max_threads:
+    threads.append(start_threads)
+    start_threads += 1
 else:
-  while (base**exp) <= max_threads:
-    threads.append(base**exp)
+  if (start_threads) <=max_threads:
+    threads.append(start_threads)
+  while (start_threads + base**exp) <= max_threads:
+    threads.append(start_threads+base**exp)
     exp += 1
 
-# list of all methods
-methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
-'Open MP collapse(1) inner loop','Open MP collapse(2)',
-'KAAPIC 1D','KAAPIC 2D',
-'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
-'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
-'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
-
+# list of all methods, sequential only if start_threads == 1
+if start_threads == 1:
+  methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
+  'Open MP collapse(1) inner loop','Open MP collapse(2)',
+  'KAAPIC 1D','KAAPIC 2D',
+  'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+  'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
+  'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
+else :
+  methods = ['pThread 1D','Open MP collapse(1) outer loop',
+  'Open MP collapse(1) inner loop','Open MP collapse(2)',
+  'KAAPIC 1D','KAAPIC 2D',
+  'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+  'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
+  'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
 # lists for all methods we have, those are lists of lists:
 # e.g. time_series[i] is a list of len(threads) elements of the timings
 # of methods[i]. 
@@ -112,10 +124,11 @@ f.write(args.rowsa+','+args.colsa+','+args.colsb+'\r\n')
 f.write(thrds_str+'\r\n')
 f.close()
 
-# sequential computation
-print(strstr+' -m0 >> '+bench_file+'...')
-os.system(strstr+' -m0 >> '+bench_file)
-print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+# sequential computation, only if start_threads == 1
+if start_threads == 1:
+  print(strstr+' -m0 >> '+bench_file+'...')
+  os.system(strstr+' -m0 >> '+bench_file)
+  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # pThread computations 1D outer
 for i in threads:
@@ -224,12 +237,19 @@ for l in lines:
 
 #plot this data
 
-#line style
-stride = 1
-coloring = ['k','c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
-styles = ['None','-','-','--','-','None','-','-','--',':','-','--',':']
-markers = ['^','None','None','None','None','o','s','None','None',
-  'None','None','None','None']
+#line style, sequential method only if start_threads == 1
+if start_threads == 1:
+  stride = 1
+  coloring = ['k','c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
+  styles = ['None','-','-','--','-','None','-','-','--',':','-','--',':']
+  markers = ['^','None','None','None','None','o','s','None','None',
+    'None','None','None','None']
+else:
+  stride = 1
+  coloring = ['c','b','b','g','y','y','#b93b8f','#b93b8f','#b93b8f','r','r','r']
+  styles = ['-','-','--','-','None','-','-','--',':','-','--',':']
+  markers = ['None','None','None','None','o','s','None','None',
+    'None','None','None','None']
 
 pl.rc('legend',**{'fontsize':5})
 fig = pl.figure()
