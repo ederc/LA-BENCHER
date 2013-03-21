@@ -95,13 +95,13 @@ for l in lines:
 if start_threads == 1:
   stride = 1
   coloring = ['k','c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
-  styles = ['None','-','-','--','-','None','-','-','--',':','-','--',':']
+  styles = ['None','-','-','--','-','-','-','-','--',':','-','--',':']
   markers = ['^','None','None','None','None','o','s','None','None',
     'None','None','None','None']
 else:
   stride = 1
   coloring = ['c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
-  styles = ['-','-','--','-','None','-','-','--',':','-','--',':']
+  styles = ['-','-','--','-','-','-','-','--',':','-','--',':']
   markers = ['None','None','None','None','o','s','None','None',
     'None','None','None','None']
 
