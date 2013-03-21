@@ -64,10 +64,10 @@ if base == 1:
     threads.append(start_threads)
     start_threads += 1
 else:
-  if (start_threads) <=max_threads:
-    threads.append(start_threads)
-  while (start_threads + base**exp) <= max_threads:
-    threads.append(start_threads+base**exp)
+  while start_threads > (base**exp):
+    exp += 1
+  while (base**exp) <= max_threads:
+    threads.append(base**exp)
     exp += 1
 
 # list of all methods, sequential only if start_threads == 1
