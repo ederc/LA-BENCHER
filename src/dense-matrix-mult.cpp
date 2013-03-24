@@ -42,7 +42,7 @@ void print_help(int exval) {
  printf("       -b        sets the block size/grain of task scheduler; default = 2\n");
  printf("       -c        if input file is set, multiply matrix with its own transpose\n");
  printf("       -d        sets the dimension of the parallel for loop\n");
- printf("                 (values: 1, 2; default = 1)\n");
+ printf("                 (values: 1, 2, 3 (3 only for TBB); default = 1)\n");
  printf("       -g        generate a new random float matrix\n");
  printf("       -h        print this help and exit\n");
  printf("       -i        If parallel scheduler is used with option -d1, then the\n");
@@ -123,7 +123,8 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
           multTBBAuto(C, A, B, nthrds, blocksize, impose);
         }
       }
-    } else {
+    }
+    if (dimension == 2) {
       if (affinity == 1) {
         multTBBAffine2d(C, A, B, nthrds, blocksize, impose);
       } else {
@@ -131,6 +132,17 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
           multTBBSimple2d(C, A, B, nthrds, blocksize, impose);
         } else {
           multTBBAuto2d(C, A, B, nthrds, blocksize, impose);
+        }
+      }
+    }
+    if (dimension == 3) {
+      if (affinity == 1) {
+        multTBBAffine3d(C, A, B, nthrds, blocksize, impose);
+      } else {
+        if (affinity == 2) {
+          multTBBSimple3d(C, A, B, nthrds, blocksize, impose);
+        } else {
+          multTBBAuto3d(C, A, B, nthrds, blocksize, impose);
         }
       }
     }
@@ -305,8 +317,8 @@ int main(int argc, char *argv[]) {
       dimension = atoi(strdup(optarg));
       if (dimension == 0)
         dimension = 1;
-      if (dimension > 2)
-        dimension = 2;
+      if (dimension > 3)
+        dimension = 3;
       break;
     case 't':
       nthrds  = atoi(strdup(optarg));

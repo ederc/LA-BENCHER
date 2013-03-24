@@ -20,6 +20,7 @@ void *multPThreadImpose(void *p) {
       _p->c[j+i*m]  = (float) (sum);
     }
   }
+  return 0;
 }
 
 void *multPThread(void *p) {
@@ -38,6 +39,7 @@ void *multPThread(void *p) {
       _p->c[j+i*m]  = (float) (sum);
     }
   }
+  return 0;
 }
 
 
