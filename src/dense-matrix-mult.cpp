@@ -26,8 +26,7 @@ void print_help(int exval) {
  printf("DESCRIPTION\n");
  printf("       This program is used as a test for parallelization libraries like\n");
  printf("       OpenMP or Intel TBB. Its main feature is to multiply 2 dense matrices\n");
- printf("       with uint32 entries. If the value of the entries are < 2^16 the\n");
- printf("       result is even correct. Otherwise the program does not check for\n");
+ printf("       with floating point entries. The program does not check for\n");
  printf("       overflows. Its purpose is to compare parallelization of mostly\n");
  printf("       independent tasks, namely matrix*matrix kernel operations.\n\n");
  printf("       The program also provides the possibility of generating random\n");
