@@ -21,7 +21,7 @@ BASIC_HDRS =								\
 
 SOURCES=										\
 	intrinsics.c							\
-	dense-matrix-mult.cpp			\
+	dense-matrix.cpp					\
 	matrix-kaapi.cpp					\
 	matrix-omp.cpp						\
 	matrix-pthreads.cpp				\
@@ -50,15 +50,15 @@ else
 lib_LTLIBRARIES=libf4rt.la
 endif
 
-bin_PROGRAMS = f4rt dense-mult
+bin_PROGRAMS = intrinsics f4rt
 
-f4rt_CPPFLAGS= $(AM_CXXFLAGS)
-f4rt_SOURCES= intrinsics.c intrinsics.h
-f4rt_LDADD=libf4rt.la
+intrinsics_CPPFLAGS= $(AM_CXXFLAGS)
+intrinsics_SOURCES= intrinsics.c intrinsics.h
+intrinsics_LDADD=libf4rt.la
 
-dense_mult_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x
-dense_mult_SOURCES=  			\
-	dense-matrix-mult.cpp 	\
+f4rt_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x
+f4rt_SOURCES=  						\
+	dense-matrix.cpp 				\
 	matrix.cpp 							\
 	matrix-kaapi.cpp 				\
 	matrix-omp.cpp 					\

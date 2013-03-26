@@ -38,7 +38,7 @@ parser.add_argument('-l', '--rowsa', required=True,
     help='number of rows of matrix a')
 parser.add_argument('-m', '--colsa', required=True,
     help='number of cols of matrix a')
-parser.add_argument('-n', '--colsb', required=True,
+parser.add_argument('-n', '--colsb', default=0,
     help='number of cols of matrix b')
 parser.add_argument('-s', '--startthreads', default=1,
     help='start of number of threads to be used')
@@ -47,11 +47,22 @@ parser.add_argument('-t', '--threads', required=True,
 parser.add_argument('-b', '--base', default=2,
     help='base of number of threads, e.g. -b 2 -t 16 would lead to computations\
 in 1,2,4,8,16 threads. Default is 2.')
-parser.add_argument('-hg', '--homog', action="store_true", default=False,
-    help='set this flag if the ideal should be homogenized.\
-note that this flag increases the number of variables by 1.')
+parser.add_argument('-a','--alg', required=True,
+    help='What algorithm should be benchmarked:\r\n\
+1 = Matrix multiplication\r\n\
+2 = Gaussian Elimination')
 
 args = parser.parse_args()
+
+# handle error if multiplication shall be done but only two dimensions are
+# given:
+algorithm = ''
+if int(args.alg) == 1:
+  algorithm = 'M'
+  if args.colsb == 0:
+    args.colsb = args.rowsa
+else:
+  algorithm = 'E'
 
 # range of threads
 threads = list()
@@ -106,13 +117,13 @@ if not os.path.exists(folder_name):
 os.chdir(os.getcwd()+"/"+folder_name)
 
 #generate random matrices without timestamp
-os.system('../../src/dense-mult -g -R '+args.rowsa+' -C '+args.colsa)
-os.system('../../src/dense-mult -g -R '+args.colsa+' -C '+args.colsb)
+os.system('../../src/f4rt -g -R '+args.rowsa+' -C '+args.colsa)
+os.system('../../src/f4rt -g -R '+args.colsa+' -C '+args.colsb)
 
 bench_file = "bench-"+str(hash_value)
 f = open(bench_file,"w")
 
-strstr = '../../src/dense-mult -c \
+strstr = '../../src/f4rt -'+algorithm+' \
 -A random-float-mat-'+args.rowsa+'-'+args.colsa+'.mat \
 -B random-float-mat-'+args.colsa+'-'+args.colsb+'.mat'
 

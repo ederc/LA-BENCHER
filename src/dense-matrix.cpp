@@ -25,23 +25,30 @@
 void print_help(int exval) {
  printf("DESCRIPTION\n");
  printf("       This program is used as a test for parallelization libraries like\n");
- printf("       OpenMP or Intel TBB. Its main feature is to multiply 2 dense matrices\n");
- printf("       with floating point entries. The program does not check for\n");
- printf("       overflows. Its purpose is to compare parallelization of mostly\n");
- printf("       independent tasks, namely matrix*matrix kernel operations.\n\n");
+ printf("       OpenMP or Intel TBB. It is working with dense floating point entry\n");
+ printf("       matrices. Its main features are:\n\n");
+ printf("       1. Multiplication of two matrices\n");
+ printf("       2. Computing the Gaussian Elimination of a matrix\n\n");
+ printf("       Note that when preforming the multiplication he program does not\n");
+ printf("       check for overflows. Its purpose is to compare parallelization of mostly\n");
+ printf("       independent tasks, namely matrix*matrix kernel operations.\n");
+ printf("       The Gaussian Elimination is implemented cache-obliviously as a Gaussian\n");
+ printf("       Elimination Paradigm (GEP) as described in \"The Cache-Oblivious Gaussian\n");
+ printf("       Elimination Paradigm: Theoretical Framework, Parallelization and Experi-\n");
+ printf("       mental Evaluation\" by Chowdhury and Ramachandran.\n\n");
  printf("       The program also provides the possibility of generating random\n");
  printf("       input matrices.\n\n");
 
  printf("OPTIONS\n");
- printf("       -A FILE   set first intput file; if only -A is set but not -B then A*A^T is computed.\n");
- printf("       -B FILE   set second intput file\n");
- printf("       -C        number of cols of matrix to be generated\n");
  printf("       -a        sets CPU affinity of task scheduler; note this only works\n");
  printf("                 with TBB right now\n");
+ printf("       -A FILE   set first intput file; if only -A is set but not -B then A*A^T is computed.\n");
  printf("       -b        sets the block size/grain of task scheduler; default = 2\n");
- printf("       -c        if input file is set, multiply matrix with its own transpose\n");
+ printf("       -B FILE   set second intput file\n");
+ printf("       -C        number of cols of matrix to be generated\n");
  printf("       -d        sets the dimension of the parallel for loop\n");
  printf("                 (values: 1, 2, 3 (3 only for TBB); default = 1)\n");
+ printf("       -E        if input file is set, compute the Gaussian Elimination\n");
  printf("       -g        generate a new random float matrix\n");
  printf("       -h        print this help and exit\n");
  printf("       -i        If parallel scheduler is used with option -d1, then the\n");
@@ -62,6 +69,7 @@ void print_help(int exval) {
  printf("                 4 = pThread\n");
 #endif
  printf("                 Note: By default the sequential implementation is used\n");
+ printf("       -M        if input file is set, multiply matrix with its own transpose\n");
  printf("       -N        Not transposing: B is NOT transposed before multiplication,\n");
  printf("                 thus the computation has a way worse cache locality\n");
  printf("       -p        if matrix multiplication took place, print of resulting matrix\n");
@@ -226,6 +234,17 @@ void multMatrices(char* str1, char* str2, int nthrds, int method, int affinity, 
   C.clear();
 }
 
+void eliminateMatrix( char* str, int nthrds, int method, int affinity, int blocksize, 
+                      int dimension, int impose, int outerloop, int print) {
+  Matrix A;
+
+  // read files, stores matrices, etc
+  FILE* file  = fopen(str,"rb");
+  // take A from file
+  A.read(file);
+
+}
+
 void multEqualMatrices( char* str, int nthrds, int method, int affinity, int blocksize, 
                         int dimension, int impose, int outerloop, int print) {
   Matrix A, B;
@@ -256,7 +275,7 @@ int main(int argc, char *argv[]) {
  char *fileNameA = NULL, *fileNameB = NULL;
  int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
      blocksize = 2, dimension = 1, impose = 1, rows = 0, cols = 0,
-     generate = 0, outerloop = 1;
+     generate = 0, outerloop = 1, eliminate = 0;
 
  /* 
  // no arguments given
@@ -266,7 +285,7 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvgA:B:C:pt:m:cd:b:aR:Nsi")) != -1) {
+ while((opt = getopt(argc, argv, "hVvgA:B:C:Ept:m:Md:b:aR:Nsi")) != -1) {
   switch(opt) {
     case 'g': 
       generate = 1;
@@ -292,8 +311,11 @@ int main(int argc, char *argv[]) {
     case 'C':
       cols = atoi(strdup(optarg));
       break;
-    case 'c':
+    case 'M':
       multiply  = 1;
+      break;
+    case 'E':
+      eliminate  = 1;
       break;
     case 'p':
       print   = 1;
@@ -341,11 +363,11 @@ int main(int argc, char *argv[]) {
    }
  }
 
- /* 
- // print all remaining options
- */
- for(; optind < argc; optind++)
- printf("argument: %s\n", argv[optind]);
+  /* 
+  // print all remaining options
+  */
+  for(; optind < argc; optind++)
+  printf("argument: %s\n", argv[optind]);
    
   if (generate == 1) {
     genMatrix(rows,cols);
@@ -359,5 +381,9 @@ int main(int argc, char *argv[]) {
                         dimension, impose, outerloop, print);  
     }
   }
- return 0;
+  if (eliminate && fileNameA) {
+      eliminateMatrix(fileNameA, nthrds, method, affinity, blocksize, 
+                      dimension, impose, outerloop, print);  
+  }
+  return 0;
 }
