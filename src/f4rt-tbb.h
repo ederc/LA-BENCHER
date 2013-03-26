@@ -1,5 +1,5 @@
-#ifndef F4RT_MATRIX_TBB_H
-#define F4RT_MATRIX_TBB_H
+#ifndef F4RT_TBB_H
+#define F4RT_TBB_H
 
 #include <tbb/tbb.h>
 #include <matrix.h>

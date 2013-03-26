@@ -12,21 +12,21 @@ SUBDIRS=
 BASIC_HDRS =								\
 	../include/f4rt-config.h 	\
 	intrinsics.h							\
-	matrix-kaapi.h						\
-	matrix-omp.h							\
-	matrix-pthreads.h					\
-	matrix-seq.h							\
-	matrix-tbb.h							\
+	f4rt-kaapi.h							\
+	f4rt-omp.h								\
+	f4rt-pthread.h						\
+	f4rt-seq.h								\
+	f4rt-tbb.h								\
 	matrix.h									
 
 SOURCES=										\
 	intrinsics.c							\
 	dense-matrix.cpp					\
-	matrix-kaapi.cpp					\
-	matrix-omp.cpp						\
-	matrix-pthreads.cpp				\
-	matrix-seq.cpp						\
-	matrix-tbb.cpp						\
+	f4rt-kaapi.cpp						\
+	f4rt-omp.cpp							\
+	f4rt-pthread.cpp					\
+	f4rt-seq.cpp							\
+	f4rt-tbb.cpp							\
 	matrix.cpp
 
 pkginclude_HEADERS =	\
@@ -57,11 +57,11 @@ intrinsics_SOURCES= intrinsics.c intrinsics.h
 intrinsics_LDADD=libf4rt.la
 
 f4rt_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x
-f4rt_SOURCES=  						\
-	dense-matrix.cpp 				\
-	matrix.cpp 							\
-	matrix-kaapi.cpp 				\
-	matrix-omp.cpp 					\
-	matrix-pthreads.cpp 		\
-	matrix-seq.cpp					\
-	matrix-tbb.cpp
+f4rt_SOURCES=  				\
+	dense-matrix.cpp 		\
+	matrix.cpp 					\
+	f4rt-kaapi.cpp 			\
+	f4rt-omp.cpp 				\
+	f4rt-pthread.cpp 		\
+	f4rt-seq.cpp				\
+	f4rt-tbb.cpp

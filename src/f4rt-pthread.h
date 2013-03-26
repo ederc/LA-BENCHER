@@ -1,5 +1,5 @@
-#ifndef F4RT_MATRIX_PTHREADS_H
-#define F4RT_MATRIX_PTHREADS_H
+#ifndef F4RT_PTHREADS_H
+#define F4RT_PTHREADS_H
 
 #include <matrix.h>
 
