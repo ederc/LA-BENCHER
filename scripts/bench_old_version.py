@@ -113,8 +113,8 @@ if not os.path.exists(folder_name):
 os.chdir(os.getcwd()+"/"+folder_name)
 
 #generate random matrices without timestamp
-os.system('../../src/f4rt -g -R '+args.rowsa+' -C '+args.colsa)
-os.system('../../src/f4rt -g -R '+args.colsa+' -C '+args.colsb)
+os.system('../../src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
+os.system('../../src/f4rt -G -R '+args.colsa+' -C '+args.colsb)
 
 bench_file = "bench-"+str(hash_value)
 f = open(bench_file,"w")

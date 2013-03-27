@@ -36,7 +36,7 @@ void print_help(int exval) {
  printf("       -d        sets the dimension of the parallel for loop\n");
  printf("                 (values: 1, 2, 3 (3 only for TBB); default = 1)\n");
  printf("       -E        if input file is set, compute the Gaussian Elimination\n");
- printf("       -g        generate a new random float matrix\n");
+ printf("       -G        generate a new random float matrix\n");
  printf("       -h        print this help and exit\n");
  printf("       -i        If parallel scheduler is used with option -d1, then the\n");
  printf("                 -i flag triggers collapsing on one loop level deeper.\n");
@@ -117,9 +117,9 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvgA:B:C:Ept:m:Md:b:aR:Nsi")) != -1) {
+ while((opt = getopt(argc, argv, "hVvGA:B:C:Ept:m:Md:b:aR:Nsi")) != -1) {
   switch(opt) {
-    case 'g': 
+    case 'G': 
       generate = 1;
       break;
     case 'h':
