@@ -1,4 +1,4 @@
-#include <f4rt-omp.h>
+#include "mat-mult-omp.h"
 
 #define __F4RT_DEBUG  0
 

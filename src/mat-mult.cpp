@@ -1,5 +1,5 @@
 /**
- * \file   dense-mat-mult.cpp
+ * \file   mat-mult.cpp
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   February 2013
  * \brief  General source file for dense matrix multiplication.
@@ -7,21 +7,21 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#include "dense-mat-mult.h"
+#include "mat-mult.h"
 
 #ifdef __F4RT_HAVE_PTHREAD_H
-#include "f4rt-pthread.h"
+#include "pthrd/mat-mult-pthrd.h"
 #endif
 #ifdef __F4RT_HAVE_INTEL_TBB
-#include "f4rt-tbb.h"
+#include "tbb/mat-mult-tbb.h"
 #endif
 #ifdef __F4RT_HAVE_OPENMP
-#include "f4rt-omp.h"
+#include "omp/mat-mult-omp.h"
 #endif
 #if defined(__F4RT_HAVE_KAAPI)
-#include "f4rt-kaapi.h"
+#include "kaapi/mat-mult-kaapi.h"
 #endif
-#include "f4rt-seq.h"
+#include "seq/mat-mult-seq.h"
 
 void prepareMult(Matrix& A, Matrix& B, char* str) {
   FILE* file  = fopen(str,"rb");

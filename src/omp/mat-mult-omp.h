@@ -1,5 +1,5 @@
-#ifndef F4RT_OMP_H
-#define F4RT_OMP_H
+#ifndef F4RT_MAT_MULT_OMP_H
+#define F4RT_MAT_MULT_OMP_H
 
 #include <matrix.h>
 

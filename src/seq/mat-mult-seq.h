@@ -1,5 +1,5 @@
-#ifndef F4RT_SEQ_H
-#define F4RT_SEQ_H
+#ifndef F4RT_MAT_MULT_SEQ_H
+#define F4RT_MAT_MULT_SEQ_H
 
 #include <matrix.h>
 

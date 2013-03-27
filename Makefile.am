@@ -19,10 +19,14 @@ EXTRA_DIST=PROJECTS
 
 CLEANFILES=				\
 	tags						\
+	obj/*						\
 	*~
+
+
 
 distclean-local:
 	rm -rf autom4te.cache
+	rm -rf obj
 
 DISTCLEANFILES= 									\
 	_configs.sed										\
@@ -36,6 +40,7 @@ DISTCLEANFILES= 									\
 	include/f4rt-config.h*					\
 	include/stamp-h1a         			\
 	doc/index.html									\
+	obj/*														\
 	*~
 
 ctags:

@@ -13,6 +13,7 @@
 *.res
 .libs
 *.backup
+.dirstamp
 _configs.sed
 compile
 config.h
@@ -50,6 +51,8 @@ include/f4rt-config.h.in
 include/stamp-h1
 doc/index.html
 doc/*.html
+obj
+benchmarks
 src/f4rt
 src/intrinsics
 scripts/test-*

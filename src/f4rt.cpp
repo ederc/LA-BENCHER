@@ -7,18 +7,7 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <getopt.h>
-#include "f4rt-config.h"
-
-#include "matrix.h"
-#include "dense-mat-mult.h"
-
-#define PACKAGE "F4RT"
-#define VERSION "0.0.1"
-
+#include "f4rt.h"
 
 void print_help(int exval) {
  printf("DESCRIPTION\n");

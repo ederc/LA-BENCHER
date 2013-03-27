@@ -1,5 +1,5 @@
 /**
- * \file   dense-mat-mult.h
+ * \file   mat-mult.h
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   February 2013
  * \brief  Header file for dense matrix multiplication.

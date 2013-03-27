@@ -1,5 +1,5 @@
-#ifndef F4RT_KAAPI_H
-#define F4RT_KAAPI_H
+#ifndef F4RT_MAT_MULT_KAAPI_H
+#define F4RT_MAT_MULT_KAAPI_H
 
 #include <matrix.h>
 
