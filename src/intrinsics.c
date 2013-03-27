@@ -1,6 +1,6 @@
 /**
  * \file   intrinsics.c
- * \author Christian Eder ( ederc@mathematik.uni-kl.de )
+ * \author Christian Eder ( christian.eder@inria.fr )
  * \date   February 2013
  * \brief  General source file for intrinsic stuff.
  *         This file is part of F4RT, licensed under the GNU General

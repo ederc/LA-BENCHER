@@ -1,3 +1,12 @@
+/**
+ * \file   mat-mul-seq.cpp
+ * \author Christian Eder ( christian.eder@inria.fr )
+ * \date   March 2013
+ * \brief  Source file for sequential dense matrix multiplication.
+ *         This file is part of F4RT, licensed under the GNU General
+ *         Public License version 3. See COPYING for more information.
+ */
+
 #include "mat-mult-seq.h"
 
 #define __F4RT_DEBUG  0
