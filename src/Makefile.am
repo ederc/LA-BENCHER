@@ -17,17 +17,19 @@ BASIC_HDRS =								\
 	f4rt-pthread.h						\
 	f4rt-seq.h								\
 	f4rt-tbb.h								\
-	matrix.h									
+	matrix.h									\
+	dense-mat-mult.h
 
 SOURCES=										\
 	intrinsics.c							\
-	dense-matrix.cpp					\
+	f4rt.cpp									\
 	f4rt-kaapi.cpp						\
 	f4rt-omp.cpp							\
 	f4rt-pthread.cpp					\
 	f4rt-seq.cpp							\
 	f4rt-tbb.cpp							\
-	matrix.cpp
+	matrix.cpp								\
+	dense-mat-mult.cpp
 
 pkginclude_HEADERS =	\
 	$(BASIC_HDRS)
@@ -58,10 +60,11 @@ intrinsics_LDADD=libf4rt.la
 
 f4rt_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x
 f4rt_SOURCES=  				\
-	dense-matrix.cpp 		\
+	f4rt.cpp 						\
 	matrix.cpp 					\
 	f4rt-kaapi.cpp 			\
 	f4rt-omp.cpp 				\
 	f4rt-pthread.cpp 		\
 	f4rt-seq.cpp				\
-	f4rt-tbb.cpp
+	f4rt-tbb.cpp				\
+	dense-mat-mult.cpp
