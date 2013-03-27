@@ -9,20 +9,6 @@
 
 #include "mat-mult.h"
 
-#ifdef __F4RT_HAVE_PTHREAD_H
-#include "pthrd/mat-mult-pthrd.h"
-#endif
-#ifdef __F4RT_HAVE_INTEL_TBB
-#include "tbb/mat-mult-tbb.h"
-#endif
-#ifdef __F4RT_HAVE_OPENMP
-#include "omp/mat-mult-omp.h"
-#endif
-#if defined(__F4RT_HAVE_KAAPI)
-#include "kaapi/mat-mult-kaapi.h"
-#endif
-#include "seq/mat-mult-seq.h"
-
 void prepareMult(Matrix& A, Matrix& B, char* str) {
   FILE* file  = fopen(str,"rb");
   // take A from file
