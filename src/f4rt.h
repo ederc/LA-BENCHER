@@ -15,6 +15,7 @@
 
 #include "matrix.h"
 #include "mat-mult.h"
+#include "mat-gen.h"
 
 #define PACKAGE "F4RT"
 #define VERSION "0.0.1"

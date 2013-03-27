@@ -21,6 +21,7 @@ BASIC_HDRS =								\
 	seq/mat-mult-seq.h				\
 	tbb/mat-mult-tbb.h				\
 	matrix.h									\
+	mat-gen.h									\
 	mat-mult.h
 
 SOURCES=										\
@@ -32,6 +33,7 @@ SOURCES=										\
 	seq/mat-mult-seq.cpp			\
 	tbb/mat-mult-tbb.cpp			\
 	matrix.cpp								\
+	mat-gen.cpp								\
 	mat-mult.cpp
 
 pkginclude_HEADERS =	\
@@ -70,6 +72,7 @@ f4rt_SOURCES=  							\
 	pthrd/mat-mult-pthrd.cpp	\
 	seq/mat-mult-seq.cpp			\
 	tbb/mat-mult-tbb.cpp			\
+	mat-gen.cpp								\
 	mat-mult.cpp
 
 CLEANFILES=				\

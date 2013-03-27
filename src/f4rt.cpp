@@ -71,26 +71,6 @@ void print_help(int exval) {
  exit(exval);
 }
 
-void genMatrix(int rows=0, int cols=0) {
-  uint32 m, n;
-  bool cmp;
-  Matrix A;
-  if (rows == 0 || cols == 0) {
-    std::cout << "Generate new random matrix with entries of type float." << std::endl;
-    std::cout << "Number of rows (<2^32): ";
-    std::cin >> m;
-    std::cout << "Number of cols (<2^32): ";
-    std::cin >> n;
-    std::cout << "Check if matrix is stored correctly? (1=yes, 0=no)  ";
-    std::cin >> cmp;
-    A.generateRandomMatrix(m,n,cmp,1);
-  } else {
-    A.generateRandomMatrix(rows,cols,0,0);
-  }
-  A.clear();
-  std::cout << "Matrix generated." << std::endl;
-}
-
 void eliminateMatrix( char* str, int nthrds, int method, int affinity, int blocksize, 
                       int dimension, int impose, int outerloop, int print) {
   Matrix A;
