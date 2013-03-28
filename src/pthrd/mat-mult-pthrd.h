@@ -13,9 +13,9 @@
 #include <matrix.h>
 
 struct params {
-  const float *a;
-  const float *b;
-  float *c;
+  const mat *a;
+  const mat *b;
+  mat *c;
   int size;
   uint32 m;
   uint32 n;

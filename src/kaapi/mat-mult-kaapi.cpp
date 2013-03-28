@@ -18,65 +18,65 @@
 static void multMat2dInnerImpose(
     size_t start, size_t end, int32_t tid, 
     uint32 i, uint32 n, uint32 m,
-    float* c_floats, const float* a_floats, const float* b_floats) {
+    mat* c_entries, const mat* a_entries, const mat* b_entries) {
   for (size_t j = start; j < end; ++j) {
-    float sum = 0;
+    mat sum = 0;
     for (size_t k = 0; k < n; ++k) {
-      sum += a_floats[k+i*n] * b_floats[k+j*n];
+      sum += a_entries[k+i*n] * b_entries[k+j*n];
     }
     //std::cout << j+i*m << ". " << sum << std::endl;
-    c_floats[j+i*m]  = (float) (sum);
+    c_entries[j+i*m]  = sum;
   }
 }
 
 static void multMat2dOuterImpose(
     size_t start, size_t end, int32_t tid, 
     uint32 m, uint32 n, 
-    float* c_floats, const float* a_floats, const float* b_floats) {
+    mat* c_entries, const mat* a_entries, const mat* b_entries) {
   for (size_t i = start; i < end; ++i) {
     kaapic_foreach_attr_t attr;
     kaapic_foreach_attr_init(&attr);
     kaapic_foreach( 0, m, &attr, 6, multMat2dInnerImpose, i, n,
-                    m, c_floats, a_floats, b_floats);
+                    m, c_entries, a_entries, b_entries);
   }
 }
 
 static void multMat2dInner(
     size_t start, size_t end, int32_t tid, 
     uint32 i, uint32 n, 
-    float* c_floats, const float* a_floats, const float* b_floats) {
+    mat* c_entries, const mat* a_entries, const mat* b_entries) {
   for (size_t j = start; j < end; ++j) {
-    float sum = 0;
+    mat sum = 0;
     for (size_t k = 0; k < n; ++n) {
-      sum += a_floats[k+i*n] * b_floats[j+k*(end+1)];
+      sum += a_entries[k+i*n] * b_entries[j+k*(end+1)];
     }
-    c_floats[j+i*(end+1)]  = (float) (sum);
+    c_entries[j+i*(end+1)]  = sum;
   }
 }
 
 static void multMat2dOuter(
     size_t start, size_t end, int32_t tid, 
     uint32 m, uint32 n, 
-    float* c_floats, const float* a_floats, const float* b_floats) {
+    mat* c_entries, const mat* a_entries, const mat* b_entries) {
   for (size_t i = start; i < end; ++i) {
     kaapic_foreach_attr_t attr;
     kaapic_foreach_attr_init(&attr);
-    kaapic_foreach(0, m, &attr, 5, multMat2dInner, i, n, c_floats, a_floats, b_floats);
+    kaapic_foreach(0, m, &attr, 5, multMat2dInner, i, n, c_entries, a_entries, b_entries);
   }
 }
 
 static void multMat1dImpose(
     size_t start, size_t end, int32_t tid, 
     uint32 m, uint32 n, 
-    float* c_floats, const float* a_floats, const float* b_floats) {
+    mat* c_entries, const mat* a_entries, const mat* b_entries) {
   for (size_t i = start; i < end; ++i) {
     for (size_t j = 0; j < m; ++j) {
       float sum = 0;
       for (size_t k = 0; k < n; k++) {
-        sum += a_floats[k+i*n] * b_floats[k+j*n];
+        sum += a_entries[k+i*n] * b_entries[k+j*n];
       }
       //std::cout << j+i*m << "." << sum << "LL" << std::endl;
-      c_floats[j+i*m]  = (float) (sum);
+      c_entries[j+i*m]  = (float) (sum);
     }
   }
 }
@@ -84,15 +84,15 @@ static void multMat1dImpose(
 static void multMat1d(
     size_t start, size_t end, int32_t tid, 
     uint32 m, uint32 n, 
-    float* c_floats, const float* a_floats, const float* b_floats) {
+    mat* c_entries, const mat* a_entries, const mat* b_entries) {
   for (size_t i = start; i < end; ++i) {
     for (size_t j = 0; j < m; ++j) {
-      float sum = 0;
+      mat sum = 0;
       for (size_t k = 0; k < n; k++) {
-        sum += a_floats[k+i*n] * b_floats[j+k*m];
+        sum += a_entries[k+i*n] * b_entries[j+k*m];
       }
       //std::cout << j+i*m << "." << sum << "LL" << std::endl;
-      c_floats[j+i*m]  = (float) (sum);
+      c_entries[j+i*m]  = (float) (sum);
     }
   }
 }
@@ -115,13 +115,13 @@ void multKAAPIC1d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int b
     n = B.nRows();
   }
 
-  const float *a_floats = new float[l*n];
-  a_floats = A.entries.data();
+  const mat *a_entries = new mat[l*n];
+  a_entries = A.entries.data();
   
-  const float *b_floats = new float[n*m];
-  b_floats = B.entries.data();
+  const mat *b_entries = new mat[n*m];
+  b_entries = B.entries.data();
 
-  float *c_floats = new float[l*m];
+  mat *c_entries = new mat[l*m];
   //C.resize(l*m);
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
@@ -143,9 +143,9 @@ void multKAAPIC1d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int b
   if (nthrds > 0)
     omp_set_num_threads(nthrds);
 if (impose == 1) {
-  kaapic_foreach(0, l, &attr, 5, multMat1dImpose, m, n, c_floats, a_floats, b_floats);
+  kaapic_foreach(0, l, &attr, 5, multMat1dImpose, m, n, c_entries, a_entries, b_entries);
 } else {
-  kaapic_foreach(0, l, &attr, 5, multMat1d, m, n, c_floats, a_floats, b_floats);
+  kaapic_foreach(0, l, &attr, 5, multMat1d, m, n, c_entries, a_entries, b_entries);
 }
   gettimeofday(&stop, NULL);
   cStop = clock();
@@ -209,13 +209,13 @@ void multKAAPIC2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int b
     n = B.nRows();
   }
 
-  const float *a_floats = new float[l*n];
-  a_floats = A.entries.data();
+  const mat *a_entries = new mat[l*n];
+  a_entries = A.entries.data();
   
-  const float *b_floats = new float[n*m];
-  b_floats = B.entries.data();
+  const mat *b_entries = new mat[n*m];
+  b_entries = B.entries.data();
 
-  float *c_floats = new float[l*m];
+  mat *c_entries = new mat[l*m];
   //C.resize(l*m);
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
@@ -237,9 +237,9 @@ void multKAAPIC2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int b
   if (nthrds > 0)
     omp_set_num_threads(nthrds);
 if (impose == 1) {
-  kaapic_foreach(0, l, &attr, 5, multMat2dOuterImpose, m, n, c_floats, a_floats, b_floats);
+  kaapic_foreach(0, l, &attr, 5, multMat2dOuterImpose, m, n, c_entries, a_entries, b_entries);
 } else {
-  kaapic_foreach(0, l, &attr, 5, multMat2dOuter, m, n, c_floats, a_floats, b_floats);
+  kaapic_foreach(0, l, &attr, 5, multMat2dOuter, m, n, c_entries, a_entries, b_entries);
 }
   gettimeofday(&stop, NULL);
   cStop = clock();
@@ -342,13 +342,13 @@ struct TaskBodyCPU<TaskMatProduct> {
         ka::rangeindex ri(i, i+blocksize);
         for (size_t j=0; j<m; j += blocksize) {
           ka::rangeindex rj(j, j+blocksize);
-          float sum = 0;
+          mat sum = 0;
           for (size_t k=0; k<n; k += 1) {
             sum += A.entries[k+i*n] * B.entries[k+j*n];
             cntr += 2;
           }
           //std::cout << j+i*m << sum << std::endl;
-          C->entries[j+i*m]  = (float) (sum);
+          C->entries[j+i*m]  = mat (sum);
         }
       }
     } else {
@@ -356,12 +356,12 @@ struct TaskBodyCPU<TaskMatProduct> {
         ka::rangeindex ri(i, i+blocksize);
         for (size_t j=0; j<m; j += blocksize) {
           ka::rangeindex rj(j, j+blocksize);
-          float sum = 0;
+          mat sum = 0;
           for (size_t k=0; k<n; k += 1) {
             sum += A.entries[k+i*n] * B.entries[j+k*m];
             cntr += 2;
           }
-          C->entries[j+i*m]  = (float) (sum);
+          C->entries[j+i*m]  = sum;
         }
       }
     }

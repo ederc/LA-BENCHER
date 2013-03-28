@@ -49,10 +49,10 @@ void multTBBAuto( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.begin(); i!=r.end(); ++i )
             for( size_t j=0; j!=m; ++j ) {
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k )
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         });
   } else {
@@ -61,10 +61,10 @@ void multTBBAuto( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.begin(); i!=r.end(); ++i )
             for( size_t j=0; j!=m; ++j ) {
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k )
                 sum += A.entries[k+i*n] * B.entries[j+k*m];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         });
   }
@@ -133,7 +133,7 @@ void multTBBAffine( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
+  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(mat);
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -149,10 +149,10 @@ void multTBBAffine( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.begin(); i!=r.end(); ++i )
             for( size_t j=0; j!=m; ++j ) {
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k )
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, ap);
   } else {
@@ -161,10 +161,10 @@ void multTBBAffine( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.begin(); i!=r.end(); ++i )
             for( size_t j=0; j!=m; ++j ) {
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k )
                 sum += A.entries[k+i*n] * B.entries[j+k*m];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, ap);
   }
@@ -232,7 +232,7 @@ void multTBBSimple( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
+  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(mat);
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -248,10 +248,10 @@ void multTBBSimple( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.begin(); i!=r.end(); ++i )
             for( size_t j=0; j!=m; ++j ) {
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k )
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, sp);
   } else {
@@ -260,10 +260,10 @@ void multTBBSimple( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.begin(); i!=r.end(); ++i )
             for( size_t j=0; j!=m; ++j ) {
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k )
                 sum += A.entries[k+i*n] * B.entries[j+k*m];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, sp);
   }
@@ -332,7 +332,7 @@ void multTBBAuto2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
+  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(mat);
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -348,10 +348,10 @@ void multTBBAuto2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i )
             for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k )
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         });
   } else {
@@ -361,10 +361,10 @@ void multTBBAuto2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i )
             for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k )
                 sum += A.entries[k+i*n] * B.entries[j+k*m];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         });
   }
@@ -433,7 +433,7 @@ void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
+  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(mat);
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -450,10 +450,10 @@ void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i )
             for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k )
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, ap);
   } else {
@@ -463,10 +463,10 @@ void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i )
             for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k )
                 sum += A.entries[k+i*n] * B.entries[j+k*m];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, ap);
   }
@@ -534,7 +534,7 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
+  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(mat);
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -551,12 +551,12 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i )
             for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k ) {
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
               }
               //std::cout << j+i*m << sum << std::endl;
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, sp);
   } else {
@@ -566,11 +566,11 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.rows().begin(); i!=r.rows().end(); ++i )
             for( size_t j=r.cols().begin(); j!=r.cols().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=0; k<n; ++k ) {
                 sum += A.entries[k+i*n] * B.entries[j+k*m];
               }
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, sp);
   }
@@ -638,7 +638,7 @@ void multTBBAuto3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
+  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(mat);
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -654,10 +654,10 @@ void multTBBAuto3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.pages().begin(); i!=r.pages().end(); ++i )
             for( size_t j=r.rows().begin(); j!=r.rows().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=r.cols().begin(); k!=r.cols().end(); ++k )
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         });
   } else {
@@ -667,10 +667,10 @@ void multTBBAuto3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.pages().begin(); i!=r.pages().end(); ++i )
             for( size_t j=r.rows().begin(); j!=r.rows().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=r.cols().begin(); k!=r.cols().end(); ++k )
                 sum += A.entries[k+i*n] * B.entries[j+k*m];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         });
   }
@@ -739,7 +739,7 @@ void multTBBAffine3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
+  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(mat);
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -756,10 +756,10 @@ void multTBBAffine3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.pages().begin(); i!=r.pages().end(); ++i )
             for( size_t j=r.rows().begin(); j!=r.rows().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=r.cols().begin(); k!=r.cols().end(); ++k )
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, ap);
   } else {
@@ -769,10 +769,10 @@ void multTBBAffine3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.pages().begin(); i!=r.pages().end(); ++i )
             for( size_t j=r.rows().begin(); j!=r.rows().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=r.cols().begin(); k!=r.cols().end(); ++k )
                 sum += A.entries[k+i*n] * B.entries[j+k*m];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, ap);
   }
@@ -840,7 +840,7 @@ void multTBBSimple3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   std::cout << "B => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
   std::cout << "C => " << C.nRows() << "-" << C.nCols() << "-" << C.nEntries() << std::endl;
 #endif
-  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
+  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(mat);
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -857,11 +857,11 @@ void multTBBSimple3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.pages().begin(); i!=r.pages().end(); ++i )
             for( size_t j=r.rows().begin(); j!=r.rows().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=r.cols().begin(); k!=r.cols().end(); ++k )
                 sum += A.entries[k+i*n] * B.entries[k+j*n];
               //std::cout << j+i*m << sum << std::endl;
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, sp);
   } else {
@@ -871,10 +871,10 @@ void multTBBSimple3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
         {
           for( size_t i=r.pages().begin(); i!=r.pages().end(); ++i )
             for( size_t j=r.rows().begin(); j!=r.rows().end(); ++j ){
-              float sum = 0;
+              mat sum = 0;
               for( size_t k=r.cols().begin(); k!=r.cols().end(); ++k )
                 sum += A.entries[k+i*n] * B.entries[j+k*m];
-              C.entries[j+i*m]  = (float) (sum);
+              C.entries[j+i*m]  = (mat) (sum);
             }
         }, sp);
   }

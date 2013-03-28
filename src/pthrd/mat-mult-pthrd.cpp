@@ -22,11 +22,11 @@ void *multPThreadImpose(void *p) {
   uint32 n      = _p->n;
   for (size_t i = start; i < end; ++i) {
     for(size_t j = 0; j < m; ++j) {
-      float sum = 0;
+      mat sum = 0;
       for(size_t k = 0; k < n; ++k )
         sum += _p->a[k+i*n] * _p->b[k+j*n];
         //std::cout << j+i*m << "." << sum << std::endl;
-      _p->c[j+i*m]  = (float) (sum);
+      _p->c[j+i*m]  = sum;
     }
   }
   return 0;
@@ -41,11 +41,11 @@ void *multPThread(void *p) {
   uint32 n      = _p->n;
   for (size_t i = start; i < end; ++i) {
     for(size_t j = 0; j < m; ++j) {
-      float sum = 0;
+      mat sum = 0;
       for(size_t k = 0; k < n; ++k )
         //std::cout << j+i*m << "." << sum << "LL" << std::endl;
         sum += _p->a[k+i*n] * _p->b[j+k*m];
-      _p->c[j+i*m]  = (float) (sum);
+      _p->c[j+i*m]  = sum;
     }
   }
   return 0;
@@ -65,12 +65,12 @@ void multPT(Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     m = B.nCols();
     n = B.nRows();
   }
-  const float *a_floats = A.entries.data();
+  const mat *a_entries = A.entries.data();
   
-  const float *b_floats = new float[n*m];
-  b_floats = B.entries.data();
+  const mat *b_entries = new mat[n*m];
+  b_entries = B.entries.data();
 
-  float *c_floats = new float[l*m];
+  mat *c_entries = new mat[l*m];
 
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
@@ -95,10 +95,10 @@ void multPT(Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
   gettimeofday(&start, NULL);
   cStart  = clock();
   if (impose == 1) {
-    for (size_t i = 0; i < nthrds; ++i) {
-      thread_params[i].a  = a_floats; 
-      thread_params[i].b  = b_floats; 
-      thread_params[i].c  = c_floats; 
+    for (int i = 0; i < nthrds; ++i) {
+      thread_params[i].a  = a_entries; 
+      thread_params[i].b  = b_entries; 
+      thread_params[i].c  = c_entries; 
       thread_params[i].tid  = i;
       // add 1 more chunk for the first pad threads
       if (i < pad)
@@ -112,15 +112,15 @@ void multPT(Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     }
 
     // join threads back again
-    for (size_t i = 0; i < nthrds; ++i)
+    for (int i = 0; i < nthrds; ++i)
       pthread_join(threads[i], NULL);
 
     free(thread_params);
   } else {
-    for (size_t i = 0; i < nthrds; ++i) {
-      thread_params[i].a  = a_floats; 
-      thread_params[i].b  = b_floats; 
-      thread_params[i].c  = c_floats; 
+    for (int i = 0; i < nthrds; ++i) {
+      thread_params[i].a  = a_entries; 
+      thread_params[i].b  = b_entries; 
+      thread_params[i].c  = c_entries; 
       thread_params[i].tid  = i;
       // add 1 more chunk for the first pad threads
       if (i < pad)
@@ -134,7 +134,7 @@ void multPT(Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     }
 
     // join threads back again
-    for (size_t i = 0; i < nthrds; ++i)
+    for (int i = 0; i < nthrds; ++i)
       pthread_join(threads[i], NULL);
 
     free(thread_params);

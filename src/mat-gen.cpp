@@ -8,13 +8,12 @@
  */
 
 #include "mat-gen.h"
-/*
 void genMatrix(int rows=0, int cols=0) {
   uint32 m, n;
   bool cmp;
   Matrix A;
   if (rows == 0 || cols == 0) {
-    std::cout << "Generate new random matrix with entries of type float." << std::endl;
+    std::cout << "Generate new random matrix." << std::endl;
     std::cout << "Number of rows (<2^32): ";
     std::cin >> m;
     std::cout << "Number of cols (<2^32): ";
@@ -28,7 +27,7 @@ void genMatrix(int rows=0, int cols=0) {
   A.clear();
   std::cout << "Matrix generated." << std::endl;
 }
-*/
+/*
 void genMatrix(int rows=0, int cols=0) {
   uint32 m, n;
   bool cmp;
@@ -44,3 +43,4 @@ void genMatrix(int rows=0, int cols=0) {
   }
   std::cout << "Matrix generated." << std::endl;
 }
+*/

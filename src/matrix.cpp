@@ -11,11 +11,12 @@
 
 #define __F4RT_DEBUG  0
 
+/*
 // matrix deletion
 void clear(matrix& M) {
   M.rows  = 0;
   M.cols  = 0;
-  free(M.entries);
+  M.entries.clear();
   M.entries = NULL;
 }
 
@@ -101,10 +102,18 @@ rmat getRandVal() {
 // random matrix generating
 void genRandom( const uint32 m, const uint32 n, 
                 bool cmp, bool timestamp) {
-  matrix M;
+  struct matrix M;
   M.rows     = m;
   M.cols     = n;
-  M.entries  = (mat *)malloc(M.rows * M.cols * sizeof(mat));
+  std::cout << m << " -- " << n << std::endl;
+  std::cout << M.rows << " -- " << M.cols << std::endl;
+  std::cout << sizeof(M.entries) << std::endl;
+  std::cout << sizeof(mat) << std::endl;
+  std::cout << M.rows * M.cols * sizeof(*M.entries) << std::endl;
+  mat *temp   = (mat *)malloc(M.rows * M.cols * sizeof(*M.entries));
+  M.entries   = temp; 
+  std::cout << sizeof(M.entries) << std::endl;
+  std::cout << sizeof(M.entries[0]) << std::endl;
  
   std::ostringstream fileName;
   // generate current time for fileName
@@ -139,8 +148,10 @@ void genRandom( const uint32 m, const uint32 n,
   srand(time(NULL));
   for (uint64 i = 0; i < M.rows * M.cols; ++i) {
     M.entries[i] = getRandVal();
+    std::cout << M.entries[i] << std::endl;
   }
-
+  std::cout << sizeof(temp) << std::endl;
+  std::cout << sizeof(temp[0]) << std::endl;
   write(M, file); 
   fclose(file);
 
@@ -163,7 +174,7 @@ void genRandom( const uint32 m, const uint32 n,
   clear(M);
 }
 
-
+*/
 ////////////////////////
 
 // not coincide: return 1
@@ -181,14 +192,12 @@ int check(const Matrix& A, const Matrix& B, int unittest = 0) {
   return 0;
 }
 void Matrix::read(FILE* file) {
-  const auto rowCount   = readOne<uint32>(file);
-  const auto colCount   = readOne<uint32>(file);
-  const auto entryCount = rowCount * colCount;
+  const auto rowCount   = readOne(file);
+  const auto colCount   = readOne(file);
   m = rowCount;
   n = colCount;
-  l = entryCount;
-  entries.resize(entryCount);
-  readMany(file, entryCount, entries);
+  entries.resize(rowCount * colCount);
+  readMany(file, rowCount * colCount, entries);
 }
 
 void Matrix::write(FILE* file) {
@@ -218,8 +227,8 @@ void Matrix::print() {
   }
 }
 
-float getRandomVal() {
-  return static_cast<float>(std::rand());
+mat getRandomVal() {
+  return static_cast<rmat>(std::rand());
 }
 
 
@@ -255,9 +264,9 @@ void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = f
       strTime.append("0");
     strTime.append(std::to_string(now->tm_sec));
 
-    fileName << "random-float-mat-" << m << "-" << n << "-" << strTime << ".mat";
+    fileName << "random-mat-" << m << "-" << n << "-" << strTime << ".mat";
   } else {
-    fileName << "random-float-mat-" << m << "-" << n << ".mat";
+    fileName << "random-mat-" << m << "-" << n << ".mat";
   }
 
   FILE* file  = fopen(fileName.str().c_str(), "ab");
@@ -297,9 +306,8 @@ void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = f
 void Matrix::copy(const Matrix& M) {
   m = M.m;
   n = M.n;
-  l = M.l;
   entries.resize(M.entries.size());
-  for (uint64 i=0; i < nEntries(); ++i) 
+  for (uint64 i=0; i < m * n; ++i) 
     entries[i]  = M.entries[i];
   return;
 }
@@ -308,7 +316,7 @@ void Matrix::copy(const Matrix& M) {
 void Matrix::transpose() {
   uint32 tempRows = n;
   uint32 tempCols = m;
-  std::vector<float> tempEntries;
+  std::vector<mat> tempEntries;
   tempEntries.resize(entries.size());
   for (uint32 i=0; i<m; ++i) {
     for (uint32 j=0; j<n; ++j) {
@@ -325,7 +333,6 @@ void Matrix::transpose() {
 void Matrix::transpose(const Matrix& M) {
   m = M.n;
   n = M.m;
-  l = M.l;
   entries.resize(M.entries.size());
   for (uint32 i=0; i<M.nRows(); ++i) {
     for (uint32 j=0; j<M.nCols(); ++j) {

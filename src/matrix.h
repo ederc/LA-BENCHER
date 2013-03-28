@@ -56,11 +56,12 @@ typedef signed char int8;
 typedef uint64 mat; // mat entry type
 typedef uint16 rmat; // real type of entry
 
+/*
 // Dense matrix
 struct matrix {
   uint32 rows;
   uint32 cols;
-  mat *entries;
+  std::vector<mat> entries;
 };
 
 
@@ -76,22 +77,21 @@ void genRandom( const uint32 m, const uint32 n,
                 bool cmp, bool timestamp);
 
 
-
+*/
 /// Dense matrix
 class Matrix {
 public:
   uint32 m;
   uint32 n;
-  uint64 l;
-  std::vector<float> entries;
+  std::vector<mat> entries;
   
   void write(FILE* file);
   Matrix() : m(0), n(0) {}
-  Matrix(size_t m_, size_t n_) : m(m_), n(n_), l(m_*n_), entries(m_*n_) {}
-  Matrix(size_t m_, size_t n_, float val) : m(m_), n(n_), l(m_*n_), entries(m_*n_, val) {}
+  Matrix(size_t m_, size_t n_) : m(m_), n(n_), entries(m_*n_) {}
+  Matrix(size_t m_, size_t n_, mat val) : m(m_), n(n_),  entries(m_*n_, val) {}
 
   void clear() {
-    m = n = l = 0;
+    m = n = 0;
     entries.clear();
   }
 
@@ -103,19 +103,15 @@ public:
     return n;
   }
 
-  size_t nEntries() const {
-    return l;
-  }
-
-  float* column(size_t j) {
+  mat* column(size_t j) {
     return &*(entries.begin() + j*m);
   } 
   
-  float& operator()(size_t i, size_t j)  {
+  mat& operator()(size_t i, size_t j)  {
     return entries[j+ (i*n)];
   }
   
-  const float& operator()(size_t i, size_t j) const  {
+  const mat& operator()(size_t i, size_t j) const  {
     return entries[j + (i * n)];
   }
 
@@ -136,40 +132,36 @@ public:
   void print();
 };
 
-int check(const Matrix& A, const Matrix& B, int unittest);
-
-float getRandom();
-
 
 namespace {
-  template<class T>
-  T readOne(FILE* file) {
-    T t;
-    if (fread(&t, sizeof(T), 1, file) != 1)
+  uint32 readOne(FILE* file) {
+    uint32 t;
+    if (fread(&t, sizeof(uint32), 1, file) != 1)
       std::cerr << "Error while reading file." << std::endl;
     return t;
   }
 
-  template<class T>
-  void readMany(FILE* file, size_t count, std::vector<T>& v) {
+  void readMany(FILE* file, size_t count, std::vector<mat>& v) {
     //size_t const origSize = v.size();
     //v.resize(origSize+count);
-    if (fread(v.data(), sizeof(T), v.size(), file) != v.size())
+    if (fread(v.data(), sizeof(mat), v.size(), file) != v.size())
       std::cerr << "Error while reading file." << std::endl;
   }
 
-  template<class T>
-  void writeOne(const T& t, FILE* file) {
-    if (fwrite(&t, sizeof(T), 1, file) != 1)
+  void writeOne(const uint32& t, FILE* file) {
+    if (fwrite(&t, sizeof(uint32), 1, file) != 1)
       std::cerr << "Error while writing to file." << std::endl;
   }
 
-  template<class T>
-  void writeMany(const std::vector<T>& v, FILE* file) {
+  void writeMany(const std::vector<mat>& v, FILE* file) {
     if (v.empty())
       return;
-    if (fwrite(v.data(), sizeof(T), v.size(), file) != v.size())
+    if (fwrite(v.data(), sizeof(mat), v.size(), file) != v.size())
       std::cerr << "Error while writing to file." << std::endl;
   }
 }
+
+int check(const Matrix& A, const Matrix& B, int unittest);
+
+mat getRandom();
 #endif

@@ -29,7 +29,7 @@ void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int imp
   std::cout << "Matrix Multiplication" << std::endl;
   timeval start, stop;
   clock_t cStart, cStop;
-  float sum = 0;
+  mat sum = 0;
 #if __F4RT_DEBUG
   std::cout << std::endl;
   std::cout << "A => " << A.nRows() << "-" << A.nCols() << "-" << A.nEntries() << std::endl;
@@ -47,7 +47,7 @@ void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int imp
           sum += A.entries[k+i*n] * B.entries[k+j*n];
         }
         //std::cout << j+i*m << ". " << sum << std::endl;
-        C.entries[j+i*m]  = (float) (sum);
+        C.entries[j+i*m]  = (mat) (sum);
       }
     }
   } else {
@@ -58,7 +58,7 @@ void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int imp
           // sum += A(i,k) * B(k,j);
           sum += A.entries[k+i*n] * B.entries[j+k*m];
         }
-        C.entries[j+i*m]  = (float) (sum);
+        C.entries[j+i*m]  = (mat) (sum);
       }
     }
   }

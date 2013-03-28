@@ -49,12 +49,12 @@ if (impose == 1) {
   for (uint32 i = 0; i < l; ++i) {
 #pragma omp for schedule(guided,blocksize) collapse(1)
     for (uint32 j = 0; j < m; ++j) {
-      float sum = 0;
+      mat sum = 0;
       for (uint32 k = 0; k < n; k++) {
         // sum += A(i,k) * B(j,k);
         sum += A.entries[k+i*n] * B.entries[k+j*n];
       }
-      C.entries[j+i*m]  = (float) (sum);
+      C.entries[j+i*m]  = sum;
     }
   }
 }
@@ -68,12 +68,12 @@ if (impose == 1) {
 #pragma omp for schedule(guided,blocksize) collapse(2)
   for (uint32 i = 0; i < l; ++i) {
     for (uint32 j = 0; j < m; ++j) {
-      float sum = 0;
+      mat sum = 0;
       for (uint32 k = 0; k < n; k++) {
         // sum += A(i,k) * B(k,j);
         sum += A.entries[k+i*n] * B.entries[j+k*m];
       }
-      C.entries[j+i*m]  = (float) (sum);
+      C.entries[j+i*m]  = sum;
     }
   }
 }
@@ -156,12 +156,12 @@ if (impose == 1) {
 #pragma omp for schedule(guided,blocksize) collapse(1)
   for (uint32 i = 0; i < l; ++i) {
     for (uint32 j = 0; j < m; ++j) {
-      float sum = 0;
+      mat sum = 0;
       for (uint32 k = 0; k < n; k++) {
         // sum += A(i,k) * B(j,k);
         sum += A.entries[k+i*n] * B.entries[k+j*n];
       }
-      C.entries[j+i*m]  = (float) (sum);
+      C.entries[j+i*m]  = (mat) (sum);
     }
   }
 }
@@ -175,12 +175,12 @@ if (impose == 1) {
 #pragma omp for schedule(guided,blocksize) collapse(2)
   for (uint32 i = 0; i < l; ++i) {
     for (uint32 j = 0; j < m; ++j) {
-      float sum = 0;
+      mat sum = 0;
       for (uint32 k = 0; k < n; k++) {
         // sum += A(i,k) * B(k,j);
         sum += A.entries[k+i*n] * B.entries[j+k*m];
       }
-      C.entries[j+i*m]  = (float) (sum);
+      C.entries[j+i*m]  = (mat) (sum);
     }
   }
 }
@@ -263,12 +263,12 @@ if (impose == 1) {
 #pragma omp for schedule(guided,blocksize) collapse(2)
   for (uint32 i = 0; i < l; ++i) {
     for (uint32 j = 0; j < m; ++j) {
-      float sum = 0;
+      mat sum = 0;
       for (uint32 k = 0; k < n; k++) {
         // sum += A(i,k) * B(j,k);
         sum += A.entries[k+i*n] * B.entries[k+j*n];
       }
-      C.entries[j+i*m]  = (float) (sum);
+      C.entries[j+i*m]  = (mat) (sum);
     }
   }
 }
@@ -282,12 +282,12 @@ if (impose == 1) {
 #pragma omp for schedule(guided,blocksize) collapse(2)
   for (uint32 i = 0; i < l; ++i) {
     for (uint32 j = 0; j < m; ++j) {
-      float sum = 0;
+      mat sum = 0;
       for (uint32 k = 0; k < n; k++) {
         // sum += A(i,k) * B(k,j);
         sum += A.entries[k+i*n] * B.entries[j+k*m];
       }
-      C.entries[j+i*m]  = (float) (sum);
+      C.entries[j+i*m]  = (mat) (sum);
     }
   }
 }
