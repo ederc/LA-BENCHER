@@ -5,6 +5,7 @@ import fnmatch
 import os
 import shutil
 import argparse
+from argparse import RawTextHelpFormatter
 import time
 import math
 import matplotlib
@@ -28,19 +29,22 @@ def linesinfile(file_name):
   
 currentdir = os.getcwd()
 
-parser = argparse.ArgumentParser(description='generates two random matrices\
-a and b with float entries. these matrices are then multiplied, thus it\
-is enough to predefine #rows of a, #cols of a and #cols of b. the\
-multiplication is performed in various combinations of the f4rt dense\
-matrix multiplication implementation. afterwards the stored results\
-are visualized.')
+parser = argparse.ArgumentParser(description='\
+Generates two random matrices a and b with either float\n\
+or uint16 entries. these matrices are then multiplied,\n\
+thus it is enough to predefine #rows of a, #cols of a\n\
+and #cols of b. The multiplication is performed in various\n\
+combinations of the f4rt dense matrix multiplication\n\
+implementation. afterwards the stored results are visualized.',
+formatter_class=RawTextHelpFormatter)
 parser.add_argument('-a','--alg', required=True,
-    help='What algorithm should be benchmarked:\r\n\
-1 = Matrix multiplication\r\n\
-2 = Gaussian Elimination')
+    help="What algorithm should be benchmarked:\n\
+1 = Matrix multiplication\n\
+2 = Gaussian Elimination")
 parser.add_argument('-b', '--base', default=2,
-    help='base of number of threads, e.g. -b 2 -t 16 would lead to computations\
-in 1,2,4,8,16 threads. Default is 2.')
+    help='base of number of threads, e.g. -b 2 -t 16\n\
+would lead to computations in 1,2,4,8,16\n\
+threads. Default is 2.')
 parser.add_argument('-l', '--rowsa', required=True,
     help='number of rows of matrix a')
 parser.add_argument('-m', '--colsa', required=True,
