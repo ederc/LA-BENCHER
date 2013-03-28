@@ -21,7 +21,7 @@
 #if defined(__F4RT_HAVE_KAAPI)
 #include "kaapi/mat-mult-kaapi.h"
 #endif
-#include "seq/mat-mult-seq.h"
+#include "seq/mat-elim-seq.h"
 
 void eliminateMatrix( 
   char* str, int nthrds, int method, int affinity, 

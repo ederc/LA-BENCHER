@@ -15,28 +15,30 @@ SUBDIRS=
 BASIC_HDRS =								\
 	../include/f4rt-config.h 	\
 	intrinsics.h							\
+	matrix.h									\
+	mat-mult.h								\
 	kaapi/mat-mult-kaapi.h		\
 	omp/mat-mult-omp.h				\
 	pthrd/mat-mult-pthrd.h		\
 	seq/mat-mult-seq.h				\
 	tbb/mat-mult-tbb.h				\
-	matrix.h									\
-	mat-gen.h									\
 	mat-elim.h								\
-	mat-mult.h
+	seq/mat-elim-seq.h				\
+	mat-gen.h
 
 SOURCES=										\
 	intrinsics.c							\
 	f4rt.cpp									\
+	matrix.cpp								\
+	mat-mult.cpp							\
 	kaapi/mat-mult-kaapi.cpp	\
 	omp/mat-mult-omp.cpp			\
 	pthrd/mat-mult-pthrd.cpp	\
 	seq/mat-mult-seq.cpp			\
 	tbb/mat-mult-tbb.cpp			\
-	matrix.cpp								\
-	mat-gen.cpp								\
 	mat-elim.cpp							\
-	mat-mult.cpp
+	seq/mat-elim-seq.cpp			\
+	mat-gen.cpp
 
 pkginclude_HEADERS =	\
 	$(BASIC_HDRS)
@@ -69,14 +71,15 @@ f4rt_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x
 f4rt_SOURCES=  							\
 	f4rt.cpp 									\
 	matrix.cpp 								\
+	mat-mult.cpp							\
 	kaapi/mat-mult-kaapi.cpp	\
 	omp/mat-mult-omp.cpp			\
 	pthrd/mat-mult-pthrd.cpp	\
 	seq/mat-mult-seq.cpp			\
 	tbb/mat-mult-tbb.cpp			\
-	mat-gen.cpp								\
 	mat-elim.cpp							\
-	mat-mult.cpp
+	seq/mat-elim-seq.cpp			\
+	mat-gen.cpp
 
 CLEANFILES=				\
 	../obj/*				\

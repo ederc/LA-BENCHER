@@ -14,7 +14,8 @@ void eliminate(Matrix& A, const int nthrds, const int blocksize,
               const int affinity, int outerloop) {
   // sequential method
   if (method == 0) {
-    //elimSEQ(A, blocksize);
+    elimNaiveSEQModP(A, blocksize);
+    A.print();
   }
   // OpenMP
   if (method == 1) {
