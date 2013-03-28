@@ -130,8 +130,8 @@ bench_file = "bench-"+str(hash_value)
 f = open(bench_file,"w")
 
 strstr = '../../src/f4rt -'+algorithm+' \
--A random-float-mat-'+args.rowsa+'-'+args.colsa+'.mat \
--B random-float-mat-'+args.colsa+'-'+args.colsb+'.mat'
+-A random-mat-'+args.rowsa+'-'+args.colsa+'.mat \
+-B random-mat-'+args.colsa+'-'+args.colsb+'.mat'
 
 thrds_str = str(threads)
 thrds_str = thrds_str.replace('[','')
