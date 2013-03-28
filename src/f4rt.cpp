@@ -12,10 +12,10 @@
 void print_help(int exval) {
  printf("DESCRIPTION\n");
  printf("       This program is used as a test for parallelization libraries like\n");
- printf("       OpenMP or Intel TBB. It is working with dense floating point entry\n");
- printf("       matrices. Its main features are:\n\n");
- printf("       1. Multiplication of two matrices\n");
- printf("       2. Computing the Gaussian Elimination of a matrix\n\n");
+ printf("       OpenMP or Intel TBB. It is working with dense floating point resp.\n");
+ printf("       uint16 entry matrices. Its main features are:\n\n");
+ printf("       1. Multiplication of two floating point entry matrices\n");
+ printf("       2. Computing the Gaussian Elimination of a uint16 entry matrix\n\n");
  printf("       Note that when preforming the multiplication he program does not\n");
  printf("       check for overflows. Its purpose is to compare parallelization of mostly\n");
  printf("       independent tasks, namely matrix*matrix kernel operations.\n");
@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
   printf("argument: %s\n", argv[optind]);
    
   if (generate == 1) {
-    genMatrixNew(rows,cols);
+    genMatrix(rows,cols);
   }
   if (multiply && fileNameA) {
     if (fileNameB) {

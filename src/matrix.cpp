@@ -10,6 +10,160 @@
 #include "matrix.h"
 
 #define __F4RT_DEBUG  0
+
+// matrix deletion
+void clear(matrix& M) {
+  M.rows  = 0;
+  M.cols  = 0;
+  free(M.entries);
+  M.entries = NULL;
+}
+
+// matrix reading
+// memory for M is allocated inside!
+void read(matrix& M, FILE* file) {
+  if (fread(&M.rows, sizeof(uint32), 1, file) != 1)
+    std::cerr << "Error while reading file." << std::endl;
+  if (fread(&M.cols, sizeof(uint32), 1, file) != 1)
+    std::cerr << "Error while reading file." << std::endl;
+
+  M.entries = (mat *)malloc(M.rows * M.cols * sizeof(mat));
+  if (fread(M.entries, sizeof(mat), sizeof(M.entries)/sizeof(mat), file)
+      != sizeof(M.entries)/sizeof(mat))
+    std::cerr << "Error while reading file." << std::endl;
+}
+
+// matrix writing
+void write(const matrix M, FILE* file) {
+  if (fwrite(&M.rows, sizeof(uint32), 1, file) != 1)
+    std::cerr << "Error while writing to file." << std::endl;
+  if (fwrite(&M.cols, sizeof(uint32), 1, file) != 1)
+    std::cerr << "Error while writing to file." << std::endl;
+  if (M.entries == NULL)
+    return;
+  if (fwrite(M.entries, sizeof(mat), sizeof(M.entries)/sizeof(mat), file) 
+      != sizeof(M.entries)/sizeof(mat))
+    std::cerr << "Error while writing to file." << std::endl;
+}
+
+// matrix copying
+void copy(const matrix& M, matrix& N) {
+  N.rows    = M.rows;
+  N.cols    = M.cols;
+  N.entries = (mat *)malloc(N.rows * N.cols * sizeof(mat));
+  for (uint32 i = 0; i < N.rows * N.cols; i++)
+    N.entries[i]  = M.entries[i];
+}
+
+// matrix printing
+void print(const matrix& M) {
+  std::cout << "#rows" << std::setw(15) << M.rows << std::endl;
+  std::cout << "#cols" << std::setw(15) << M.cols << std::endl;
+  if (M.rows * M.cols > 1000) {
+    int pr;
+    std::cout << "NOTE: The matrix consists of " << M.rows * M.cols << " entries." << std::endl;
+    std::cout << "      Do you really want to print it? (1=yes, else=no) ";
+    std::cin >> pr;
+    if (pr != 1)
+      return;
+  }
+  uint32 i,j;
+  for (i = 0; i < M.rows; ++i) {
+    for (j = 0; j < M.cols-1; ++j) {
+      std::cout  << std::setw(5) << M.entries[j+i*M.cols] << " | ";
+    }
+    std::cout  << std::setw(5) << M.entries[j+i*M.cols];
+    std::cout << std::endl;
+  }
+}
+
+// matrix transposing
+void transpose(const matrix& M, matrix& N) {
+  uint32 tempRows     = M.cols;
+  uint32 tempCols     = M.rows;
+  mat *tempEntries = (mat *)malloc(tempRows * tempCols * sizeof(mat));
+  uint32 i,j;
+  for (i = 0; i < M.rows; ++i) {
+    for (j = 0; j < M.cols; ++j) {
+      tempEntries[i+j*M.rows]  = M.entries[j+i*M.cols];
+    }
+  }
+  N.rows    = tempRows;
+  N.cols    = tempCols;
+  N.entries = tempEntries;
+}
+
+// get random entries
+rmat getRandVal() {
+  return static_cast<rmat>(std::rand());
+}
+
+// random matrix generating
+void genRandom( const uint32 m, const uint32 n, 
+                bool cmp, bool timestamp) {
+  matrix M;
+  M.rows     = m;
+  M.cols     = n;
+  M.entries  = (mat *)malloc(M.rows * M.cols * sizeof(mat));
+ 
+  std::ostringstream fileName;
+  // generate current time for fileName
+  std::string strTime;
+  time_t t = time(0);   // get time now
+  struct tm * now = localtime( & t );
+  strTime.append(std::to_string(now->tm_year + 1900));
+  strTime.append("-");
+  if (now->tm_mon+1 < 10)
+    strTime.append("0");
+  strTime.append(std::to_string(now->tm_mon + 1));
+  strTime.append("-");
+  if (now->tm_mday < 10)
+    strTime.append("0");
+  strTime.append(std::to_string(now->tm_mday));
+  strTime.append("-");
+  if (now->tm_hour < 10)
+    strTime.append("0");
+  strTime.append(std::to_string(now->tm_hour));
+  strTime.append("-");
+  if (now->tm_min < 10)
+    strTime.append("0");
+  strTime.append(std::to_string(now->tm_min));
+  strTime.append("-");
+  if (now->tm_sec < 10)
+    strTime.append("0");
+  strTime.append(std::to_string(now->tm_sec));
+
+  fileName << "random-mat-" << m << "-" << n << "-" << strTime << ".mat";
+
+  FILE* file  = fopen(fileName.str().c_str(), "ab");
+  srand(time(NULL));
+  for (uint64 i = 0; i < M.rows * M.cols; ++i) {
+    M.entries[i] = getRandVal();
+  }
+
+  write(M, file); 
+  fclose(file);
+
+  if (cmp) {
+    // read it from file and recheck
+    matrix N;
+    file  = fopen(fileName.str().c_str(), "rb");
+    read(N, file);
+    fclose(file);
+    //TOOOOOOO DOOOOOO
+    //check(*this, B);
+    int printMatrices = 0;
+    std::cout << "Matrices coincide. Print them? (1=yes, 0=no) ";
+    std::cin >> printMatrices;
+    if (printMatrices)
+      print(N);
+    clear(N);
+  }
+
+  clear(M);
+}
+
+
 ////////////////////////
 
 // not coincide: return 1

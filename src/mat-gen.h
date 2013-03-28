@@ -10,4 +10,3 @@
 #include "matrix.h"
 
 void genMatrix(int rows, int cols);
-void genMatrixNew(int rows, int cols);
