@@ -23,4 +23,7 @@
 #endif
 #include "seq/mat-mult-seq.h"
 
-
+void eliminateMatrix( 
+  char* str, int nthrds, int method, int affinity, 
+  int blocksize, int dimension, int outerloop, int print
+  );

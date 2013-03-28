@@ -10,37 +10,7 @@
 #include "matrix.h"
 
 #define __F4RT_DEBUG  0
-namespace {
-  template<class T>
-  T readOne(FILE* file) {
-    T t;
-    if (fread(&t, sizeof(T), 1, file) != 1)
-      std::cerr << "Error while reading file." << std::endl;
-    return t;
-  }
-
-  template<class T>
-  void readMany(FILE* file, size_t count, std::vector<T>& v) {
-    //size_t const origSize = v.size();
-    //v.resize(origSize+count);
-    if (fread(v.data(), sizeof(T), v.size(), file) != v.size())
-      std::cerr << "Error while reading file." << std::endl;
-  }
-
-  template<class T>
-  void writeOne(const T& t, FILE* file) {
-    if (fwrite(&t, sizeof(T), 1, file) != 1)
-      std::cerr << "Error while writing to file." << std::endl;
-  }
-
-  template<class T>
-  void writeMany(const std::vector<T>& v, FILE* file) {
-    if (v.empty())
-      return;
-    if (fwrite(v.data(), sizeof(T), v.size(), file) != v.size())
-      std::cerr << "Error while writing to file." << std::endl;
-  }
-}
+////////////////////////
 
 // not coincide: return 1
 // coincide:     return 0
@@ -56,11 +26,6 @@ int check(const Matrix& A, const Matrix& B, int unittest = 0) {
       }
   return 0;
 }
-
-float getRandom() {
-  return static_cast<float>(std::rand());
-}
-
 void Matrix::read(FILE* file) {
   const auto rowCount   = readOne<uint32>(file);
   const auto colCount   = readOne<uint32>(file);
@@ -98,6 +63,11 @@ void Matrix::print() {
     std::cout << std::endl;
   }
 }
+
+float getRandomVal() {
+  return static_cast<float>(std::rand());
+}
+
 
 void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = false, 
                                   bool timestamp = false) {
@@ -146,7 +116,7 @@ void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = f
   entries.resize(m*n);
   srand(time(NULL));
   for (uint64 i = 0; i < m*n; ++i) {
-    entries[i] = getRandom();
+    entries[i] = getRandomVal();
   }
 
   writeMany(entries, file);

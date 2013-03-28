@@ -1,5 +1,5 @@
 /**
- * \file   mat-mul-kaapi.h
+ * \file   mat-mult-kaapi.h
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   March 2013
  * \brief  Header file for dense matrix multiplication using KAAPI.

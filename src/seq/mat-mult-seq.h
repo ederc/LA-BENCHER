@@ -1,5 +1,5 @@
 /**
- * \file   mat-mul-seq.h
+ * \file   mat-mult-seq.h
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   March 2013
  * \brief  Header file for sequential dense matrix multiplication.

@@ -1,5 +1,5 @@
 /**
- * \file   mat-mul-pthrd.h
+ * \file   mat-mult-pthrd.h
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   March 2013
  * \brief  Header file for dense matrix multiplication using pthread.

@@ -1,5 +1,5 @@
 /**
- * \file   mat-mul-tbb.cpp
+ * \file   mat-mult-tbb.cpp
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   March 2013
  * \brief  Source file for dense matrix multiplication using Intel TBB.

@@ -71,17 +71,6 @@ void print_help(int exval) {
  exit(exval);
 }
 
-void eliminateMatrix( char* str, int nthrds, int method, int affinity, int blocksize, 
-                      int dimension, int impose, int outerloop, int print) {
-  Matrix A;
-
-  // read files, stores matrices, etc
-  FILE* file  = fopen(str,"rb");
-  // take A from file
-  A.read(file);
-  
-}
-
 int main(int argc, char *argv[]) {
  int opt;
  char *fileNameA = NULL, *fileNameB = NULL;
@@ -182,7 +171,7 @@ int main(int argc, char *argv[]) {
   printf("argument: %s\n", argv[optind]);
    
   if (generate == 1) {
-    genMatrix(rows,cols);
+    genMatrixNew(rows,cols);
   }
   if (multiply && fileNameA) {
     if (fileNameB) {
@@ -194,8 +183,8 @@ int main(int argc, char *argv[]) {
     }
   }
   if (eliminate && fileNameA) {
-      eliminateMatrix(fileNameA, nthrds, method, affinity, blocksize, 
-                      dimension, impose, outerloop, print);  
+      eliminateMatrix(fileNameA, nthrds, method, affinity, 
+                      blocksize, dimension, outerloop, print);  
   }
   return 0;
 }

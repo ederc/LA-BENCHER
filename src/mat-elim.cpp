@@ -9,16 +9,41 @@
 
 #include "mat-elim.h"
 
-#ifdef __F4RT_HAVE_PTHREAD_H
-#include "pthrd/mat-elim-pthrd.h"
-#endif
-#ifdef __F4RT_HAVE_INTEL_TBB
-#include "tbb/mat-elim-tbb.h"
-#endif
-#ifdef __F4RT_HAVE_OPENMP
-#include "omp/mat-elim-omp.h"
-#endif
-#if defined(__F4RT_HAVE_KAAPI)
-#include "kaapi/mat-elim-kaapi.h"
-#endif
-#include "seq/mat-elim-seq.h"
+void eliminate(Matrix& A, const int nthrds, const int blocksize, 
+              const int method, const int dimension, 
+              const int affinity, int outerloop) {
+  // sequential method
+  if (method == 0) {
+    //elimSEQ(A, blocksize);
+  }
+  // OpenMP
+  if (method == 1) {
+  }
+  // TBB
+  if (method == 2) {
+  }
+  // KAAPI
+  if (method == 3) {
+  }
+  // pthread
+  if (method == 4) {
+  }
+}
+
+void eliminateMatrix( char* str, int nthrds, int method, int affinity,
+                      int blocksize, int dimension, int outerloop, 
+                      int print) {
+  Matrix A;
+
+  // read files, stores matrices, etc
+  FILE* file  = fopen(str,"rb");
+  // take A from file
+  A.read(file);
+ 
+  eliminate(A, nthrds, blocksize, method, dimension, affinity, outerloop);
+
+  if (print)
+    A.print();
+  // clear memory
+  A.clear();
+}
