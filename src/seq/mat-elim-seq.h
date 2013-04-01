@@ -12,10 +12,10 @@
 
 #include <matrix.h>
 
-mat negInverseModP(mat a, mat p);
+mat negInverseModP(mat a, uint64 prime);
 
-void cleanUpModP(Matrix& A, mat p);
+void cleanUpModP(Matrix& A, uint64 prime);
 
 void elimSEQ(Matrix& A, int blocksize);
-void elimNaiveSEQModP(Matrix& A, int blocksize);
+void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime);
 #endif

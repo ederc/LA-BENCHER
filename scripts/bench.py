@@ -273,7 +273,7 @@ if args.plot:
   fig = pl.figure()
   ax = fig.add_subplot(111)
   fig.suptitle('Timings: '+file_name, fontsize=10)
-  pl.title('Matrix dimensions: '+dimensions[0]+
+  pl.title('uint64 Matrix dimensions: '+dimensions[0]+
   ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
   ax.set_xlabel('Number of threads', fontsize=7)
   ax.set_ylabel('Real time in seconds', fontsize=8)
@@ -316,7 +316,7 @@ if args.plot:
   fig = pl.figure()
   ax = fig.add_subplot(111)
   fig.suptitle('GFLOPS/sec: '+file_name, fontsize=10)
-  pl.title('Matrix dimensions: '+dimensions[0]+
+  pl.title('uint64 Matrix dimensions: '+dimensions[0]+
   ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
   ax.set_xlabel('Number of threads', fontsize=8)
   ax.set_ylabel('GFLOPS per second', fontsize=8)

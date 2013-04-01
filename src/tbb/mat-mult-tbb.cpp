@@ -615,7 +615,7 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
-
+/*
 // multiplies A*B^T and stores it in *this
 void multTBBAuto3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
                     int blocksize, int impose) {
@@ -919,4 +919,5 @@ void multTBBSimple3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
+*/
 #endif

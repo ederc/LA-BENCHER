@@ -47,6 +47,7 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
         }
       }
     }
+    /*
     if (dimension == 3) {
       if (affinity == 1) {
         multTBBAffine3d(C, A, B, nthrds, blocksize, impose);
@@ -58,6 +59,7 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
         }
       }
     }
+    */
 #else
     multSEQ(C, A, B, blocksize, impose);
 #endif

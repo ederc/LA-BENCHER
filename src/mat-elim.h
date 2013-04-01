@@ -1,7 +1,7 @@
 /**
  * \file   mat-elim.h
  * \author Christian Eder ( christian.eder@inria.fr )
- * \date   February 2013
+ * \date   March 2013
  * \brief  Header file for Gaussian Elimination.
  *         This file is part of F4RT, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
@@ -23,7 +23,10 @@
 #endif
 #include "seq/mat-elim-seq.h"
 
-void eliminateMatrix( 
-  char* str, int nthrds, int method, int affinity, 
-  int blocksize, int dimension, int outerloop, int print
-  );
+void eliminate(Matrix& A, const int nthrds, const int blocksize, 
+              const int method, const int dimension, const int affinity, 
+              int outerloop, uint64 prime);
+
+void eliminateMatrix( char* str, int nthrds, int method, int affinity, 
+                      int blocksize, int dimension, int outerloop, 
+                      uint64 prime, int print);

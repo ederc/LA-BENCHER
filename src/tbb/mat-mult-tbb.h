@@ -36,7 +36,7 @@ void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 // multiplies A*B^T and stores it in *this
 void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
                       int blocksize, int impose);
-
+/*
 // multiplies A*B^T and stores it in *this
 void multTBBAuto3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
                     int blocksize, int impose);
@@ -48,4 +48,5 @@ void multTBBAffine3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 // multiplies A*B^T and stores it in *this
 void multTBBSimple3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
                       int blocksize, int impose);
+*/
 #endif

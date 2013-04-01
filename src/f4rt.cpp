@@ -59,7 +59,10 @@ void print_help(int exval) {
  printf("       -M        if input file is set, multiply matrix with its own transpose\n");
  printf("       -N        Not transposing: B is NOT transposed before multiplication,\n");
  printf("                 thus the computation has a way worse cache locality\n");
- printf("       -p        if matrix multiplication took place, print of resulting matrix\n");
+ printf("       -P        if matrix multiplication took place, print of resulting matrix\n");
+ printf("       -p        if Gaussian Elimination: prime p < 2^16 s.t. computation takes\n");
+ printf("                 place over the field F_p.\n");
+ printf("                 Default: p = 65221, biggest prime < 2^16.\n");
  printf("                 (no printing of resulting matrix by default)\n");
  printf("       -R        number of rows of matrix to be generated\n");
  printf("       -s        sets simple task scheduler; note this only works\n");
@@ -77,6 +80,8 @@ int main(int argc, char *argv[]) {
  int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
      blocksize = 2, dimension = 1, impose = 1, rows = 0, cols = 0,
      generate = 0, outerloop = 1, eliminate = 0;
+ // biggest prime < 2^16
+ uint64 prime = 65221;
 
  /* 
  // no arguments given
@@ -86,7 +91,7 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvGA:B:C:Ept:m:Md:b:aR:Nsi")) != -1) {
+ while((opt = getopt(argc, argv, "hVvGA:B:C:EPp:t:m:Md:b:aR:Nsi")) != -1) {
   switch(opt) {
     case 'G': 
       generate = 1;
@@ -118,7 +123,7 @@ int main(int argc, char *argv[]) {
     case 'E':
       eliminate  = 1;
       break;
-    case 'p':
+    case 'P':
       print   = 1;
       break;
     case 'a':
@@ -141,6 +146,9 @@ int main(int argc, char *argv[]) {
         dimension = 1;
       if (dimension > 3)
         dimension = 3;
+      break;
+    case 'p':
+      prime  = atoi(strdup(optarg));
       break;
     case 't':
       nthrds  = atoi(strdup(optarg));
@@ -184,7 +192,8 @@ int main(int argc, char *argv[]) {
   }
   if (eliminate && fileNameA) {
       eliminateMatrix(fileNameA, nthrds, method, affinity, 
-                      blocksize, dimension, outerloop, print);  
+                      blocksize, dimension, outerloop,
+                      prime, print);  
   }
   return 0;
 }
