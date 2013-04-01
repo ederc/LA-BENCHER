@@ -62,7 +62,7 @@ void print_help(int exval) {
  printf("       -P        if matrix multiplication took place, print of resulting matrix\n");
  printf("       -p        if Gaussian Elimination: prime p < 2^16 s.t. computation takes\n");
  printf("                 place over the field F_p.\n");
- printf("                 Default: p = 65221, biggest prime < 2^16.\n");
+ printf("                 Default: p = 65521, biggest prime < 2^16.\n");
  printf("                 (no printing of resulting matrix by default)\n");
  printf("       -R        number of rows of matrix to be generated\n");
  printf("       -s        sets simple task scheduler; note this only works\n");
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
      blocksize = 2, dimension = 1, impose = 1, rows = 0, cols = 0,
      generate = 0, outerloop = 1, eliminate = 0;
  // biggest prime < 2^16
- uint64 prime = 65221;
+ uint64 prime = 65521;
 
  /* 
  // no arguments given

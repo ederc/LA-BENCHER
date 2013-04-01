@@ -23,6 +23,7 @@ BASIC_HDRS =								\
 	seq/mat-mult-seq.h				\
 	tbb/mat-mult-tbb.h				\
 	mat-elim.h								\
+	modular.h									\
 	seq/mat-elim-seq.h				\
 	mat-gen.h
 
@@ -37,6 +38,7 @@ SOURCES=										\
 	seq/mat-mult-seq.cpp			\
 	tbb/mat-mult-tbb.cpp			\
 	mat-elim.cpp							\
+	modular.cpp								\
 	seq/mat-elim-seq.cpp			\
 	mat-gen.cpp
 
@@ -78,6 +80,7 @@ f4rt_SOURCES=  							\
 	seq/mat-mult-seq.cpp			\
 	tbb/mat-mult-tbb.cpp			\
 	mat-elim.cpp							\
+	modular.cpp								\
 	seq/mat-elim-seq.cpp			\
 	mat-gen.cpp
 

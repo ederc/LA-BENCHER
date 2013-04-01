@@ -7,38 +7,10 @@
  *         Public License version 3. See COPYING for more information.
  */
 
+#include "../modular.h"
 #include "mat-elim-seq.h"
 
-mat negInverseModP(mat a, uint64 p) {
-  // we do two turns of the extended Euclidian algorithm per
-  // loop. Usually the sign of x changes each time through the loop,
-  // but we avoid that by representing every other x as its negative,
-  // which is the value minusLastX. This way no negative values show
-  // up.
-  mat b           = p;
-  mat minusLastX  = 0;
-  mat x           = 1;
-  std::cout << "a  " << a << std::endl;
-  while (true) {
-    std::cout << "a  " << a << std::endl;
-    // 1st turn
-    if (a == 1)
-      break;
-    const mat firstQuot =   b / a;
-    b                   -=  firstQuot * a;
-    minusLastX          +=  firstQuot * x;
-
-    // 2nd turn
-    if (b == 1) {
-      x = p - minusLastX;
-      break;
-    }
-    const mat secondQuot  =   a / b;
-    a                     -=  secondQuot * b;
-    x                     +=  secondQuot * minusLastX;
-  }
-  return p - x;
-}
+#define F4RT_DBG  0
 
 void cleanUpModP(Matrix& A, uint64 p) {
   for (int i = 0; i < A.entries.size(); ++i)
@@ -55,29 +27,34 @@ void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
   int n         = A.nCols(); 
   // if m > n then only n eliminations are possible
   int boundary  = (m > n) ? n : m;
-  std::cout << "boundary " << boundary << std::endl;
   mat inv, mult;
   timeval start, stop;
   clock_t cStart, cStop;
-  std::cout << "Gaussian Elimination" << std::endl;
+  std::cout << "Naive Gaussian Elimination" << std::endl;
   gettimeofday(&start, NULL);
   cStart  = clock();
   for (int i = 0; i < boundary; ++i) {
-    //if (A(i,i) % prime == 0)
-    std::cout << "A(" << i << "," << i << ") " << A(i,i) << std::endl;
+    A(i,i) %= prime;
+#if F4RT_DBG
+    std::cout << "!! A(" << i << "," << i << ") " << A(i,i) << std::endl;
     std::cout << "A(" << i << "," << i << ") " << A(i,i) % prime << std::endl;
-    A(i,i) = A(i,i) % prime;
+#endif
     if (A(i,i) == 0) {
       l = i+1;
+#if F4RT_DBG
       std::cout << "l1 " << l << std::endl; 
+#endif
       while (l < m && A(l,i) % prime == 0) {
         l++;
+#if F4RT_DBG
         std::cout << "l2 " << l << std::endl; 
+#endif
       }
       if (l == m) {
         continue;
       } else {
         // swapping
+#if F4RT_DBG
         std::cout << "before swapping i = " << i << " with l = " << l << std::endl;
         for (int kk=i; kk < n; ++kk) {
           std::cout << "A(i,"<< kk << ") = " << A(i,kk) << std::endl;
@@ -86,40 +63,57 @@ void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
         std::cout << "n  " << n << std::endl;
         std::cout << "l  " << l << std::endl;
         std::cout << "i  " << i << std::endl;
-        std::vector<mat> temp(A.entries[i+l*n],A.entries[n-1+l*n]);
+#endif
+        std::vector<mat> tempRow(
+            A.entries.begin()+i+(l*n),
+            A.entries.begin()+n-1+(l*n)+1);
+#if F4RT_DBG
         std::cout << "(n-1)-i " << n-1-i << std::endl;
         std::cout << "sizeof mat " << sizeof(mat) << std::endl;
-        std::cout << "sizeof temp " << sizeof(temp) << std::endl;
+        std::cout << "sizeof temp " << tempRow.size() << std::endl;
+#endif
         for (int it = i; it < n; ++it)
           A.entries[it+l*n] = A.entries[it+i*n];
-        for (int it = i; it < n; ++it)
-          A.entries[it+i*n] = temp[it-i];
+        for (int it = i; it < n; ++it) {
+          std::cout << "it - " << it << " i - " << i << std::endl;
+          std::cout << "A.entries " << A.entries[it+i*n] << std::endl;
+          std::cout << "tempRow " << tempRow[it-i] << std::endl;
+          A.entries[it+i*n] = tempRow[it-i];
+        }
+#if F4RT_DBG
         std::cout << "after swapping" << std::endl;
         for (int kk=i; kk < n; ++kk) {
           std::cout << "A(i,"<< kk << ") = " << A(i,kk) << std::endl;
           std::cout << "A(l," << kk << ") = " << A(l,kk) << std::endl;
         }
-        temp.clear();
+#endif
+        tempRow.clear();
       }
     }
     inv  = negInverseModP(A(i,i), prime);
+#if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
+#endif
     for (int j = i+1; j < m; ++j) {
+#if F4RT_DBG
       std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
+#endif
       mult  = (A(j,i) * inv) % prime;
-      //mult  = (A(j,i) * inv);
-      //std::cout << "mult " << mult << " - " << mult % prime << std::endl;
       for (int k = i; k < n; ++k) {
+#if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
           << (A(i,k)%prime) * (mult % prime) << std::endl;
+#endif
         A(j,k) += A(i,k) * mult;
         A(j,k) %= prime;
+#if F4RT_DBG
         std::cout << "A(" << j << "," << k << ") " << A(j,k) << " - " << A(j,k) % prime << std::endl;
+#endif
       }
     }
   }
-  cleanUpModP(A, prime);
-  A.print();
+  //cleanUpModP(A, prime);
+  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
