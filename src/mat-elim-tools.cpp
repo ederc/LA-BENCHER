@@ -9,12 +9,13 @@
 
 #include "mat-elim-tools.h"
 
-double countGEPFlops(uint32 m, uint32 n) {
+double countGEPFlops(uint32 m, uint32 n, uint64 prime) {
   uint32 boundary = m > n ? n : m;
+  double logp = std::log(prime);
   double res = 0;
   for (uint32 i = 1; i <= boundary; ++i) {
     //std::cout << "round " << (2*(n-i)+1)*(m-i) << std::endl;
-    res +=  (2*(n-i)+1)*(m-i);
+    res +=  (2*(n-i)+1+logp)*(m-i);
     //std::cout << "res " << res << std::endl;
   }
   //std::cout << "flops - " << std::setprecision(4) << res << std::endl;

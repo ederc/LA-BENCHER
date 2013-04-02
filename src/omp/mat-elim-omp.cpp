@@ -123,7 +123,7 @@ void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, int blocksize, uint64 prime)
   // compute FLOPS:
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
-  double flops = countGEPFlops(m, n);
+  double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
                     (stop.tv_usec - start.tv_usec)) / 1e6;

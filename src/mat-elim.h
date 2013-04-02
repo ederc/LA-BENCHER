@@ -22,7 +22,7 @@
 #include "omp/mat-elim-omp.h"
 #endif
 #if defined(__F4RT_HAVE_KAAPI)
-#include "kaapi/mat-mult-kaapi.h"
+#include "kaapi/mat-elim-kaapi.h"
 #endif
 #include "seq/mat-elim-seq.h"
 

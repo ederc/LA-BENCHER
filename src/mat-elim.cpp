@@ -58,6 +58,13 @@ void eliminate(Matrix& A, const int nthrds, const int blocksize,
   }
   // KAAPI
   if (method == 3) {
+#ifdef __F4RT_HAVE_KAAPI
+    if (dimension == 1) {
+      elimNaiveKAAPICModP1d(A, nthrds, blocksize, prime);
+    }
+#else
+    elimNaiveSEQModP(A, blocksize, prime);
+#endif
   }
   // pthread
   if (method == 4) {

@@ -12,7 +12,7 @@
 
 #include "matrix.h"
 
-double countGEPFlops(uint32 m, uint32 n);
+double countGEPFlops(uint32 m, uint32 n, uint64 prime);
 
 void cleanUpModP(Matrix& A, uint64 prime);
 

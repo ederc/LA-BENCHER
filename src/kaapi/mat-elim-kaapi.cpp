@@ -1,29 +1,94 @@
 /**
- * \file   mat-elim-seq.cpp
+ * \file   mat-elim-kaapi.cpp
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   March 2013
- * \brief  Source file for sequential Gaussian Elimination.
+ * \brief  Source file for Gaussian Elimination using XKAAPI.
  *         This file is part of F4RT, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
 
-#include "mat-elim-seq.h"
+#include "mat-elim-kaapi.h"
 
 #define F4RT_DBG  0
 
-void elimSEQ(Matrix& A, int blocksize) {
+static void multElim2dOuter(
+    size_t start, size_t end, int32_t tid, 
+    uint32 m, uint32 n, mat *a_entries, mat inv, uint64 prime) {
+  
+  mat mult;
+  uint32 i = start-1;
+  // start = i+1
+  for (uint32 j = start; j < end; ++j) {
+#if F4RT_DBG
+    std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
+#endif
+    //mult  = (A(j,i) * inv) % prime;
+    mult  = (a_entries[i+j*n] * inv) % prime;
+    // start-1 = i
+    for (uint32 k = i; k < n; ++k) {
+#if F4RT_DBG
+      std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
+        << (A(i,k)%prime) * (mult % prime) << std::endl;
+#endif
+      //A(j,k) += A(i,k) * mult;
+      //A(j,k) %= prime;
+      a_entries[k+j*n]  +=  a_entries[k+i*n] * mult;
+      a_entries[k+j*n]  %=  prime;
+#if F4RT_DBG
+      std::cout << "A(" << j << "," << k << ") " << A(j,k) << " - " << A(j,k) % prime << std::endl;
+#endif
+    }
+  }
+}
+
+static void multElim1d(
+    size_t start, size_t end, int32_t tid, 
+    uint32 m, uint32 n, mat *a_entries, mat inv, uint64 prime) {
+  
+  mat mult;
+  uint32 i = start-1;
+  // start = i+1
+  for (uint32 j = start; j < end; ++j) {
+#if F4RT_DBG
+    std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
+#endif
+    //mult  = (A(j,i) * inv) % prime;
+    mult  = (a_entries[i+j*n] * inv) % prime;
+    // start-1 = i
+    for (uint32 k = i; k < n; ++k) {
+#if F4RT_DBG
+      std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
+        << (A(i,k)%prime) * (mult % prime) << std::endl;
+#endif
+      //A(j,k) += A(i,k) * mult;
+      //A(j,k) %= prime;
+      a_entries[k+j*n]  +=  a_entries[k+i*n] * mult;
+      a_entries[k+j*n]  %=  prime;
+#if F4RT_DBG
+      std::cout << "A(" << j << "," << k << ") " << A(j,k) << " - " << A(j,k) % prime << std::endl;
+#endif
+    }
+  }
+}
+
+void elimKAAPIC(Matrix& A, int blocksize) {
   //blockElimSEQ(A, 
 }
 
-void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
+void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
   uint32 l;
-  uint32 m         = A.nRows();
-  uint32 n         = A.nCols(); 
+  uint32 m        = A.nRows();
+  uint32 n        = A.nCols(); 
+  mat *a_entries  = A.entries.data();
   // if m > n then only n eliminations are possible
   uint32 boundary  = (m > n) ? n : m;
-  mat inv, mult;
+  mat inv;
   timeval start, stop;
   clock_t cStart, cStop;
+  kaapic_foreach_attr_t attr;
+  kaapic_init(1);
+  kaapic_foreach_attr_init(&attr);
+  kaapic_foreach_attr_set_grains(&attr, m-1, n-1);
   std::cout << "Naive Gaussian Elimination" << std::endl;
   gettimeofday(&start, NULL);
   cStart  = clock();
@@ -85,30 +150,14 @@ void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
 #endif
-    for (uint32 j = i+1; j < m; ++j) {
-#if F4RT_DBG
-      std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
-#endif
-      mult  = (A(j,i) * inv) % prime;
-      for (uint32 k = i; k < n; ++k) {
-#if F4RT_DBG
-        std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
-          << (A(i,k)%prime) * (mult % prime) << std::endl;
-#endif
-        A(j,k) += A(i,k) * mult;
-        A(j,k) %= prime;
-#if F4RT_DBG
-        std::cout << "A(" << j << "," << k << ") " << A(j,k) << " - " << A(j,k) % prime << std::endl;
-#endif
-      }
-    }
+    kaapic_foreach(i+1, m, &attr, 5, multElim1d, m, n, a_entries, inv, prime);
   }
   //cleanUpModP(A, prime);
   //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
-  std::cout << "Method:           Raw sequential" << std::endl;
+  std::cout << "Method:           KAAPIC 1D" << std::endl;
   // compute FLOPS:
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
@@ -122,7 +171,7 @@ void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
   // with it: digits + 1 (point) + 4 (precision) 
   int digits = sprintf(buffer,"%.0f",cputime);
   double ratio = cputime/realtime;
-  std::cout << "# Threads:        " << 1 << std::endl;
+  std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
   std::cout << "Real time:        " << std::setw(digits+1+4) 
