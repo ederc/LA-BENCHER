@@ -19,7 +19,7 @@
 #include "tbb/mat-mult-tbb.h"
 #endif
 #ifdef __F4RT_HAVE_OPENMP
-#include "omp/mat-mult-omp.h"
+#include "omp/mat-elim-omp.h"
 #endif
 #if defined(__F4RT_HAVE_KAAPI)
 #include "kaapi/mat-mult-kaapi.h"

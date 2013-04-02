@@ -1,18 +1,18 @@
 /**
- * \file   mat-elim-seq.h
+ * \file   mat-elim-omp.h
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   March 2013
- * \brief  Header file for sequential Gaussian Elimination.
+ * \brief  Header file for Gaussian Elimination using OMP.
  *         This file is part of F4RT, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
 
-#ifndef F4RT_MAT_ELIM_SEQ_H
-#define F4RT_MAT_ELIM_SEQ_H
+#ifndef F4RT_MAT_ELIM_OMP_H
+#define F4RT_MAT_ELIM_OMP_H
 
 #include <matrix.h>
 #include "../mat-elim-tools.h"
 
-void elimSEQ(Matrix& A, int blocksize);
-void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime);
+void elimOMP(Matrix& A, int blocksize);
+void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, int blocksize, uint64 prime);
 #endif

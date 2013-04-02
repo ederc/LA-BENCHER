@@ -19,6 +19,8 @@ void eliminate(Matrix& A, const int nthrds, const int blocksize,
   }
   // OpenMP
   if (method == 1) {
+    if (dimension == 1)
+      elimNaiveOMPModP1dOuter(A, nthrds, blocksize, prime);
   }
   // TBB
   if (method == 2) {
