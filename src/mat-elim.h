@@ -16,7 +16,7 @@
 #include "pthrd/mat-mult-pthrd.h"
 #endif
 #ifdef __F4RT_HAVE_INTEL_TBB
-#include "tbb/mat-mult-tbb.h"
+#include "tbb/mat-elim-tbb.h"
 #endif
 #ifdef __F4RT_HAVE_OPENMP
 #include "omp/mat-elim-omp.h"

@@ -19,11 +19,42 @@ void eliminate(Matrix& A, const int nthrds, const int blocksize,
   }
   // OpenMP
   if (method == 1) {
-    if (dimension == 1)
+#ifdef __F4RT_HAVE_OPENMP    
+    if (dimension == 1) {
       elimNaiveOMPModP1dOuter(A, nthrds, blocksize, prime);
+    }
+#else
+    elimNaiveSEQModP(A, blocksize, prime);
+#endif
   }
   // TBB
   if (method == 2) {
+#ifdef __F4RT_HAVE_INTEL_TBB
+    if (dimension == 1) {
+      if (affinity == 1) {
+        elimNaiveTBBModP1dAffine(A, nthrds, blocksize, prime);
+      } else {
+        if (affinity == 2) {
+          elimNaiveTBBModP1dSimple(A, nthrds, blocksize, prime);
+        } else {
+          elimNaiveTBBModP1dAuto(A, nthrds, blocksize, prime);
+        }
+      }
+    }
+    if (dimension == 2) {
+      if (affinity == 1) {
+        elimNaiveTBBModP2dAffine(A, nthrds, blocksize, prime);
+      } else {
+        if (affinity == 2) {
+          elimNaiveTBBModP2dSimple(A, nthrds, blocksize, prime);
+        } else {
+          elimNaiveTBBModP2dAuto(A, nthrds, blocksize, prime);
+        }
+      }
+    }
+#else
+    elimNaiveSEQModP(A, blocksize, prime);
+#endif
   }
   // KAAPI
   if (method == 3) {

@@ -13,9 +13,11 @@ double countGEPFlops(uint32 m, uint32 n) {
   uint32 boundary = m > n ? n : m;
   double res = 0;
   for (uint32 i = 1; i <= boundary; ++i) {
-    res +=  (2*(n-boundary)+1)*(m-boundary-1);
+    //std::cout << "round " << (2*(n-i)+1)*(m-i) << std::endl;
+    res +=  (2*(n-i)+1)*(m-i);
+    //std::cout << "res " << res << std::endl;
   }
-  std::cout << "flops - " << std::setprecision(4) << res << std::endl;
+  //std::cout << "flops - " << std::setprecision(4) << res << std::endl;
   return res;
 }
 

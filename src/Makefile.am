@@ -26,6 +26,7 @@ BASIC_HDRS =								\
 	mat-elim-tools.h					\
 	omp/mat-elim-omp.h				\
 	seq/mat-elim-seq.h				\
+	tbb/mat-elim-tbb.h				\
 	mat-gen.h
 
 SOURCES=										\
@@ -42,6 +43,7 @@ SOURCES=										\
 	mat-elim-tools.cpp				\
 	omp/mat-elim-omp.cpp			\
 	seq/mat-elim-seq.cpp			\
+	tbb/mat-elim-tbb.cpp			\
 	mat-gen.cpp
 
 pkginclude_HEADERS =	\
@@ -85,6 +87,7 @@ f4rt_SOURCES=  							\
 	mat-elim-tools.cpp				\
 	omp/mat-elim-omp.cpp			\
 	seq/mat-elim-seq.cpp			\
+	tbb/mat-elim-tbb.cpp			\
 	mat-gen.cpp
 
 CLEANFILES=				\
