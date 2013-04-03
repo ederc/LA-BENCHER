@@ -13,7 +13,7 @@
 #include "matrix.h"
 
 #ifdef __F4RT_HAVE_PTHREAD_H
-#include "pthrd/mat-mult-pthrd.h"
+#include "pthrd/mat-elim-pthrd.h"
 #endif
 #ifdef __F4RT_HAVE_INTEL_TBB
 #include "tbb/mat-elim-tbb.h"

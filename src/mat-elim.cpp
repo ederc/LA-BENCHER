@@ -68,6 +68,11 @@ void eliminate(Matrix& A, const int nthrds, const int blocksize,
   }
   // pthread
   if (method == 4) {
+#ifdef __F4RT_HAVE_PTHREAD_H
+    elimNaivePTHRDModP1d(A, nthrds, blocksize, prime);
+#else
+    elimNaiveSEQModP(A, blocksize, prime);
+#endif
   }
 }
 

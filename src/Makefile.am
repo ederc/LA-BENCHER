@@ -26,6 +26,7 @@ BASIC_HDRS =								\
 	mat-elim-tools.h					\
 	kaapi/mat-elim-kaapi.h		\
 	omp/mat-elim-omp.h				\
+	pthrd/mat-elim-pthrd.h		\
 	seq/mat-elim-seq.h				\
 	tbb/mat-elim-tbb.h				\
 	mat-gen.h
@@ -44,6 +45,7 @@ SOURCES=										\
 	mat-elim-tools.cpp				\
 	kaapi/mat-elim-kaapi.cpp	\
 	omp/mat-elim-omp.cpp			\
+	pthrd/mat-elim-pthrd.cpp	\
 	seq/mat-elim-seq.cpp			\
 	tbb/mat-elim-tbb.cpp			\
 	mat-gen.cpp
@@ -89,6 +91,7 @@ f4rt_SOURCES=  							\
 	mat-elim-tools.cpp				\
 	kaapi/mat-elim-kaapi.cpp	\
 	omp/mat-elim-omp.cpp			\
+	pthrd/mat-elim-pthrd.cpp	\
 	seq/mat-elim-seq.cpp			\
 	tbb/mat-elim-tbb.cpp			\
 	mat-gen.cpp

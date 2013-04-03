@@ -1,13 +1,13 @@
 /**
- * \file   mat-elim-kaapi.cpp
+ * \file   mat-elim-pthrd.cpp
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   March 2013
- * \brief  Source file for Gaussian Elimination using XKAAPI.
+ * \brief  Source file for Gaussian Elimination using pThread.
  *         This file is part of F4RT, licensed under the GNU General
  *         Public License version 3. See COPYING for more information.
  */
 
-#include "mat-elim-kaapi.h"
+#include "mat-elim-pthrd.h"
 
 #define F4RT_DBG  0
 
@@ -71,11 +71,28 @@ static void multElim1d(
   }
 }
 
-void elimKAAPIC(Matrix& A, int blocksize) {
-  //blockElimSEQ(A, 
+void *elimPTHRD(void *p) {
+  paramsElim *_p  = (paramsElim *)p;
+  int tid         = _p->tid;
+  uint32 start    = _p->start + _p->index;
+  uint32 end      = start + _p->size;
+  uint32 m        = _p->m;
+  uint32 n        = _p->n;
+  uint32 i        = _p->index;
+  uint64 prime    = _p->prime;
+  mat inv         = _p->inv;
+  mat mult;
+  for (uint32 j = start+1; j < end+1; ++j) {
+    mult  = (_p->a[i+j*n] * inv) % prime;
+    for (uint32 k = i; k < n; ++k) {
+      _p->a[k+j*n]  +=  _p->a[k+i*n] * mult;
+      _p->a[k+j*n]  %=  prime;
+    }
+  }
+  return 0;
 }
 
-void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
+void elimNaivePTHRDModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
   uint32 l;
   uint32 m        = A.nRows();
   uint32 n        = A.nCols(); 
@@ -83,15 +100,19 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
   // if m > n then only n eliminations are possible
   uint32 boundary  = (m > n) ? n : m;
   mat inv;
+  //const int padding = __F4RT_CPU_CACHE_LINE / sizeof(float);
+  if (nthrds <= 0) {
+    nthrds  = 1;
+  }
+  // holds thread information
+  pthread_t threads[nthrds];
+  paramsElim *thread_params = (paramsElim *) malloc(nthrds * sizeof(paramsElim));
+  uint32 chunkSize;
+  uint32 pad;
+  uint32 ctr;
+
   timeval start, stop;
   clock_t cStart, cStop;
-  int err = kaapic_init(1);
-  int thrdCounter = kaapic_get_concurrency();
-  std::cout << "#Threads  " << thrdCounter << std::endl;
-  kaapic_foreach_attr_t attr;
-  kaapic_foreach_attr_init(&attr);
-  kaapic_foreach_attr_set_grains(&attr, blocksize, blocksize/thrdCounter);
-  //kaapic_foreach_attr_set_grains(&attr, (m-1)*thrdCounter, (n-1)*thrdCounter);
   std::cout << "Naive Gaussian Elimination" << std::endl;
   gettimeofday(&start, NULL);
   cStart  = clock();
@@ -153,14 +174,41 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
 #endif
-    kaapic_foreach(i+1, m, &attr, 5, multElim1d, m, n, a_entries, inv, prime);
+    chunkSize = (m - i - 1) / nthrds;
+    pad       = (m - i - 1) % nthrds;
+    ctr = 0;
+    for (int l = 0; l < nthrds; ++l) {
+      thread_params[l].a      = a_entries; 
+      thread_params[l].prime  = prime; 
+      thread_params[l].index  = i; 
+      thread_params[l].tid    = l;
+      if (l < pad) {
+        thread_params[l].size   = chunkSize + 1;
+        thread_params[l].start  = ctr;
+        ctr +=  chunkSize + 1;
+      } else {
+        thread_params[l].size = chunkSize;
+        thread_params[l].start  = ctr;
+        ctr +=  chunkSize;
+      }
+      thread_params[l].m    = m;
+      thread_params[l].n    = n;
+      thread_params[l].inv  = inv;
+      // real computation
+      pthread_create(&threads[l], NULL, elimPTHRD, (void *) &thread_params[l]);
+    }
+
+    // join threads back again
+    for (int l = 0; l < nthrds; ++l)
+      pthread_join(threads[l], NULL);
   }
+  free(thread_params);
   //cleanUpModP(A, prime);
   //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
-  std::cout << "Method:           KAAPIC 1D" << std::endl;
+  std::cout << "Method:           pThread 1D" << std::endl;
   // compute FLOPS:
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()
@@ -174,7 +222,7 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
   // with it: digits + 1 (point) + 4 (precision) 
   int digits = sprintf(buffer,"%.0f",cputime);
   double ratio = cputime/realtime;
-  std::cout << "# Threads:        " << thrdCounter << std::endl;
+  std::cout << "# Threads:        " << nthrds << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
   std::cout << "Real time:        " << std::setw(digits+1+4) 
