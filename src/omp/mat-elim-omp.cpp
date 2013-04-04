@@ -88,19 +88,20 @@ void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, int blocksize, uint64 prime)
 #endif
   if (nthrds > 0)
     omp_set_num_threads(nthrds);
-#pragma omp parallel shared(A)
+  uint32 j, k;
+#pragma omp parallel shared(A) private(mult)
 {
   #pragma omp master
   {
     thrdCounter = omp_get_num_threads();
   }
-#pragma omp for schedule(guided,blocksize) collapse(1)
-    for (uint32 j = i+1; j < m; ++j) {
+#pragma omp for schedule(guided,blocksize) private(j, k) collapse(1) 
+    for (j = i+1; j < m; ++j) {
 #if F4RT_DBG
       std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
       mult  = (A(j,i) * inv) % prime;
-      for (uint32 k = i; k < n; ++k) {
+      for (k = i; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
           << (A(i,k)%prime) * (mult % prime) << std::endl;
