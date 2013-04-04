@@ -11,37 +11,7 @@
 
 #define F4RT_DBG  0
 
-static void multElim2dOuter(
-    size_t start, size_t end, int32_t tid, 
-    uint32 m, uint32 n, mat *a_entries, mat inv, uint64 prime) {
-  
-  mat mult;
-  uint32 i = start-1;
-  // start = i+1
-  for (uint32 j = start; j < end; ++j) {
-#if F4RT_DBG
-    std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
-#endif
-    //mult  = (A(j,i) * inv) % prime;
-    mult  = (a_entries[i+j*n] * inv) % prime;
-    // start-1 = i
-    for (uint32 k = i; k < n; ++k) {
-#if F4RT_DBG
-      std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
-        << (A(i,k)%prime) * (mult % prime) << std::endl;
-#endif
-      //A(j,k) += A(i,k) * mult;
-      //A(j,k) %= prime;
-      a_entries[k+j*n]  +=  a_entries[k+i*n] * mult;
-      a_entries[k+j*n]  %=  prime;
-#if F4RT_DBG
-      std::cout << "A(" << j << "," << k << ") " << A(j,k) << " - " << A(j,k) % prime << std::endl;
-#endif
-    }
-  }
-}
-
-static void multElim1d(
+static void matElim1d(
     size_t start, size_t end, int32_t tid, 
     uint32 m, uint32 n, mat *a_entries, mat inv, uint64 prime, uint32 index) {
   
@@ -152,7 +122,7 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
 #endif
-    kaapic_foreach(i+1, m, &attr, 6, multElim1d, m, n, a_entries, inv, prime, i);
+    kaapic_foreach(i+1, m, &attr, 6, matElim1d, m, n, a_entries, inv, prime, i);
   }
   //cleanUpModP(A, prime);
   //A.print();
