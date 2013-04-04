@@ -73,10 +73,8 @@ static void multElim1d(
 
 void *elimPTHRD(void *p) {
   paramsElim *_p  = (paramsElim *)p;
-  int tid         = _p->tid;
   uint32 start    = _p->start + _p->index;
   uint32 end      = start + _p->size;
-  uint32 m        = _p->m;
   uint32 n        = _p->n;
   uint32 i        = _p->index;
   uint64 prime    = _p->prime;
@@ -181,7 +179,6 @@ void elimNaivePTHRDModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
       thread_params[l].a      = a_entries; 
       thread_params[l].prime  = prime; 
       thread_params[l].index  = i; 
-      thread_params[l].tid    = l;
       if (l < pad) {
         thread_params[l].size   = chunkSize + 1;
         thread_params[l].start  = ctr;
@@ -191,7 +188,6 @@ void elimNaivePTHRDModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
         thread_params[l].start  = ctr;
         ctr +=  chunkSize;
       }
-      thread_params[l].m    = m;
       thread_params[l].n    = n;
       thread_params[l].inv  = inv;
       // real computation

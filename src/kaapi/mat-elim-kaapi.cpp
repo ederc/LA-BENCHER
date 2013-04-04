@@ -43,10 +43,11 @@ static void multElim2dOuter(
 
 static void multElim1d(
     size_t start, size_t end, int32_t tid, 
-    uint32 m, uint32 n, mat *a_entries, mat inv, uint64 prime) {
+    uint32 m, uint32 n, mat *a_entries, mat inv, uint64 prime, uint32 index) {
   
   mat mult;
-  uint32 i = start-1;
+  int thrdNumber  = kaapic_get_thread_num();
+  uint32 i = index;
   // start = i+1
   for (uint32 j = start; j < end; ++j) {
 #if F4RT_DBG
@@ -87,11 +88,8 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
   clock_t cStart, cStop;
   int err = kaapic_init(1);
   int thrdCounter = kaapic_get_concurrency();
-  std::cout << "#Threads  " << thrdCounter << std::endl;
   kaapic_foreach_attr_t attr;
   kaapic_foreach_attr_init(&attr);
-  kaapic_foreach_attr_set_grains(&attr, blocksize, blocksize/thrdCounter);
-  //kaapic_foreach_attr_set_grains(&attr, (m-1)*thrdCounter, (n-1)*thrdCounter);
   std::cout << "Naive Gaussian Elimination" << std::endl;
   gettimeofday(&start, NULL);
   cStart  = clock();
@@ -150,10 +148,11 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
       }
     }
     inv  = negInverseModP(A(i,i), prime);
+    //kaapic_foreach_attr_set_grains(&attr, chunkSize+pad, chunkSize+pad);
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
 #endif
-    kaapic_foreach(i+1, m, &attr, 5, multElim1d, m, n, a_entries, inv, prime);
+    kaapic_foreach(i+1, m, &attr, 6, multElim1d, m, n, a_entries, inv, prime, i);
   }
   //cleanUpModP(A, prime);
   //A.print();
