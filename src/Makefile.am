@@ -111,22 +111,3 @@ DISTCLEANFILES=		\
 	omp/.dirstamp		\
 	tbb/.dirstamp		\
 	seq/.dirstamp		
-
-%/.dirstamp:
-	mkdir -p $(@D)
-	touch $@
-
-all:
-	mkdir -p ../obj
-	mv *.o ../obj
-	mv *.lo ../obj
-	mv kaapi/*.o ../obj
-	mv kaapi/*.lo ../obj
-	mv omp/*.o ../obj
-	mv omp/*.lo ../obj
-	mv pthrd/*.o ../obj
-	mv pthrd/*.lo ../obj
-	mv seq/*.o ../obj
-	mv seq/*.lo ../obj
-	mv tbb/*.o ../obj
-	mv tbb/*.lo ../obj

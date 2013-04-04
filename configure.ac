@@ -62,7 +62,7 @@ AC_CACHE_CHECK([whether $1 is compilable],
 
 AC_PREREQ(2.50)
 AC_INIT(F4RT,0.0.1,ederc@mathematik.uni-kl.de)
-AM_INIT_AUTOMAKE([1.8 gnu no-dependencies])
+AM_INIT_AUTOMAKE([1.8 gnu no-dependencies subdir-objects])
 AM_CONFIG_HEADER([include/f4rt-config.h])
 AX_PREFIX_CONFIG_H(include/f4rt-config.h, __F4RT)
 AC_PATH_PROG(RM, rm, $FALSE)
