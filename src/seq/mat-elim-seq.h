@@ -13,6 +13,6 @@
 #include <matrix.h>
 #include "../mat-elim-tools.h"
 
-void elimSEQ(Matrix& A, int blocksize);
 void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime);
+void elimNaiveSEQModPPivot(Matrix& A, int blocksize, uint64 prime);
 #endif

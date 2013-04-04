@@ -30,6 +30,6 @@ void elimPTHRD(Matrix& A, int blocksize);
 
 void elimNaivePTHRDModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime);
 
-void elimNaivePTHRDModP2d(Matrix& A, int nthrds, int blocksize, uint64 prime);
+void elimNaivePTHRDModP1dPivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
 
 #endif

@@ -15,4 +15,6 @@
 
 void elimOMP(Matrix& A, int blocksize);
 void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, int blocksize, uint64 prime);
+
+void elimNaiveOMPModP1dOuterPivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
 #endif

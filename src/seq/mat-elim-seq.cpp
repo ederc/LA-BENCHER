@@ -11,7 +11,7 @@
 
 #define F4RT_DBG  0
 
-void elimSEQCOModP(Matrix& A, int blocksize) {
+void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
   uint32 l;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
@@ -20,7 +20,7 @@ void elimSEQCOModP(Matrix& A, int blocksize) {
   mat inv, mult;
   timeval start, stop;
   clock_t cStart, cStop;
-  std::cout << "Cache-oblivious Gaussian Elimination" << std::endl;
+  std::cout << "Naive Gaussian Elimination without pivoting" << std::endl;
   gettimeofday(&start, NULL);
   cStart  = clock();
   for (uint32 i = 0; i < boundary; ++i) {
@@ -29,6 +29,7 @@ void elimSEQCOModP(Matrix& A, int blocksize) {
     std::cout << "!! A(" << i << "," << i << ") " << A(i,i) << std::endl;
     std::cout << "A(" << i << "," << i << ") " << A(i,i) % prime << std::endl;
 #endif
+    /*
     if (A(i,i) == 0) {
       l = i+1;
 #if F4RT_DBG
@@ -77,6 +78,7 @@ void elimSEQCOModP(Matrix& A, int blocksize) {
         tempRow.clear();
       }
     }
+    */
     inv  = negInverseModP(A(i,i), prime);
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
@@ -137,7 +139,7 @@ void elimSEQCOModP(Matrix& A, int blocksize) {
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
-void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
+void elimNaiveSEQModPPivot(Matrix& A, int blocksize, uint64 prime) {
   uint32 l;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
@@ -146,7 +148,7 @@ void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
   mat inv, mult;
   timeval start, stop;
   clock_t cStart, cStop;
-  std::cout << "Naive Gaussian Elimination" << std::endl;
+  std::cout << "Naive Gaussian Elimination with pivoting" << std::endl;
   gettimeofday(&start, NULL);
   cStart  = clock();
   for (uint32 i = 0; i < boundary; ++i) {

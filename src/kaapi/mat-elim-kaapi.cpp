@@ -18,26 +18,11 @@ static void matElim1d(
   mat mult;
   int thrdNumber  = kaapic_get_thread_num();
   uint32 i = index;
-  // start = i+1
   for (uint32 j = start; j < end; ++j) {
-#if F4RT_DBG
-    std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
-#endif
-    //mult  = (A(j,i) * inv) % prime;
     mult  = (a_entries[i+j*n] * inv) % prime;
-    // start-1 = i
     for (uint32 k = i; k < n; ++k) {
-#if F4RT_DBG
-      std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
-        << (A(i,k)%prime) * (mult % prime) << std::endl;
-#endif
-      //A(j,k) += A(i,k) * mult;
-      //A(j,k) %= prime;
       a_entries[k+j*n]  +=  a_entries[k+i*n] * mult;
       a_entries[k+j*n]  %=  prime;
-#if F4RT_DBG
-      std::cout << "A(" << j << "," << k << ") " << A(j,k) << " - " << A(j,k) % prime << std::endl;
-#endif
     }
   }
 }
@@ -60,7 +45,75 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
   int thrdCounter = kaapic_get_concurrency();
   kaapic_foreach_attr_t attr;
   kaapic_foreach_attr_init(&attr);
-  std::cout << "Naive Gaussian Elimination" << std::endl;
+  std::cout << "Naive Gaussian Elimination without pivoting" << std::endl;
+  gettimeofday(&start, NULL);
+  cStart  = clock();
+  for (uint32 i = 0; i < boundary; ++i) {
+    A(i,i) %= prime;
+#if F4RT_DBG
+    std::cout << "!! A(" << i << "," << i << ") " << A(i,i) << std::endl;
+    std::cout << "A(" << i << "," << i << ") " << A(i,i) % prime << std::endl;
+#endif
+    inv  = negInverseModP(A(i,i), prime);
+    //kaapic_foreach_attr_set_grains(&attr, chunkSize+pad, chunkSize+pad);
+#if F4RT_DBG
+    std::cout << "inv  " << inv << std::endl;
+#endif
+    kaapic_foreach(i+1, m, &attr, 6, matElim1d, m, n, a_entries, inv, prime, i);
+  }
+  //cleanUpModP(A, prime);
+  //A.print();
+  gettimeofday(&stop, NULL);
+  cStop = clock();
+  std::cout << "---------------------------------------------------" << std::endl;
+  std::cout << "Method:           KAAPIC 1D" << std::endl;
+  // compute FLOPS:
+  // assume addition and multiplication in the mult kernel are 2 operations
+  // done A.nRows() * B.nRows() * B.nCols()
+  double flops = countGEPFlops(m, n, prime);
+  float epsilon = 0.0000000001;
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
+                    (stop.tv_usec - start.tv_usec)) / 1e6;
+  double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
+  char buffer[50];
+  // get digits before decimal point of cputime (the longest number) and setw
+  // with it: digits + 1 (point) + 4 (precision) 
+  int digits = sprintf(buffer,"%.0f",cputime);
+  double ratio = cputime/realtime;
+  std::cout << "# Threads:        " << thrdCounter << std::endl;
+  std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "Real time:        " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << realtime << " sec" 
+    << std::endl;
+  std::cout << "CPU time:         " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << cputime
+    << " sec" << std::endl;
+  if (cputime > epsilon)
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4) 
+      << std::setprecision(4) << std::fixed << ratio << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime) 
+    << std:: endl;
+  std::cout << "---------------------------------------------------" << std::endl;
+}
+
+void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, int blocksize, uint64 prime) {
+  uint32 l;
+  uint32 m        = A.nRows();
+  uint32 n        = A.nCols(); 
+  mat *a_entries  = A.entries.data();
+  // if m > n then only n eliminations are possible
+  uint32 boundary  = (m > n) ? n : m;
+  mat inv;
+  timeval start, stop;
+  clock_t cStart, cStop;
+  int err = kaapic_init(1);
+  int thrdCounter = kaapic_get_concurrency();
+  kaapic_foreach_attr_t attr;
+  kaapic_foreach_attr_init(&attr);
+  std::cout << "Naive Gaussian Elimination with pivoting" << std::endl;
   gettimeofday(&start, NULL);
   cStart  = clock();
   for (uint32 i = 0; i < boundary; ++i) {

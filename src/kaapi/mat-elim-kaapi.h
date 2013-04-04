@@ -17,6 +17,5 @@ void elimKAAPIC(Matrix& A, int blocksize);
 
 void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime);
 
-void elimNaiveKAAPICModP2d(Matrix& A, int nthrds, int blocksize, uint64 prime);
-
+void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
 #endif
