@@ -41,29 +41,47 @@ f.close()
 dimensions = lines[0].strip().replace(' ','').split(',')
 # second line are the thread settings used
 plot_threads = lines[1].strip().replace(' ','').split(',')
-
+# get algorithm benchmarked
+algorithm_benched = lines[2].strip()
+print algorithm_benched
+if algorithm_benched == 'Matrix Multiplication':
+  algorithm = 1
+if algorithm_benched == 'Naive Gaussian Elimination with pivoting':
+  algorithm = 2
+if algorithm_benched == 'Naive Gaussian Elimination without pivoting':
+  algorithm = 3
 # get threads for plot, stored in the first line of bench file
 #plot_threads = f.readline().strip().replace(' ','').split(',')
 # for compatibility to the other scripts just store this again
 threads = plot_threads
+start_threads = int(threads[0])
 threads = list(map(lambda x: int(x) - 1, threads))
 
-start_threads = threads[0]
 # list of all methods, sequential only if start_threads == 1
-if start_threads == 1:
-  methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
-  'Open MP collapse(1) inner loop','Open MP collapse(2)',
-  'KAAPIC 1D','KAAPIC 2D',
-  'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
-  'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
-  'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
-else :
-  methods = ['pThread 1D','Open MP collapse(1) outer loop',
-  'Open MP collapse(1) inner loop','Open MP collapse(2)',
-  'KAAPIC 1D','KAAPIC 2D',
-  'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
-  'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
-  'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
+if algorithm == 1:
+  if start_threads == 1:
+    methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
+    'Open MP collapse(1) inner loop','Open MP collapse(2)',
+    'KAAPIC 1D','KAAPIC 2D',
+    'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+    'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
+    'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
+  else :
+    methods = ['pThread 1D','Open MP collapse(1) outer loop',
+    'Open MP collapse(1) inner loop','Open MP collapse(2)',
+    'KAAPIC 1D','KAAPIC 2D',
+    'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+    'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
+    'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
+if algorithm == 2 or algorithm == 3:
+  if start_threads == 1:
+    methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
+    'KAAPIC 1D','Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+    'Intel TBB 1D simple partitioner','Intel TBB 2D simple partitioner']
+  else :
+    methods = ['pThread 1D','Open MP collapse(1) outer loop',
+    'KAAPIC 1D','Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+    'Intel TBB 1D simple partitioner','Intel TBB 2D simple partitioner']
 
 # lists for all methods we have, those are lists of lists:
 # E.g. time_series[i] is a list of len(threads) elements of the timings
@@ -75,6 +93,8 @@ for i in range(0,len(methods)):
   time_series.append(list())
   gflops_series.append(list())
 
+
+print methods
 
 for l in lines:
   for i in range(0,len(methods)):  
@@ -92,25 +112,44 @@ for l in lines:
 #plot this data
 
 #line style, sequential method only if start_threads == 1
-if start_threads == 1:
-  stride = 1
-  coloring = ['k','c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
-  styles = ['None','-','-','--','-','-','-','-','--',':','-','--',':']
-  markers = ['^','None','None','None','None','o','s','None','None',
-    'None','None','None','None']
-else:
-  stride = 1
-  coloring = ['c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
-  styles = ['-','-','--','-','-','-','-','--',':','-','--',':']
-  markers = ['None','None','None','None','o','s','None','None',
-    'None','None','None','None']
+if algorithm == 1:
+  if start_threads == 1:
+    stride = 1
+    coloring = ['k','c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
+    styles = ['None','-','-','--','-','-','-','-','--',':','-','--',':']
+    markers = ['^','None','None','None','None','o','s','None','None',
+      'None','None','None','None']
+  else:
+    stride = 1
+    coloring = ['c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
+    styles = ['-','-','--','-','-','-','-','--',':','-','--',':']
+    markers = ['None','None','None','None','o','s','None','None',
+      'None','None','None','None']
+if algorithm == 2 or algorithm == 3:
+  if start_threads == 1:
+    stride = 1
+    coloring = ['k','c','b','y','#7d053f','#7d053f','#7d053f','r']
+    styles = ['None','-','-','-','-','--',':',':']
+    markers = ['^','None','None','o','None','None',
+      'None','None']
+  else:
+    stride = 1
+    coloring = ['c','b','y','#7d053f','#7d053f','#7d053f','r']
+    styles = ['-','-','-','-','--',':',':']
+    markers = ['None','None','o','None','None',
+      'None','None']
+
 
 pl.rc('legend',**{'fontsize':5})
 fig = pl.figure()
 ax = fig.add_subplot(111)
 fig.suptitle('Timings: '+file_name, fontsize=10)
-pl.title('uint64 Matrix dimensions: '+dimensions[0]+
-' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
+if algorithm == 1:
+  pl.title('Mat Mult uint64 Matrix dimensions: '+dimensions[0]+
+  ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
+if algorithm == 2 or algorithm == 3 :
+  pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
+  ' x '+dimensions[1], fontsize=8)
 ax.set_xlabel('Number of threads', fontsize=7)
 ax.set_ylabel('Real time in seconds', fontsize=8)
 
@@ -152,8 +191,12 @@ pl.savefig('timings-plot.pdf',papertype='a4',orientation='landscape')
 fig = pl.figure()
 ax = fig.add_subplot(111)
 fig.suptitle('GFLOPS/sec: '+file_name, fontsize=10)
-pl.title('uint64 Matrix dimensions: '+dimensions[0]+
-' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
+if algorithm == 1:
+  pl.title('Mat Mult uint64 Matrix dimensions: '+dimensions[0]+
+  ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
+if algorithm == 2 or algorithm == 3 :
+  pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
+  ' x '+dimensions[1], fontsize=8)
 ax.set_xlabel('Number of threads', fontsize=8)
 ax.set_ylabel('GFLOPS per second', fontsize=8)
 

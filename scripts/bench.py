@@ -40,7 +40,8 @@ formatter_class=RawTextHelpFormatter)
 parser.add_argument('-a','--alg', required=True,
     help="What algorithm should be benchmarked:\n\
 1 = Matrix multiplication\n\
-2 = Gaussian Elimination")
+2 = Naive Gaussian Elimination with pivoting\n\
+3 = Naive Gaussian Elimination without pivoting")
 parser.add_argument('-b', '--base', default=2,
     help='base of number of threads, e.g. -b 2 -t 16\n\
 would lead to computations in 1,2,4,8,16\n\
@@ -67,8 +68,10 @@ if int(args.alg) == 1:
   algorithm = 'M'
   if args.colsb == 0:
     args.colsb = args.rowsa
-else:
+if int(args.alg) == 2:
   algorithm = 'E'
+if int(args.alg) == 3:
+  algorithm = 'E -w'
 
 # range of threads
 threads = list()
@@ -88,20 +91,31 @@ else:
     exp += 1
 
 # list of all methods, sequential only if start_threads == 1
-if start_threads == 1:
-  methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
-  'Open MP collapse(1) inner loop','Open MP collapse(2)',
-  'KAAPIC 1D','KAAPIC 2D',
-  'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
-  'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
-  'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
+if int(args.alg) == 1:
+  if start_threads == 1:
+    methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
+    'Open MP collapse(1) inner loop','Open MP collapse(2)',
+    'KAAPIC 1D','KAAPIC 2D',
+    'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+    'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
+    'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
+  else :
+    methods = ['pThread 1D','Open MP collapse(1) outer loop',
+    'Open MP collapse(1) inner loop','Open MP collapse(2)',
+    'KAAPIC 1D','KAAPIC 2D',
+    'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+    'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
+    'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
 else :
-  methods = ['pThread 1D','Open MP collapse(1) outer loop',
-  'Open MP collapse(1) inner loop','Open MP collapse(2)',
-  'KAAPIC 1D','KAAPIC 2D',
-  'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
-  'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
-  'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
+  if start_threads == 1:
+    methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
+    'KAAPIC 1D','Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+    'Intel TBB 1D simple partitioner','Intel TBB 2D simple partitioner']
+  else :
+    methods = ['pThread 1D','Open MP collapse(1) outer loop',
+    'KAAPIC 1D','Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
+    'Intel TBB 1D simple partitioner','Intel TBB 2D simple partitioner']
+  
 # lists for all methods we have, those are lists of lists:
 # e.g. time_series[i] is a list of len(threads) elements of the timings
 # of methods[i]. 
@@ -123,21 +137,28 @@ if not os.path.exists(folder_name):
 os.chdir(os.getcwd()+"/"+folder_name)
 
 #generate random matrices without timestamp
-os.system('../../src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
-os.system('../../src/f4rt -G -R '+args.colsa+' -C '+args.colsb)
+if int(args.alg) == 1:
+  os.system('../../src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
+  os.system('../../src/f4rt -G -R '+args.colsa+' -C '+args.colsb)
+else :
+  os.system('../../src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
 
 bench_file = "bench-"+str(hash_value)
 f = open(bench_file,"w")
 
 strstr = '../../src/f4rt -'+algorithm+' \
--A random-mat-'+args.rowsa+'-'+args.colsa+'.mat \
--B random-mat-'+args.colsa+'-'+args.colsb+'.mat'
+-A random-mat-'+args.rowsa+'-'+args.colsa+'.mat '
+if int(args.alg) == 1:
+  strstr += '-B random-mat-'+args.colsa+'-'+args.colsb+'.mat'
 
 thrds_str = str(threads)
 thrds_str = thrds_str.replace('[','')
 thrds_str = thrds_str.replace(']','')
 thrds_str = thrds_str
-f.write(args.rowsa+','+args.colsa+','+args.colsb+'\r\n')
+if int(args.alg) == 1:
+  f.write(args.rowsa+','+args.colsa+','+args.colsb+'\r\n')
+else :
+  f.write(args.rowsa+','+args.colsa+'\r\n')
 f.write(thrds_str+'\r\n')
 f.close()
 
@@ -159,17 +180,18 @@ for i in threads:
   os.system(strstr+' -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# OpenMP computations 1D inner
-for i in threads:
-  print(strstr+' -m1 -d 1 -i -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -m1 -d 1 -i -t '+str(i)+' >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+if int(args.alg) == 1:
+  # OpenMP computations 1D inner
+  for i in threads:
+    print(strstr+' -m1 -d 1 -i -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m1 -d 1 -i -t '+str(i)+' >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# OpenMP computations 2D
-for i in threads:
-  print(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+  # OpenMP computations 2D
+  for i in threads:
+    print(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # KAAPIC computations 1D
 for i in threads:
@@ -177,11 +199,12 @@ for i in threads:
   os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# KAAPIC computations 2D
-for i in threads:
-  print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 -t '+str(i)+' >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+if int(args.alg) == 1:
+  # KAAPIC computations 2D
+  for i in threads:
+    print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+    os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 -t '+str(i)+' >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # TBB computations 1D auto
 for i in threads:
@@ -201,17 +224,18 @@ for i in threads:
   os.system(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value))
   print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# TBB computations 2D auto
-for i in threads:
-  print(strstr+' -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+if int(args.alg) == 1:
+  # TBB computations 2D auto
+  for i in threads:
+    print(strstr+' -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# TBB computations 2D affinity
-for i in threads:
-  print(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+  # TBB computations 2D affinity
+  for i in threads:
+    print(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 # TBB computations 2D simple
 for i in threads:
@@ -256,25 +280,43 @@ if args.plot:
   #plot this data
 
   #line style, sequential method only if start_threads == 1
-  if start_threads == 1:
-    stride = 1
-    coloring = ['k','c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
-    styles = ['None','-','-','--','-','-','-','-','--',':','-','--',':']
-    markers = ['^','None','None','None','None','o','s','None','None',
-      'None','None','None','None']
-  else:
-    stride = 1
-    coloring = ['c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
-    styles = ['-','-','--','-','-','-','-','--',':','-','--',':']
-    markers = ['None','None','None','None','o','s','None','None',
-      'None','None','None','None']
+  if int(args.alg) == 1:
+    if start_threads == 1:
+      stride = 1
+      coloring = ['k','c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
+      styles = ['None','-','-','--','-','-','-','-','--',':','-','--',':']
+      markers = ['^','None','None','None','None','o','s','None','None',
+        'None','None','None','None']
+    else:
+      stride = 1
+      coloring = ['c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
+      styles = ['-','-','--','-','-','-','-','--',':','-','--',':']
+      markers = ['None','None','None','None','o','s','None','None',
+        'None','None','None','None']
+  if int(args.alg) == 2 or int(args.alg) == 3:
+    if start_threads == 1:
+      stride = 1
+      coloring = ['k','c','b','y','#7d053f','#7d053f','#7d053f','r']
+      styles = ['None','-','-','-','-','--',':',':']
+      markers = ['^','None','None','o','None','None',
+        'None','None']
+    else:
+      stride = 1
+      coloring = ['c','b','y','#7d053f','#7d053f','#7d053f','r']
+      styles = ['-','-','-','-','--',':',':']
+      markers = ['None','None','o','None','None',
+        'None','None']
 
   pl.rc('legend',**{'fontsize':5})
   fig = pl.figure()
   ax = fig.add_subplot(111)
   fig.suptitle('Timings: '+file_name, fontsize=10)
-  pl.title('uint64 Matrix dimensions: '+dimensions[0]+
-  ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
+  if int(args.alg) == 1:
+    pl.title('Mat Mult uint64 Matrix dimensions: '+dimensions[0]+
+    ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
+  if int(args.alg) == 2 or int(args.alg) == 3 :
+    pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
+    ' x '+dimensions[1], fontsize=8)
   ax.set_xlabel('Number of threads', fontsize=7)
   ax.set_ylabel('Real time in seconds', fontsize=8)
 
@@ -316,8 +358,12 @@ if args.plot:
   fig = pl.figure()
   ax = fig.add_subplot(111)
   fig.suptitle('GFLOPS/sec: '+file_name, fontsize=10)
-  pl.title('uint64 Matrix dimensions: '+dimensions[0]+
-  ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
+  if int(args.alg) == 1:
+    pl.title('Mat Mult uint64 Matrix dimensions: '+dimensions[0]+
+    ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
+  if int(args.alg) == 2 or int(args.alg) == 3 :
+    pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
+    ' x '+dimensions[1], fontsize=8)
   ax.set_xlabel('Number of threads', fontsize=8)
   ax.set_ylabel('GFLOPS per second', fontsize=8)
 
