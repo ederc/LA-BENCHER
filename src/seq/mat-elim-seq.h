@@ -15,4 +15,6 @@
 
 void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime);
 void elimNaiveSEQModPPivot(Matrix& A, int blocksize, uint64 prime);
+
+void elimCoSEQModP(Matrix& A, int blocksize, uint64 prime);
 #endif

@@ -11,6 +11,167 @@
 
 #define F4RT_DBG  0
 
+void elimCoSEQBaseModP( mat *M, const uint32 k1, const uint32 i1, 
+                        const uint32 j1, uint64 size, mat *neg_inv_piv) {
+  C **Mpiv, **Mmdf;
+  uint64 k;
+  {
+    // get pivots first, those do only depend on the value of k1 and the size,
+    // i.e. the length of the diagonal of the block of M 
+    int sizeC = size * sizeof(C*);
+    Mpiv      = malloc(sizeC);
+    sizeC     = size * sizeof(C);
+    for (k = 0; k < size; k++) {
+      Mpiv[k] = malloc(sizeC);
+      memcpy(Mpiv[k], M[k1+k]+k1, sizeC);
+    }
+  }
+  // now check in which part of M we are: is this the part the diagonal from k1
+  // to k1+size is running? if so we know that the pivots are the elements and
+  // we can just set the pointer Mmdf = Mpiv
+  if (i1 == k1 && j1 == k1) {
+    Mmdf  = Mpiv;
+  // otherwise, we need to store the right matrix elements in Mmdf. Those
+  // elements are completely different from the ones in Mpivot (remember that we
+  // have subdivided M in 4 parts. Mpiv is running in 1 part, Mmdf in one of the
+  // remaining 3 parts
+  } else {
+    int sizeC = size*sizeof(C*);
+    Mmdf      = malloc(sizeC);
+    sizeC     = size*sizeof(C);
+    for (k = 0; k < size; k++) {
+      Mmdf[k] = malloc(sizeC);
+      memcpy(Mmdf[k], M[i1+k]+j1, sizeC);
+    }
+  }
+
+  for (k = 0; k < size; k++) {
+    const C *Mpivk  = Mpiv[k];
+    // possibly the negative inverses of the pivots at place (k,k) were already
+    // computed in another call. otherwise we need to compute and store it
+    if (!neg_inv_piv[k+k1]) 
+      neg_inv_piv[k+k1] = negInverseModP(Mpivk[k]);
+    const C inv_piv   = neg_inv_piv[k+k1];
+    // if the pivots are in the same row part of the matrix as Mmdf then we can
+    // always start at the next row (k+1), otherwise we need to start at
+    // row 0
+    const int istart  = (k1 == i1) ? k+1 : 0;
+    int i;
+    for (i = istart; i < size; i++) {
+      C *Mmdfi          = Mmdf[i];
+      const C tmp       = Mmdfi[k] * inv_piv;
+      // if the pivots are in the same column part of the matrix as Mmdf then we can
+      // always start at the next column (k+1), otherwise we need to start at
+      // column 0
+      const int jstart  = (k1 == j1) ? k+1 : 0;
+      int j;
+      for (j = jstart; j < size; j++)
+  	    Mmdfi[j]  +=  Mpivk[j] * tmp;
+    }
+  }
+  {
+    const int sizeC = size * sizeof(C);
+    for (k = 0; k < size; k++) {
+      memcpy(M[k1+k]+k1, Mpiv[k], sizeC);
+      free(Mpiv[k]);
+    }
+    free(Mpiv);
+  }
+  if (i1 != k1 || j1 != k1) {
+    const int sizeC = size*sizeof (C);
+    for (k = 0; k < size; k++) {
+      memcpy(M[i1+k]+j1, Mmdf[k], sizeC);
+      free(Mmdf[k]);
+    }
+    free(Mmdf);
+  }
+}
+
+void elimCoSEQBlockModP(mat *M, const uint32 k1, const uint32 k2, 
+                        const uint32 i1, const uint32 i2,
+		                    const uint32 j1, const uint32 j2, 
+                        uint64 size, mat *neg_inv_piv) {
+  if (i2 <= k1 || j2 <= k1) 
+    return;
+  // 
+  if (size <= __F4RT_CPU_L1_CACHE) {
+    elimCoSEQBaseModP (M, k1, i1, j1, size, neg_inv_piv);
+  }
+  else {
+    size = size / 2;
+
+    uint32 km = (k1+k2) / 2;
+    uint32 im = (i1+i2) / 2;
+    uint32 jm = (j1+j2) / 2;
+
+    elimCoSEQBlockModP(M, k1, km, i1, im, j1, jm, size, neg_inv_piv);
+    elimCoSEQBlockModP(M, k1, km, i1, im, jm+1, j2, size, neg_inv_piv);
+    elimCoSEQBlockModP(M, k1, km, im+1, i2, j1, jm, size, neg_inv_piv);
+    elimCoSEQBlockModP(M, k1, km, im+1, i2, jm+1, j2, size, neg_inv_piv);
+    elimCoSEQBlockModP(M, km+1, k2, im+1, i2, jm+1, j2, size, neg_inv_piv);
+    elimCoSEQBlockModP(M, km+1, k2, im+1, i2, j1, jm, size, neg_inv_piv);
+    elimCoSEQBlockModP(M, km+1, k2, i1, im, jm+1, j2, size, neg_inv_piv);
+    elimCoSEQBlockModP(M, km+1, k2, i1, im, j1, jm, size, neg_inv_piv);
+  }
+}
+
+void elimCoSEQModP(Matrix& A, int blocksize, uint64 prime) {
+  uint32 m          = A.nRows();
+  uint32 n          = A.nCols();
+  uint64 size       = m * n;
+  // if m > n then only n eliminations are possible
+  uint32 boundary   = (m > n) ? n : m;
+  mat *a_entries;
+  memcpy(a_entries, A.entries.data(), A.entries.size() * sizeof(mat));
+  mat *neg_inv_piv  =   calloc(boundary, sizeof(mat));
+  a_entries[0]      %=  prime;
+  neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime); 
+  mat inv, mult;
+  timeval start, stop;
+  clock_t cStart, cStop;
+  std::cout << "Cache-oblivious Gaussian Elimination without pivoting" << std::endl;
+  gettimeofday(&start, NULL);
+  cStart  = clock();
+  
+  // computation of blocks
+  elimCoSEQBlockModP(a_entries, 0, boundary, 0, m, 0, n, size, neg_inv_piv);
+  
+  gettimeofday(&stop, NULL);
+  cStop = clock();
+  std::cout << "---------------------------------------------------" << std::endl;
+  std::cout << "Method:           Raw sequential" << std::endl;
+  // compute FLOPS:
+  // assume addition and multiplication in the mult kernel are 2 operations
+  // done A.nRows() * B.nRows() * B.nCols()
+  double flops = countGEPFlops(m, n, prime);
+  float epsilon = 0.0000000001;
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
+                    (stop.tv_usec - start.tv_usec)) / 1e6;
+  double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
+  char buffer[50];
+  // get digits before decimal point of cputime (the longest number) and setw
+  // with it: digits + 1 (point) + 4 (precision) 
+  int digits = sprintf(buffer,"%.0f",cputime);
+  double ratio = cputime/realtime;
+  std::cout << "# Threads:        " << 1 << std::endl;
+  std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "Real time:        " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << realtime << " sec" 
+    << std::endl;
+  std::cout << "CPU time:         " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << cputime
+    << " sec" << std::endl;
+  if (cputime > epsilon)
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4) 
+      << std::setprecision(4) << std::fixed << ratio << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4) 
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime) 
+    << std:: endl;
+  std::cout << "---------------------------------------------------" << std::endl;
+}
+
 void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
   uint32 l;
   uint32 m         = A.nRows();

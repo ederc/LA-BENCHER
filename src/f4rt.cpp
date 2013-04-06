@@ -33,6 +33,7 @@ void print_help(int exval) {
  printf("       -b        sets the block size/grain of task scheduler; default = 2\n");
  printf("       -B FILE   set second intput file\n");
  printf("       -C        number of cols of matrix to be generated\n");
+ printf("       -c        if option -E for Gaussian Elimination: Cache-oblivious implementation\n");
  printf("       -d        sets the dimension of the parallel for loop\n");
  printf("                 (values: 1, 2, 3 (3 only for TBB); default = 1)\n");
  printf("       -E        if input file is set, compute the Gaussian Elimination\n");
@@ -80,7 +81,8 @@ int main(int argc, char *argv[]) {
  char *fileNameA = NULL, *fileNameB = NULL;
  int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
      blocksize = 2, dimension = 1, impose = 1, rows = 0, cols = 0,
-     generate = 0, outerloop = 1, eliminate = 0, pivoting = 1;
+     generate = 0, outerloop = 1, eliminate = 0, pivoting = 1,
+     cacheOblivious = 0;
  // biggest prime < 2^16
  uint64 prime = 65521;
 
@@ -92,7 +94,7 @@ int main(int argc, char *argv[]) {
   //print_help(1);
  }
 
- while((opt = getopt(argc, argv, "hVvGA:B:C:EPp:t:m:Md:b:aR:Nwsi")) != -1) {
+ while((opt = getopt(argc, argv, "hVvGA:B:cC:EPp:t:m:Md:b:aR:Nwsi")) != -1) {
   switch(opt) {
     case 'G': 
       generate = 1;
@@ -129,6 +131,9 @@ int main(int argc, char *argv[]) {
       break;
     case 'a':
       affinity  = 1;
+      break;
+    case 'c':
+      cacheOblivious  = 1;
       break;
     case 's':
       affinity  = 2;
@@ -197,7 +202,7 @@ int main(int argc, char *argv[]) {
   if (eliminate && fileNameA) {
       eliminateMatrix(fileNameA, nthrds, method, affinity, 
                       blocksize, dimension, outerloop,
-                      pivoting, prime, print);  
+                      pivoting, cacheOblivious, prime, print);  
   }
   return 0;
 }
