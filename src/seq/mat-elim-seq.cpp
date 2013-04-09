@@ -12,18 +12,24 @@
 #define F4RT_DBG  0
 
 void elimCoSEQBaseModP( mat *M, const uint32 k1, const uint32 i1, 
-                        const uint32 j1, uint64 size, mat *neg_inv_piv) {
-  C **Mpiv, **Mmdf;
+                        const uint32 j1, const uint32 rows, const uint32 cols,
+                        uint64 size, uint64 prime, mat *neg_inv_piv) {
+  mat **Mpiv, **Mmdf;
   uint64 k;
-  {
-    // get pivots first, those do only depend on the value of k1 and the size,
-    // i.e. the length of the diagonal of the block of M 
-    int sizeC = size * sizeof(C*);
-    Mpiv      = malloc(sizeC);
-    sizeC     = size * sizeof(C);
-    for (k = 0; k < size; k++) {
-      Mpiv[k] = malloc(sizeC);
-      memcpy(Mpiv[k], M[k1+k]+k1, sizeC);
+ 
+  // get pivots first, those do only depend on the value of k1 and the size,
+  // i.e. the length of the diagonal of the block of M 
+  uint64 sizeMat  = size * sizeof(mat*);
+  Mpiv            = (mat **)malloc(sizeMat);
+  sizeMat     = size * sizeof(mat);
+  for (k = 0; k < size; k++) {
+    Mpiv[k] = (mat *)malloc(sizeMat);
+    memcpy(Mpiv[k], &M[k1+(k1+k)*cols], sizeMat);
+  }
+  printf("- - - Size %d - k1 %d - i1 %d - j1 %d - - - \n", size, k1, i1, j1);
+  for (int it=0; it < size; ++it) {
+    for (int jt=0; jt < size; ++jt) {
+      printf("Mpiv[%d][%d] = %u\n", it, jt, Mpiv[it][jt]);
     }
   }
   // now check in which part of M we are: is this the part the diagonal from k1
@@ -36,51 +42,58 @@ void elimCoSEQBaseModP( mat *M, const uint32 k1, const uint32 i1,
   // have subdivided M in 4 parts. Mpiv is running in 1 part, Mmdf in one of the
   // remaining 3 parts
   } else {
-    int sizeC = size*sizeof(C*);
-    Mmdf      = malloc(sizeC);
-    sizeC     = size*sizeof(C);
+    sizeMat  = size*sizeof(mat*);
+    Mmdf            = (mat **)malloc(sizeMat);
+    sizeMat         = size*sizeof(mat);
     for (k = 0; k < size; k++) {
-      Mmdf[k] = malloc(sizeC);
-      memcpy(Mmdf[k], M[i1+k]+j1, sizeC);
+      Mmdf[k] = (mat *)malloc(sizeMat);
+      memcpy(Mmdf[k], &M[j1+(i1+k)*cols], sizeMat);
     }
   }
 
   for (k = 0; k < size; k++) {
-    const C *Mpivk  = Mpiv[k];
+    Mpiv[k][k] %= prime;
+    const mat *Mpivk  = Mpiv[k];
     // possibly the negative inverses of the pivots at place (k,k) were already
     // computed in another call. otherwise we need to compute and store it
-    if (!neg_inv_piv[k+k1]) 
-      neg_inv_piv[k+k1] = negInverseModP(Mpivk[k]);
-    const C inv_piv   = neg_inv_piv[k+k1];
+    if (!neg_inv_piv[k+k1]) {
+      if (Mpivk[k] != 0)
+        neg_inv_piv[k+k1] = negInverseModP(Mpivk[k], prime);
+    }
+    const mat inv_piv   = neg_inv_piv[k+k1];
     // if the pivots are in the same row part of the matrix as Mmdf then we can
     // always start at the next row (k+1), otherwise we need to start at
     // row 0
-    const int istart  = (k1 == i1) ? k+1 : 0;
-    int i;
+    const uint32 istart  = (k1 == i1) ? k+1 : 0;
+    uint64 i;
     for (i = istart; i < size; i++) {
-      C *Mmdfi          = Mmdf[i];
-      const C tmp       = Mmdfi[k] * inv_piv;
+      mat *Mmdfi    = Mmdf[i];
+      const mat tmp = (Mmdfi[k] * inv_piv) % prime;
       // if the pivots are in the same column part of the matrix as Mmdf then we can
       // always start at the next column (k+1), otherwise we need to start at
       // column 0
-      const int jstart  = (k1 == j1) ? k+1 : 0;
-      int j;
-      for (j = jstart; j < size; j++)
+      const uint32 jstart  = (k1 == j1) ? k+1 : 0;
+      uint64 j;
+      for (j = jstart; j < size; j++) {
   	    Mmdfi[j]  +=  Mpivk[j] * tmp;
+  	    Mmdfi[j]  %=  prime;
+      }
     }
   }
-  {
-    const int sizeC = size * sizeof(C);
+
+    sizeMat = size * sizeof(mat);
     for (k = 0; k < size; k++) {
-      memcpy(M[k1+k]+k1, Mpiv[k], sizeC);
+      memcpy(&M[k1+(k1+k)*cols], Mpiv[k], sizeMat);
+      //memcpy(M[k1+k]+k1, Mpiv[k], sizeMat);
       free(Mpiv[k]);
     }
     free(Mpiv);
-  }
   if (i1 != k1 || j1 != k1) {
-    const int sizeC = size*sizeof (C);
+    sizeMat = size*sizeof (mat);
     for (k = 0; k < size; k++) {
-      memcpy(M[i1+k]+j1, Mmdf[k], sizeC);
+      memcpy(&M[j1+(i1+k)*cols], Mmdf[k], sizeMat);
+      //memcpy(M[i1+k]+j1, Mmdf[k], sizeMat);
+      printf("size of mmdf %d\n", sizeof(Mmdf[k]));
       free(Mmdf[k]);
     }
     free(Mmdf);
@@ -90,41 +103,54 @@ void elimCoSEQBaseModP( mat *M, const uint32 k1, const uint32 i1,
 void elimCoSEQBlockModP(mat *M, const uint32 k1, const uint32 k2, 
                         const uint32 i1, const uint32 i2,
 		                    const uint32 j1, const uint32 j2, 
-                        uint64 size, mat *neg_inv_piv) {
+		                    const uint32 rows, const uint32 cols, 
+                        uint64 size, uint64 prime, mat *neg_inv_piv) {
   if (i2 <= k1 || j2 <= k1) 
     return;
   // 
-  if (size <= __F4RT_CPU_L1_CACHE) {
-    elimCoSEQBaseModP (M, k1, i1, j1, size, neg_inv_piv);
+  if (size <= 2) {
+  //if (size <= __F4RT_CPU_L1_CACHE) {
+    elimCoSEQBaseModP (M, k1, i1, j1, rows, cols, size, prime, neg_inv_piv);
   }
   else {
     size = size / 2;
 
-    uint32 km = (k1+k2) / 2;
+    uint32 km = (k1+k2) / 2 ;
     uint32 im = (i1+i2) / 2;
     uint32 jm = (j1+j2) / 2;
+    printf("size %d -- km %d - im %d - jm %d\n",size, km, im, jm);
 
-    elimCoSEQBlockModP(M, k1, km, i1, im, j1, jm, size, neg_inv_piv);
-    elimCoSEQBlockModP(M, k1, km, i1, im, jm+1, j2, size, neg_inv_piv);
-    elimCoSEQBlockModP(M, k1, km, im+1, i2, j1, jm, size, neg_inv_piv);
-    elimCoSEQBlockModP(M, k1, km, im+1, i2, jm+1, j2, size, neg_inv_piv);
-    elimCoSEQBlockModP(M, km+1, k2, im+1, i2, jm+1, j2, size, neg_inv_piv);
-    elimCoSEQBlockModP(M, km+1, k2, im+1, i2, j1, jm, size, neg_inv_piv);
-    elimCoSEQBlockModP(M, km+1, k2, i1, im, jm+1, j2, size, neg_inv_piv);
-    elimCoSEQBlockModP(M, km+1, k2, i1, im, j1, jm, size, neg_inv_piv);
+    elimCoSEQBlockModP( M, k1, km, i1, im, j1, jm, rows, cols, size,
+                        prime, neg_inv_piv);
+    elimCoSEQBlockModP( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+                        prime, neg_inv_piv);
+    elimCoSEQBlockModP( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+                        prime, neg_inv_piv);
+    elimCoSEQBlockModP( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+                        prime, neg_inv_piv);
+    elimCoSEQBlockModP( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
+                        prime, neg_inv_piv);
+    elimCoSEQBlockModP( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
+                        prime, neg_inv_piv);
+    elimCoSEQBlockModP( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
+                        prime, neg_inv_piv);
+    elimCoSEQBlockModP( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
+                        prime, neg_inv_piv);
   }
 }
 
 void elimCoSEQModP(Matrix& A, int blocksize, uint64 prime) {
   uint32 m          = A.nRows();
   uint32 n          = A.nCols();
-  uint64 size       = m * n;
   // if m > n then only n eliminations are possible
   uint32 boundary   = (m > n) ? n : m;
-  mat *a_entries;
-  memcpy(a_entries, A.entries.data(), A.entries.size() * sizeof(mat));
-  mat *neg_inv_piv  =   calloc(boundary, sizeof(mat));
+  uint64 size       = m * n;
+  //mat *a_entries    = (mat *)malloc(A.entries.size() * sizeof(mat));
+  //memcpy(a_entries, A.entries.data(), A.entries.size() * sizeof(mat));
+  mat *a_entries    = A.entries.data();
+  mat *neg_inv_piv  =   (mat *)calloc(boundary, sizeof(mat));
   a_entries[0]      %=  prime;
+  A.print();
   neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime); 
   mat inv, mult;
   timeval start, stop;
@@ -134,10 +160,12 @@ void elimCoSEQModP(Matrix& A, int blocksize, uint64 prime) {
   cStart  = clock();
   
   // computation of blocks
-  elimCoSEQBlockModP(a_entries, 0, boundary, 0, m, 0, n, size, neg_inv_piv);
+  elimCoSEQBlockModP( a_entries, 0, boundary-1, 0, m-1, 0, n-1, m, n, boundary,
+                      prime, neg_inv_piv);
   
   gettimeofday(&stop, NULL);
   cStop = clock();
+  //cleanUpModP(A, prime);
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Raw sequential" << std::endl;
   // compute FLOPS:
