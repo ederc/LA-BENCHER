@@ -80,8 +80,8 @@ void elimCoSEQBlockModP(mat *M, const uint32 k1, const uint32 k2,
   if (i2 <= k1 || j2 <= k1) 
     return;
   // 
-  if (size <= 2) {
-  //if (size <= __F4RT_CPU_L1_CACHE) {
+  //if (size <= 2) {
+  if (size <= __F4RT_CPU_L1_CACHE) {
     elimCoSEQBaseModP (M, k1, i1, j1, rows, cols, size, prime, neg_inv_piv);
   }
   else {
