@@ -47,6 +47,13 @@ parser.add_argument('-b', '--base', default=2,
     help='base of number of threads, e.g. -b 2 -t 16\n\
 would lead to computations in 1,2,4,8,16\n\
 threads. Default is 2.')
+parser.add_argument('-c', '--count', default=10,
+    help='If doing Gaussian Elimination and the option "-i" is\n\
+set, then the benchmarking is done on increasing matrix\n\
+sizes. Thus it works only with the number of threads set\n\
+by option "-t", but increases the row resp. column number\n\
+by the value given for i. The increasing is done "-c" times.\n\
+By default this value is 10.')
 parser.add_argument('-i', '--inc', default=0,
     help='If doing Gaussian Elimination and this option is\n\
 set, then the benchmarking is done on increasing matrix\n\
@@ -254,7 +261,7 @@ if int(args.inc) == 0:
 # generate 10 random matrices without timestamp if increasing is done
 # works only for GEP
 else:
-  for k in range(0,11):
+  for k in range(0,int(args.count)+1):
     rows = int(args.rowsa) + k * int(args.inc)
     cols = int(args.colsa) + k * int(args.inc)
     os.system('../../src/f4rt -G -R '+str(rows)+' -C '+str(cols))
@@ -273,7 +280,7 @@ else:
 
   # sequential computation, only if max_threads == 1
   if int(max_threads) == 1:
-    for k in range(0,11):
+    for k in range(0,int(args.count)+1):
       rows = int(args.rowsa) + k * int(args.inc)
       cols = int(args.colsa) + k * int(args.inc)
       strstr = '../../src/f4rt -'+algorithm+' \
@@ -284,7 +291,7 @@ else:
       print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   # pThread computations 1D outer
-  for k in range(0,11):
+  for k in range(0,int(args.count)+1):
     rows = int(args.rowsa) + k * int(args.inc)
     cols = int(args.colsa) + k * int(args.inc)
     strstr = '../../src/f4rt -'+algorithm+' \
@@ -295,7 +302,7 @@ else:
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   # OpenMP computations 1D outer
-  for k in range(0,11):
+  for k in range(0,int(args.count)+1):
     rows = int(args.rowsa) + k * int(args.inc)
     cols = int(args.colsa) + k * int(args.inc)
     strstr = '../../src/f4rt -'+algorithm+' \
@@ -306,7 +313,7 @@ else:
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   # KAAPIC computations 1D
-  for k in range(0,11):
+  for k in range(0,int(args.count)+1):
     rows = int(args.rowsa) + k * int(args.inc)
     cols = int(args.colsa) + k * int(args.inc)
     strstr = '../../src/f4rt -'+algorithm+' \
@@ -317,7 +324,7 @@ else:
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   # TBB computations 1D auto
-  for k in range(0,11):
+  for k in range(0,int(args.count)+1):
     rows = int(args.rowsa) + k * int(args.inc)
     cols = int(args.colsa) + k * int(args.inc)
     strstr = '../../src/f4rt -'+algorithm+' \
@@ -328,7 +335,7 @@ else:
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   # TBB computations 1D affinity
-  for k in range(0,11):
+  for k in range(0,int(args.count)+1):
     rows = int(args.rowsa) + k * int(args.inc)
     cols = int(args.colsa) + k * int(args.inc)
     strstr = '../../src/f4rt -'+algorithm+' \
@@ -339,7 +346,7 @@ else:
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   # TBB computations 1D simple
-  for k in range(0,11):
+  for k in range(0,int(args.count)+1):
     rows = int(args.rowsa) + k * int(args.inc)
     cols = int(args.colsa) + k * int(args.inc)
     strstr = '../../src/f4rt -'+algorithm+' \
@@ -374,7 +381,9 @@ if args.plot:
     # if inc is set we cheat a bit and still use plot_threads and threads thus we
     # do not need to change the code for the plotting below:
     # There are 10 increasements of the sizes, that means, we have 11 values:
-    plot_threads = ['0','1','2','3','4','5','6','7','8','9','10']
+    plot_threads = []
+    for k in range(0,int(args.count)+1):
+      plot_threads.append(str(k))
 
   # get threads for plot, stored in the first line of bench file
   #plot_threads = f.readline().strip().replace(' ','').split(',')
@@ -439,8 +448,8 @@ if args.plot:
       ' x '+dimensions[1], fontsize=8)
     else:
       pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
-      ' x '+dimensions[1]+' increasing by '+dimensions[2]+' in each step using\
-'+str(max_threads)+' threads', fontsize=8)
+      ' x '+dimensions[1]+' increasing by '+dimensions[2]+' in each step using '+
+      str(max_threads)+' threads', fontsize=8)
   if int(args.inc) == 0:
     ax.set_xlabel('Number of threads', fontsize=7)
   else:
@@ -497,8 +506,8 @@ if args.plot:
       ' x '+dimensions[1], fontsize=8)
     else:
       pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
-      ' x '+dimensions[1]+' increasing by '+dimensions[2]+' in each step using\
-'+str(max_threads)+' threads', fontsize=8)
+      ' x '+dimensions[1]+' increasing by '+dimensions[2]+' in each step using '+
+      str(max_threads)+' threads', fontsize=8)
   if int(args.inc) == 0:
     ax.set_xlabel('Number of threads', fontsize=7)
   else:
