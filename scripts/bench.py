@@ -41,11 +41,18 @@ parser.add_argument('-a','--alg', required=True,
     help="What algorithm should be benchmarked:\n\
 1 = Matrix multiplication\n\
 2 = Naive Gaussian Elimination with pivoting\n\
-3 = Naive Gaussian Elimination without pivoting")
+3 = Naive Gaussian Elimination without pivoting\n\
+4 = Cache-oblivious Gaussian Elimination without pivoting")
 parser.add_argument('-b', '--base', default=2,
     help='base of number of threads, e.g. -b 2 -t 16\n\
 would lead to computations in 1,2,4,8,16\n\
 threads. Default is 2.')
+parser.add_argument('-i', '--inc', default=0,
+    help='If doing Gaussian Elimination and this option is\n\
+set, then the benchmarking is done on increasing matrix\n\
+sizes. Thus it works only with the number of threads set\n\
+by option "-t", but increases the row resp. column number\n\
+by the value given for i. The increasing is done 10 times.')
 parser.add_argument('-l', '--rowsa', required=True,
     help='number of rows of matrix a')
 parser.add_argument('-m', '--colsa', required=True,
@@ -136,112 +143,217 @@ if not os.path.exists(folder_name):
 
 os.chdir(os.getcwd()+"/"+folder_name)
 
-#generate random matrices without timestamp
-if int(args.alg) == 1:
-  os.system('../../src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
-  os.system('../../src/f4rt -G -R '+args.colsa+' -C '+args.colsb)
-else :
-  os.system('../../src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
+# generate random matrices without timestamp if no increasing is done
+if int(args.inc) == 0:
+  if int(args.alg) == 1:
+    os.system('../../src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
+    os.system('../../src/f4rt -G -R '+args.colsa+' -C '+args.colsb)
+  else :
+    os.system('../../src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
 
-bench_file = "bench-"+str(hash_value)
-f = open(bench_file,"w")
+  bench_file = "bench-"+str(hash_value)
+  f = open(bench_file,"w")
 
-strstr = '../../src/f4rt -'+algorithm+' \
--A random-mat-'+args.rowsa+'-'+args.colsa+'.mat '
-if int(args.alg) == 1:
-  strstr += '-B random-mat-'+args.colsa+'-'+args.colsb+'.mat'
+  strstr = '../../src/f4rt -'+algorithm+' \
+  -A random-mat-'+args.rowsa+'-'+args.colsa+'.mat '
+  if int(args.alg) == 1:
+    strstr += '-B random-mat-'+args.colsa+'-'+args.colsb+'.mat'
 
-thrds_str = str(threads)
-thrds_str = thrds_str.replace('[','')
-thrds_str = thrds_str.replace(']','')
-thrds_str = thrds_str
-if int(args.alg) == 1:
-  f.write(args.rowsa+','+args.colsa+','+args.colsb+'\r\n')
-else :
-  f.write(args.rowsa+','+args.colsa+'\r\n')
-f.write(thrds_str+'\r\n')
-f.close()
+  thrds_str = str(threads)
+  thrds_str = thrds_str.replace('[','')
+  thrds_str = thrds_str.replace(']','')
+  thrds_str = thrds_str
+  if int(args.alg) == 1:
+    f.write(args.rowsa+','+args.colsa+','+args.colsb+'\r\n')
+  else :
+    f.write(args.rowsa+','+args.colsa+'\r\n')
+  f.write(thrds_str+'\r\n')
+  f.close()
 
-# sequential computation, only if start_threads == 1
-if start_threads == 1:
-  print(strstr+' -m0 >> '+bench_file+'...')
-  os.system(strstr+' -m0 >> '+bench_file)
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
-
-# pThread computations 1D outer
-for i in threads:
-  print(strstr+' -m4 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -m4 -t '+str(i)+' >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
-
-# OpenMP computations 1D outer
-for i in threads:
-  print(strstr+' -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
-
-if int(args.alg) == 1:
-  # OpenMP computations 1D inner
-  for i in threads:
-    print(strstr+' -m1 -d 1 -i -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m1 -d 1 -i -t '+str(i)+' >> bench-'+str(hash_value))
+  # sequential computation, only if start_threads == 1
+  if start_threads == 1:
+    print(strstr+' -m0 >> '+bench_file+'...')
+    os.system(strstr+' -m0 >> '+bench_file)
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-  # OpenMP computations 2D
+  # pThread computations 1D outer
   for i in threads:
-    print(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value))
+    print(strstr+' -m4 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m4 -t '+str(i)+' >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# KAAPIC computations 1D
-for i in threads:
-  print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
-
-if int(args.alg) == 1:
-  # KAAPIC computations 2D
+  # OpenMP computations 1D outer
   for i in threads:
-    print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-    os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 -t '+str(i)+' >> bench-'+str(hash_value))
+    print(strstr+' -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# TBB computations 1D auto
-for i in threads:
-  print(strstr+' -m2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -m2 -t '+str(i)+' >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+  if int(args.alg) == 1:
+    # OpenMP computations 1D inner
+    for i in threads:
+      print(strstr+' -m1 -d 1 -i -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+      os.system(strstr+' -m1 -d 1 -i -t '+str(i)+' >> bench-'+str(hash_value))
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# TBB computations 1D affinity
-for i in threads:
-  print(strstr+' -m2 -t '+str(i)+' -a >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -m2 -t '+str(i)+' -a >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+    # OpenMP computations 2D
+    for i in threads:
+      print(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+      os.system(strstr+' -m1 -d 2 -t '+str(i)+' >> bench-'+str(hash_value))
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# TBB computations 1D simple
-for i in threads:
-  print(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
-
-if int(args.alg) == 1:
-  # TBB computations 2D auto
+  # KAAPIC computations 1D
   for i in threads:
-    print(strstr+' -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value))
+    print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+    os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-  # TBB computations 2D affinity
+  if int(args.alg) == 1:
+    # KAAPIC computations 2D
+    for i in threads:
+      print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+      os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -d2 -t '+str(i)+' >> bench-'+str(hash_value))
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+  # TBB computations 1D auto
   for i in threads:
-    print(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value))
+    print(strstr+' -m2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m2 -t '+str(i)+' >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-  # TBB computations 2D simple
+  # TBB computations 1D affinity
   for i in threads:
-    print(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value))
+    print(strstr+' -m2 -t '+str(i)+' -a >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m2 -t '+str(i)+' -a >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+  # TBB computations 1D simple
+  for i in threads:
+    print(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+  if int(args.alg) == 1:
+    # TBB computations 2D auto
+    for i in threads:
+      print(strstr+' -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value)+'...')
+      os.system(strstr+' -m2 -t '+str(i)+' -d 2 >> bench-'+str(hash_value))
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+    # TBB computations 2D affinity
+    for i in threads:
+      print(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value)+'...')
+      os.system(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value))
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+    # TBB computations 2D simple
+    for i in threads:
+      print(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value)+'...')
+      os.system(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value))
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+# generate 10 random matrices without timestamp if increasing is done
+# works only for GEP
+else:
+  for k in range(0,11):
+    rows = int(args.rowsa) + k * int(args.inc)
+    cols = int(args.colsa) + k * int(args.inc)
+    os.system('../../src/f4rt -G -R '+str(rows)+' -C '+str(cols))
+
+  bench_file = "bench-"+str(hash_value)
+  f = open(bench_file,"w")
+
+  thrds_str = str(threads)
+  thrds_str = thrds_str.replace('[','')
+  thrds_str = thrds_str.replace(']','')
+  thrds_str = thrds_str
+
+  f.write(args.rowsa+','+args.colsa+','+args.inc+'\r\n')
+  f.write(thrds_str+'\r\n')
+  f.close()
+
+  # sequential computation, only if max_threads == 1
+  if int(max_threads) == 1:
+    for k in range(0,11):
+      rows = int(args.rowsa) + k * int(args.inc)
+      cols = int(args.colsa) + k * int(args.inc)
+      strstr = '../../src/f4rt -'+algorithm+' \
+      -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
+
+      print(strstr+' -m0 >> '+bench_file+'...')
+      os.system(strstr+' -m0 >> '+bench_file)
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+  # pThread computations 1D outer
+  for k in range(0,11):
+    rows = int(args.rowsa) + k * int(args.inc)
+    cols = int(args.colsa) + k * int(args.inc)
+    strstr = '../../src/f4rt -'+algorithm+' \
+    -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
+
+    print(strstr+' -m4 -t '+str(max_threads)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m4 -t '+str(max_threads)+' >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+  # OpenMP computations 1D outer
+  for k in range(0,11):
+    rows = int(args.rowsa) + k * int(args.inc)
+    cols = int(args.colsa) + k * int(args.inc)
+    strstr = '../../src/f4rt -'+algorithm+' \
+    -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
+
+    print(strstr+' -m1 -d 1 -t '+str(max_threads)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m1 -d 1 -t '+str(max_threads)+' >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+  # KAAPIC computations 1D
+  for k in range(0,11):
+    rows = int(args.rowsa) + k * int(args.inc)
+    cols = int(args.colsa) + k * int(args.inc)
+    strstr = '../../src/f4rt -'+algorithm+' \
+    -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
+
+    print('KAAPI_CPUCOUNT='+str(max_threads)+' '+strstr+' -m3 -t '+str(max_threads)+' >> bench-'+str(hash_value)+'...')
+    os.system('KAAPI_CPUCOUNT='+str(max_threads)+' '+strstr+' -m3 -t '+str(max_threads)+' >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+  # TBB computations 1D auto
+  for k in range(0,11):
+    rows = int(args.rowsa) + k * int(args.inc)
+    cols = int(args.colsa) + k * int(args.inc)
+    strstr = '../../src/f4rt -'+algorithm+' \
+    -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
+
+    print(strstr+' -m2 -t '+str(max_threads)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m2 -t '+str(max_threads)+' >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+  # TBB computations 1D affinity
+  for k in range(0,11):
+    rows = int(args.rowsa) + k * int(args.inc)
+    cols = int(args.colsa) + k * int(args.inc)
+    strstr = '../../src/f4rt -'+algorithm+' \
+    -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
+
+    print(strstr+' -m2 -t '+str(max_threads)+' -a >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m2 -t '+str(max_threads)+' -a >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+  # TBB computations 1D simple
+  for k in range(0,11):
+    rows = int(args.rowsa) + k * int(args.inc)
+    cols = int(args.colsa) + k * int(args.inc)
+    strstr = '../../src/f4rt -'+algorithm+' \
+    -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
+
+    print(strstr+' -m2 -t '+str(max_threads)+' -s >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m2 -t '+str(max_threads)+' -s >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+
+
+##############################################
+# plotting part of the script
+##############################################
+
 
 if args.plot:
   file_name = 'bench-'+str(hash_value)
@@ -254,8 +366,15 @@ if args.plot:
   # 1. dimensions of benchmark matrices
   # 2. threads for plot, stored in the first line of bench file
   dimensions = lines[0].strip().replace(' ','').split(',')
-  # second line are the thread settings used
-  plot_threads = lines[1].strip().replace(' ','').split(',')
+  
+  if int(args.inc) == 0:
+    # second line are the thread settings used
+    plot_threads = lines[1].strip().replace(' ','').split(',')
+  else:
+    # if inc is set we cheat a bit and still use plot_threads and threads thus we
+    # do not need to change the code for the plotting below:
+    # There are 10 increasements of the sizes, that means, we have 11 values:
+    plot_threads = ['0','1','2','3','4','5','6','7','8','9','10']
 
   # get threads for plot, stored in the first line of bench file
   #plot_threads = f.readline().strip().replace(' ','').split(',')
@@ -293,7 +412,7 @@ if args.plot:
       styles = ['-','-','--','-','-','-','-','--',':','-','--',':']
       markers = ['None','None','None','None','o','s','None','None',
         'None','None','None','None']
-  if int(args.alg) == 2 or int(args.alg) == 3:
+  if int(args.alg) == 2 or int(args.alg) == 3 or int(args.alg) == 4:
     if start_threads == 1:
       stride = 1
       coloring = ['k','c','b','y','#7d053f','#7d053f','#7d053f']
@@ -314,10 +433,18 @@ if args.plot:
   if int(args.alg) == 1:
     pl.title('Mat Mult uint64 Matrix dimensions: '+dimensions[0]+
     ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
-  if int(args.alg) == 2 or int(args.alg) == 3 :
-    pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
-    ' x '+dimensions[1], fontsize=8)
-  ax.set_xlabel('Number of threads', fontsize=7)
+  if int(args.alg) == 2 or int(args.alg) == 3 or int(args.alg) == 4:
+    if int(args.inc) == 0:
+      pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
+      ' x '+dimensions[1], fontsize=8)
+    else:
+      pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
+      ' x '+dimensions[1]+' increasing by '+dimensions[2]+' in each step using\
+'+str(max_threads)+' threads', fontsize=8)
+  if int(args.inc) == 0:
+    ax.set_xlabel('Number of threads', fontsize=7)
+  else:
+    ax.set_xlabel('Number of increasing steps', fontsize=7)
   ax.set_ylabel('Real time in seconds', fontsize=8)
 
   pl.grid(b=True, which='major', color='k', linewidth=0.3)
@@ -343,7 +470,10 @@ if args.plot:
   # set 0 as min value for y and 1 as min value for x (threads)
   #pl.xlim(xmin=1)
   pl.ylim(ymin=0)
-  ax.legend((methods),'upper right', shadow=True, fancybox=True)
+  if int(args.inc) == 0:
+    ax.legend((methods),'upper right', shadow=True, fancybox=True)
+  else:
+    ax.legend((methods),'lower right', shadow=True, fancybox=True)
 
   # take real time of sequential computation to figure out the 
   # granularity of the yaxis
@@ -361,10 +491,18 @@ if args.plot:
   if int(args.alg) == 1:
     pl.title('Mat Mult uint64 Matrix dimensions: '+dimensions[0]+
     ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
-  if int(args.alg) == 2 or int(args.alg) == 3 :
-    pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
-    ' x '+dimensions[1], fontsize=8)
-  ax.set_xlabel('Number of threads', fontsize=8)
+  if int(args.alg) == 2 or int(args.alg) == 3 or int(args.alg) == 4:
+    if int(args.inc) == 0:
+      pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
+      ' x '+dimensions[1], fontsize=8)
+    else:
+      pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
+      ' x '+dimensions[1]+' increasing by '+dimensions[2]+' in each step using\
+'+str(max_threads)+' threads', fontsize=8)
+  if int(args.inc) == 0:
+    ax.set_xlabel('Number of threads', fontsize=7)
+  else:
+    ax.set_xlabel('Number of increasing steps', fontsize=7)
   ax.set_ylabel('GFLOPS per second', fontsize=8)
 
   pl.grid(b=True, which='major', color='k', linewidth=0.3)
@@ -388,7 +526,10 @@ if args.plot:
   # set 0 as min value for y and 1 as min value for x (threads)
   #pl.xlim(xmin=1)
   pl.ylim(ymin=0)
-  ax.legend((methods),'upper left', shadow=True, fancybox=True)
+  if int(args.inc) == 0:
+    ax.legend((methods),'upper left', shadow=True, fancybox=True)
+  else:
+    ax.legend((methods),'lower right', shadow=True, fancybox=True)
 
   # take gflops of best computation to figure out the 
   # granularity of the yaxis
