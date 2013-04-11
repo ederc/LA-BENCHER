@@ -22,7 +22,7 @@ void *elimPTHRD(void *p) {
   mat mult;
   for (uint32 j = start+1; j < end+1; ++j) {
     mult  = (_p->a[i+j*n] * inv) % prime;
-    for (uint32 k = i; k < n; ++k) {
+    for (uint32 k = i+1; k < n; ++k) {
       _p->a[k+j*n]  +=  _p->a[k+i*n] * mult;
       _p->a[k+j*n]  %=  prime;
     }
@@ -31,7 +31,6 @@ void *elimPTHRD(void *p) {
 }
 
 void elimNaivePTHRDModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
-  uint32 l;
   uint32 m        = A.nRows();
   uint32 n        = A.nCols(); 
   mat *a_entries  = A.entries.data();

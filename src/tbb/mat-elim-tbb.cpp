@@ -16,7 +16,6 @@ void elimTBB(Matrix& A, int blocksize) {
 }
 
 void elimNaiveTBBModP1dAuto(Matrix& A, int nthrds, int blocksize, uint64 prime) {
-  uint32 l;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
   // if m > n then only n eliminations are possible
@@ -49,7 +48,7 @@ void elimNaiveTBBModP1dAuto(Matrix& A, int nthrds, int blocksize, uint64 prime) 
         std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
         mult  = (A(j,i) * inv) % prime;
-        for (uint32 k = i; k < n; ++k) {
+        for (uint32 k = i+1; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
         << (A(i,k)%prime) * (mult % prime) << std::endl;
@@ -102,7 +101,6 @@ void elimNaiveTBBModP1dAuto(Matrix& A, int nthrds, int blocksize, uint64 prime) 
 }
 
 void elimNaiveTBBModP1dAffine(Matrix& A, int nthrds, int blocksize, uint64 prime) {
-  uint32 l;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
   // if m > n then only n eliminations are possible
@@ -136,7 +134,7 @@ void elimNaiveTBBModP1dAffine(Matrix& A, int nthrds, int blocksize, uint64 prime
         std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
         mult  = (A(j,i) * inv) % prime;
-        for (uint32 k = i; k < n; ++k) {
+        for (uint32 k = i+1; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
         << (A(i,k)%prime) * (mult % prime) << std::endl;
@@ -189,7 +187,6 @@ void elimNaiveTBBModP1dAffine(Matrix& A, int nthrds, int blocksize, uint64 prime
 }
 
 void elimNaiveTBBModP1dSimple(Matrix& A, int nthrds, int blocksize, uint64 prime) {
-  uint32 l;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
   // if m > n then only n eliminations are possible
@@ -223,7 +220,7 @@ void elimNaiveTBBModP1dSimple(Matrix& A, int nthrds, int blocksize, uint64 prime
         std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
         mult  = (A(j,i) * inv) % prime;
-        for (uint32 k = i; k < n; ++k) {
+        for (uint32 k = i+1; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
         << (A(i,k)%prime) * (mult % prime) << std::endl;
@@ -276,7 +273,6 @@ void elimNaiveTBBModP1dSimple(Matrix& A, int nthrds, int blocksize, uint64 prime
 }
 
 void elimNaiveTBBModP2dAuto(Matrix& A, int nthrds, int blocksize, uint64 prime) {
-  uint32 l;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
   // if m > n then only n eliminations are possible
@@ -284,7 +280,7 @@ void elimNaiveTBBModP2dAuto(Matrix& A, int nthrds, int blocksize, uint64 prime) 
   mat inv, mult;
   timeval start, stop;
   clock_t cStart, cStop;
-  std::cout << "Naive Gaussian Elimination" << std::endl;
+  std::cout << "Naive Gaussian Elimination without pivoting" << std::endl;
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -301,7 +297,7 @@ void elimNaiveTBBModP2dAuto(Matrix& A, int nthrds, int blocksize, uint64 prime) 
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
 #endif
-    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i, n, blocksize),
+    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i+1, n, blocksize),
         [&](const tbb::blocked_range2d<uint32>& r)
         {
         for (uint32 j = r.rows().begin(); j != r.rows().end(); ++j) {
@@ -362,7 +358,6 @@ void elimNaiveTBBModP2dAuto(Matrix& A, int nthrds, int blocksize, uint64 prime) 
 }
 
 void elimNaiveTBBModP2dAffine(Matrix& A, int nthrds, int blocksize, uint64 prime) {
-  uint32 l;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
   // if m > n then only n eliminations are possible
@@ -370,7 +365,7 @@ void elimNaiveTBBModP2dAffine(Matrix& A, int nthrds, int blocksize, uint64 prime
   mat inv, mult;
   timeval start, stop;
   clock_t cStart, cStop;
-  std::cout << "Naive Gaussian Elimination" << std::endl;
+  std::cout << "Naive Gaussian Elimination without pivoting" << std::endl;
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -388,7 +383,7 @@ void elimNaiveTBBModP2dAffine(Matrix& A, int nthrds, int blocksize, uint64 prime
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
 #endif
-    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i, n, blocksize),
+    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i+1, n, blocksize),
         [&](const tbb::blocked_range2d<uint32>& r)
         {
         for (uint32 j = r.rows().begin(); j != r.rows().end(); ++j) {
@@ -449,7 +444,6 @@ void elimNaiveTBBModP2dAffine(Matrix& A, int nthrds, int blocksize, uint64 prime
 }
 
 void elimNaiveTBBModP2dSimple(Matrix& A, int nthrds, int blocksize, uint64 prime) {
-  uint32 l;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
   // if m > n then only n eliminations are possible
@@ -457,7 +451,7 @@ void elimNaiveTBBModP2dSimple(Matrix& A, int nthrds, int blocksize, uint64 prime
   mat inv, mult;
   timeval start, stop;
   clock_t cStart, cStop;
-  std::cout << "Naive Gaussian Elimination" << std::endl;
+  std::cout << "Naive Gaussian Elimination without pivoting" << std::endl;
   if (nthrds <= 0) {
     nthrds  = tbb::task_scheduler_init::default_num_threads();
   }
@@ -475,7 +469,7 @@ void elimNaiveTBBModP2dSimple(Matrix& A, int nthrds, int blocksize, uint64 prime
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
 #endif
-    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i, n, blocksize),
+    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i+1, n, blocksize),
         [&](const tbb::blocked_range2d<uint32>& r)
         {
         for (uint32 j = r.rows().begin(); j != r.rows().end(); ++j) {
@@ -617,7 +611,7 @@ void elimNaiveTBBModP1dAutoPivot(Matrix& A, int nthrds, int blocksize, uint64 pr
         std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
         mult  = (A(j,i) * inv) % prime;
-        for (uint32 k = i; k < n; ++k) {
+        for (uint32 k = i+1; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
         << (A(i,k)%prime) * (mult % prime) << std::endl;
@@ -752,7 +746,7 @@ void elimNaiveTBBModP1dAffinePivot(Matrix& A, int nthrds, int blocksize, uint64 
         std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
         mult  = (A(j,i) * inv) % prime;
-        for (uint32 k = i; k < n; ++k) {
+        for (uint32 k = i+1; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
         << (A(i,k)%prime) * (mult % prime) << std::endl;
@@ -887,7 +881,7 @@ void elimNaiveTBBModP1dSimplePivot(Matrix& A, int nthrds, int blocksize, uint64 
         std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
         mult  = (A(j,i) * inv) % prime;
-        for (uint32 k = i; k < n; ++k) {
+        for (uint32 k = i+1; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
         << (A(i,k)%prime) * (mult % prime) << std::endl;
@@ -1013,7 +1007,7 @@ void elimNaiveTBBModP2dAutoPivot(Matrix& A, int nthrds, int blocksize, uint64 pr
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
 #endif
-    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i, n, blocksize),
+    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i+1, n, blocksize),
         [&](const tbb::blocked_range2d<uint32>& r)
         {
         for (uint32 j = r.rows().begin(); j != r.rows().end(); ++j) {
@@ -1148,7 +1142,7 @@ void elimNaiveTBBModP2dAffinePivot(Matrix& A, int nthrds, int blocksize, uint64 
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
 #endif
-    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i, n, blocksize),
+    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i+1, n, blocksize),
         [&](const tbb::blocked_range2d<uint32>& r)
         {
         for (uint32 j = r.rows().begin(); j != r.rows().end(); ++j) {
@@ -1283,7 +1277,7 @@ void elimNaiveTBBModP2dSimplePivot(Matrix& A, int nthrds, int blocksize, uint64 
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
 #endif
-    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i, n, blocksize),
+    tbb::parallel_for(tbb::blocked_range2d<uint32>(i+1, m, blocksize, i+1, n, blocksize),
         [&](const tbb::blocked_range2d<uint32>& r)
         {
         for (uint32 j = r.rows().begin(); j != r.rows().end(); ++j) {

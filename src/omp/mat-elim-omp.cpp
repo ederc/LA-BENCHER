@@ -17,7 +17,6 @@ void elimOMP(Matrix& A, int blocksize) {
 
 void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, int blocksize, uint64 prime) {
   int thrdCounter = nthrds;
-  uint32 l;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
   // if m > n then only n eliminations are possible
@@ -53,7 +52,7 @@ void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, int blocksize, uint64 prime)
       std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
       mult  = (A(j,i) * inv) % prime;
-      for (k = i; k < n; ++k) {
+      for (k = i+1; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
           << (A(i,k)%prime) * (mult % prime) << std::endl;
@@ -190,7 +189,7 @@ void elimNaiveOMPModP1dOuterPivot(Matrix& A, int nthrds, int blocksize, uint64 p
       std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
       mult  = (A(j,i) * inv) % prime;
-      for (k = i; k < n; ++k) {
+      for (k = i+1; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
           << (A(i,k)%prime) * (mult % prime) << std::endl;

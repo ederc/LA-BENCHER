@@ -346,7 +346,7 @@ void elimNaiveSEQModPPivot(Matrix& A, int blocksize, uint64 prime) {
       std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
       mult  = (A(j,i) * inv) % prime;
-      for (uint32 k = i; k < n; ++k) {
+      for (uint32 k = i+1; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
           << (A(i,k)%prime) * (mult % prime) << std::endl;

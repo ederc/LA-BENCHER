@@ -20,7 +20,7 @@ static void matElim1d(
   uint32 i = index;
   for (uint32 j = start; j < end; ++j) {
     mult  = (a_entries[i+j*n] * inv) % prime;
-    for (uint32 k = i; k < n; ++k) {
+    for (uint32 k = i+1; k < n; ++k) {
       a_entries[k+j*n]  +=  a_entries[k+i*n] * mult;
       a_entries[k+j*n]  %=  prime;
     }
@@ -32,7 +32,6 @@ void elimKAAPIC(Matrix& A, int blocksize) {
 }
 
 void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
-  uint32 l;
   uint32 m        = A.nRows();
   uint32 n        = A.nCols(); 
   mat *a_entries  = A.entries.data();
