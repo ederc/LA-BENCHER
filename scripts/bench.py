@@ -110,11 +110,11 @@ else :
   if start_threads == 1:
     methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
     'KAAPIC 1D','Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
-    'Intel TBB 1D simple partitioner','Intel TBB 2D simple partitioner']
+    'Intel TBB 1D simple partitioner']
   else :
     methods = ['pThread 1D','Open MP collapse(1) outer loop',
     'KAAPIC 1D','Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
-    'Intel TBB 1D simple partitioner','Intel TBB 2D simple partitioner']
+    'Intel TBB 1D simple partitioner']
   
 # lists for all methods we have, those are lists of lists:
 # e.g. time_series[i] is a list of len(threads) elements of the timings
@@ -237,11 +237,11 @@ if int(args.alg) == 1:
     os.system(strstr+' -m2 -t '+str(i)+' -d 2 -a >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-# TBB computations 2D simple
-for i in threads:
-  print(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value)+'...')
-  os.system(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value))
-  print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+  # TBB computations 2D simple
+  for i in threads:
+    print(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m2 -t '+str(i)+' -d 2 -s >> bench-'+str(hash_value))
+    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 if args.plot:
   file_name = 'bench-'+str(hash_value)
@@ -296,16 +296,16 @@ if args.plot:
   if int(args.alg) == 2 or int(args.alg) == 3:
     if start_threads == 1:
       stride = 1
-      coloring = ['k','c','b','y','#7d053f','#7d053f','#7d053f','r']
-      styles = ['None','-','-','-','-','--',':',':']
+      coloring = ['k','c','b','y','#7d053f','#7d053f','#7d053f']
+      styles = ['None','-','-','-','-','--',':']
       markers = ['^','None','None','o','None','None',
-        'None','None']
+        'None']
     else:
       stride = 1
-      coloring = ['c','b','y','#7d053f','#7d053f','#7d053f','r']
-      styles = ['-','-','-','-','--',':',':']
+      coloring = ['c','b','y','#7d053f','#7d053f','#7d053f']
+      styles = ['-','-','-','-','--',':']
       markers = ['None','None','o','None','None',
-        'None','None']
+        'None']
 
   pl.rc('legend',**{'fontsize':5})
   fig = pl.figure()
