@@ -16,31 +16,6 @@ void elimCoSEQBaseModP( mat *M, const uint32 k1, const uint32 i1,
                         uint64 size, uint64 prime, mat *neg_inv_piv) {
   uint64 k;
     
-  // get pivots first, those do only depend on the value of k1 and the size,
-  // i.e. the length of the diagonal of the block of M 
-  for (k = 0; k < size; k++) {
-    //Mpiv[k] = (mat *)malloc(sizeMat);
-    //memcpy(Mpiv[k], &M[k1+(k1+k)*cols], sizeMat);
-  }
-  // now check in which part of M we are: is this the part the diagonal from k1
-  // to k1+size is running? if so we know that the pivots are the elements and
-  // we can just set the pointer Mmdf = Mpiv
-  if (i1 == k1 && j1 == k1) {
-    //Mmdf  = Mpiv;
-  // otherwise, we need to store the right matrix elements in Mmdf. Those
-  // elements are completely different from the ones in Mpivot (remember that we
-  // have subdivided M in 4 parts. Mpiv is running in 1 part, Mmdf in one of the
-  // remaining 3 parts
-  } else {
-    //sizeMat  = size*sizeof(mat*);
-    //Mmdf            = (mat **)malloc(sizeMat);
-    //sizeMat         = size*sizeof(mat);
-    //for (k = 0; k < size; k++) {
-    //  Mmdf[k] = (mat *)malloc(sizeMat);
-    //  memcpy(Mmdf[k], &M[j1+(i1+k)*cols], sizeMat);
-    //}
-  }
-
   for (k = 0; k < size; k++) {
     M[(k1+k)+(k1+k)*cols] %= prime;
     //const mat *Mpivk  = Mpiv[k];
