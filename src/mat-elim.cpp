@@ -116,6 +116,9 @@ void eliminate(Matrix& A, const int nthrds, const int blocksize,
     elimNaiveSEQModP(A, blocksize, prime);
 #endif
   }
+  if (method == 5) {
+      elimCoSEQModPReordered(A, blocksize, prime);
+  }
 }
 
 void eliminateMatrix( char* str, int nthrds, int method, int affinity,
