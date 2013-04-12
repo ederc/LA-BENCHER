@@ -29,10 +29,14 @@ void eliminate(Matrix& A, const int nthrds, const int blocksize,
   if (method == 1) {
 #ifdef __F4RT_HAVE_OPENMP    
     if (dimension == 1) {
-      if (pivoting == 1) {
-        elimNaiveOMPModP1dOuterPivot(A, nthrds, blocksize, prime);
+      if (cacheOblivious == 0) {
+        if (pivoting == 1) {
+          elimNaiveOMPModP1dOuterPivot(A, nthrds, blocksize, prime);
+        } else {
+          elimNaiveOMPModP1dOuter(A, nthrds, blocksize, prime);
+        }
       } else {
-        elimNaiveOMPModP1dOuter(A, nthrds, blocksize, prime);
+        elimCoOMPModP(A, nthrds, blocksize, prime);
       }
     }
 #else
