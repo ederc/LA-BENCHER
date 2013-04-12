@@ -393,7 +393,7 @@ void A( mat *M, const uint32 k1, const uint32 k2,
   }
 }
 
-void elimCoSEQModP(Matrix& A, int blocksize, uint64 prime) {
+void elimCoSEQModPOld(Matrix& A, int blocksize, uint64 prime) {
   uint32 m          = A.nRows();
   uint32 n          = A.nCols();
   // if m > n then only n eliminations are possible
@@ -407,7 +407,8 @@ void elimCoSEQModP(Matrix& A, int blocksize, uint64 prime) {
   neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime); 
   timeval start, stop;
   clock_t cStart, cStop;
-  std::cout << "Cache-oblivious Gaussian Elimination without pivoting" << std::endl;
+  std::cout << "Cache-oblivious Gaussian Elimination without pivoting -- ";
+  std::cout << " old version ( not parallelizable )" << std::endl;
   gettimeofday(&start, NULL);
   cStart  = clock();
   
@@ -452,7 +453,7 @@ void elimCoSEQModP(Matrix& A, int blocksize, uint64 prime) {
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
-void elimCoSEQModPReordered(Matrix& M, int blocksize, uint64 prime) {
+void elimCoSEQModP(Matrix& M, int blocksize, uint64 prime) {
   uint32 m          = M.nRows();
   uint32 n          = M.nCols();
   // if m > n then only n eliminations are possible
@@ -466,7 +467,7 @@ void elimCoSEQModPReordered(Matrix& M, int blocksize, uint64 prime) {
   neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime); 
   timeval start, stop;
   clock_t cStart, cStop;
-  std::cout << "Cache-oblivious Gaussian Elimination without pivoting - parallelizable" << std::endl;
+  std::cout << "Cache-oblivious Gaussian Elimination without pivoting" << std::endl;
   gettimeofday(&start, NULL);
   cStart  = clock();
   

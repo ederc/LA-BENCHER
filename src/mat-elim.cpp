@@ -116,8 +116,9 @@ void eliminate(Matrix& A, const int nthrds, const int blocksize,
     elimNaiveSEQModP(A, blocksize, prime);
 #endif
   }
+  // only for testing purposes, no user option
   if (method == 5) {
-      elimCoSEQModPReordered(A, blocksize, prime);
+      elimCoSEQModPOld(A, blocksize, prime);
   }
 }
 

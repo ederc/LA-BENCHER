@@ -52,6 +52,9 @@ void D1(mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols, 
         uint64 size, uint64 prime, mat *neg_inv_piv);
 
+void elimCoSEQBaseModP( mat *M, const uint32 k1, const uint32 i1, 
+                        const uint32 j1, const uint32 rows, const uint32 cols,
+                        uint64 size, uint64 prime, mat *neg_inv_piv);
+void elimCoSEQModPOld(Matrix& A, int blocksize, uint64 prime);
 void elimCoSEQModP(Matrix& A, int blocksize, uint64 prime);
-void elimCoSEQModPReordered(Matrix& A, int blocksize, uint64 prime);
 #endif
