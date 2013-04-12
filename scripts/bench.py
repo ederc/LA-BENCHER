@@ -83,9 +83,9 @@ if int(args.alg) == 1:
   if args.colsb == 0:
     args.colsb = args.rowsa
 if int(args.alg) == 2:
-  algorithm = 'E'
-if int(args.alg) == 3:
   algorithm = 'E -w'
+if int(args.alg) == 3:
+  algorithm = 'E'
 
 # range of threads
 threads = list()

@@ -71,7 +71,7 @@ void print_help(int exval) {
  printf("       -t        number of threads to be used (default: all possible ones)\n");
  printf("       -V        print version and exit\n\n");
  printf("       -v        set verbose flag\n");
- printf("       -w        Gaussian Elimination without pivoting\n");
+ printf("       -w        Gaussian Elimination with pivoting\n");
 
  exit(exval);
 }
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
  char *fileNameA = NULL, *fileNameB = NULL;
  int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
      blocksize = 2, dimension = 1, impose = 1, rows = 0, cols = 0,
-     generate = 0, outerloop = 1, eliminate = 0, pivoting = 1,
+     generate = 0, outerloop = 1, eliminate = 0, pivoting = 0,
      cacheOblivious = 0;
  // biggest prime < 2^16
  uint64 prime = 65521;
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
       method  = atoi(strdup(optarg));
       break;
     case 'w':
-      pivoting  = 0;
+      pivoting  = 1;
       break;
     case 'R':
       rows = atoi(strdup(optarg));
