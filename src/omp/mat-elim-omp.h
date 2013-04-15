@@ -24,42 +24,28 @@ void elimCoOMPBaseModP( mat *M, const uint32 k1, const uint32 i1,
                         const uint32 j1, const uint32 rows, const uint32 cols,
                         uint64 size, uint64 prime, mat *neg_inv_piv, int nthrds);
 
-void A( mat *M, const uint32 k1, const uint32 k2,
+void AOMP( mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds);
 
-void B1(mat *M, const uint32 k1, const uint32 k2,
+void B1OMP(mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds);
 
-void B2(mat *M, const uint32 k1, const uint32 k2,
+void C1OMP(mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds);
 
-void C1(mat *M, const uint32 k1, const uint32 k2,
-        const uint32 i1, const uint32 i2,
-		    const uint32 j1, const uint32 j2,
-		    const uint32 rows, const uint32 cols,
-        uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds);
-
-void C2(mat *M, const uint32 k1, const uint32 k2,
-        const uint32 i1, const uint32 i2,
-		    const uint32 j1, const uint32 j2,
-		    const uint32 rows, const uint32 cols,
-        uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds);
-
-void D1(mat *M, const uint32 k1, const uint32 k2,
+void D1OMP(mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,

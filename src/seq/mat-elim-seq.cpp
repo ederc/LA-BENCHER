@@ -188,61 +188,6 @@ void C1(mat *M, const uint32 k1, const uint32 k2,
   }
 }
 
-void C2(mat *M, const uint32 k1, const uint32 k2, 
-        const uint32 i1, const uint32 i2,
-		    const uint32 j1, const uint32 j2, 
-		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv) {
-  if (i2 <= k1 || j2 <= k1) 
-    return;
-
-  if (size <= __F4RT_CPU_L1_CACHE) {
-    elimCoSEQBaseModP (M, k1, i1, j1, rows, cols, size, prime, neg_inv_piv);
-  } else {
-    size = size / 2;
-
-    uint32 km = (k1+k2) / 2 ;
-    uint32 im = (i1+i2) / 2;
-    uint32 jm = (j1+j2) / 2;
-
-    // parallel - start
-    // X11
-    C2( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
-    // X21
-    C2( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
-    // parallel - end
-
-    // parallel - start
-    // X21
-    D1( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
-    // X22
-    D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
-    // parallel - end
-    
-    // parallel - start
-    // X12
-    C2( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
-    // X22
-    C2( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
-    // parallel - end
-    
-    // parallel - start
-    // X11
-    D1( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
-    // X12
-    D1( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
-    // parallel - end
-  }
-}
-
 void B1(mat *M, const uint32 k1, const uint32 k2, 
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
@@ -299,62 +244,6 @@ void B1(mat *M, const uint32 k1, const uint32 k2,
   }
 }
 
-void B2(mat *M, const uint32 k1, const uint32 k2, 
-        const uint32 i1, const uint32 i2,
-		    const uint32 j1, const uint32 j2, 
-		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv) {
-  if (i2 <= k1 || j2 <= k1) 
-    return;
-
-  if (size <= __F4RT_CPU_L1_CACHE) {
-    elimCoSEQBaseModP (M, k1, i1, j1, rows, cols, size, prime, neg_inv_piv);
-  } else {
-    size = size / 2;
-
-    uint32 km = (k1+k2) / 2 ;
-    uint32 im = (i1+i2) / 2;
-    uint32 jm = (j1+j2) / 2;
-
-    // parallel - start
-    // X11
-    B2( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
-    // X12
-    B2( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
-    // parallel - end
-
-    // parallel - start
-    // X21
-    D1( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
-    // X22
-    D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
-    // parallel - end
-    
-    // parallel - start
-    // X21
-    B2( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
-    // X22
-    B2( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
-    // parallel - end
-    
-    // parallel - start
-    // X11
-    D1( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
-    // X12
-    D1( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
-    // parallel - end
-
-  }
-}
-
 void A( mat *M, const uint32 k1, const uint32 k2, 
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
@@ -365,7 +254,6 @@ void A( mat *M, const uint32 k1, const uint32 k2,
   // 
   //if (size <= 2) {
   if (size <= __F4RT_CPU_L1_CACHE) {
-    printf("size %lu\n", size);
     elimCoSEQBaseModP (M, k1, i1, j1, rows, cols, size, prime, neg_inv_piv);
   } else {
     size = size / 2;

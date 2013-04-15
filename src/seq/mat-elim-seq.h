@@ -28,19 +28,7 @@ void B1(mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols, 
         uint64 size, uint64 prime, mat *neg_inv_piv);
 
-void B2(mat *M, const uint32 k1, const uint32 k2, 
-        const uint32 i1, const uint32 i2,
-		    const uint32 j1, const uint32 j2, 
-		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv);
-
 void C1(mat *M, const uint32 k1, const uint32 k2, 
-        const uint32 i1, const uint32 i2,
-		    const uint32 j1, const uint32 j2, 
-		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv);
-
-void C2(mat *M, const uint32 k1, const uint32 k2, 
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
 		    const uint32 rows, const uint32 cols, 
