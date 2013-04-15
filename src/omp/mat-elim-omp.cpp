@@ -264,19 +264,22 @@ void elimCoOMPBaseModP( mat *M, const uint32 k1, const uint32 i1,
     // always start at the next row (k+1), otherwise we need to start at
     // row 0
     const uint32 istart  = (k1 == i1) ? k+1 : 0;
-    uint64 i;
+    uint64 i, j;
+#pragma omp parallel
+{
+#pragma omp for schedule(guided) private(i,j) collapse(1) 
     for (i = istart; i < size; i++) {
       const mat tmp = (M[k+k1+(i1+i)*cols] * inv_piv) % prime;
       // if the pivots are in the same column part of the matrix as Mmdf then we can
       // always start at the next column (k+1), otherwise we need to start at
       // column 0
       const uint32 jstart  = (k1 == j1) ? k+1 : 0;
-      uint64 j;
       for (j = jstart; j < size; j++) {
         M[(j1+j)+(i1+i)*cols]  +=  M[(j1+j)+(k1+k)*cols] * tmp;
         M[(j1+j)+(i1+i)*cols]  %=  prime;
       }
     }
+}
   }
 }
 
@@ -300,6 +303,8 @@ void D1(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
+# pragma omp parallel 
+{
     // X11
     D1( M, k1, km, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
@@ -312,9 +317,12 @@ void D1(mat *M, const uint32 k1, const uint32 k2,
     // X22
     D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X11
     D1( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
@@ -327,6 +335,7 @@ void D1(mat *M, const uint32 k1, const uint32 k2,
     // X22
     D1( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
   }
 }
@@ -351,39 +360,51 @@ void C1(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
+# pragma omp parallel 
+{
     // X11
     C1( M, k1, km, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X21
     C1( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X12
     D1( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X22
     D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X12
     C1( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X22
     C1( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X11
     D1( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X12
     D1( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
   }
 }
@@ -408,39 +429,51 @@ void C2(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
+# pragma omp parallel 
+{
     // X11
     C2( M, k1, km, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X21
     C2( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X21
     D1( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X22
     D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X12
     C2( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X22
     C2( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X11
     D1( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X12
     D1( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
   }
 }
@@ -465,39 +498,51 @@ void B1(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
+# pragma omp parallel 
+{
     // X11
     B1( M, k1, km, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X12
     B1( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X21
     D1( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X22
     D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X21
     B1( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X22
     B1( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X11
     D1( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X12
     D1( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
   }
@@ -523,39 +568,51 @@ void B2(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
+# pragma omp parallel 
+{
     // X11
     B2( M, k1, km, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X12
     B2( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X21
     D1( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X22
     D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X21
     B2( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X22
     B2( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
     // parallel - start
+# pragma omp parallel 
+{
     // X11
     D1( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     // X12
     D1( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
 
   }
@@ -586,10 +643,13 @@ void A( mat *M, const uint32 k1, const uint32 k2,
     A(M, k1, km, i1, im, j1, jm, rows, cols, size,
       prime, neg_inv_piv, nthrds);
     // parallel - start
+# pragma omp parallel 
+{
     B1( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
     C1( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds);
+}
     // parallel - end
     D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds);
@@ -605,6 +665,7 @@ void elimCoOMPModP(Matrix& M, int nthrds, int blocksize, uint64 prime) {
   int thrdCounter   = nthrds;
   if (nthrds > 0)
     omp_set_num_threads(nthrds);
+  omp_set_nested(1);
 #pragma omp parallel
 {
   #pragma omp master
@@ -630,6 +691,7 @@ void elimCoOMPModP(Matrix& M, int nthrds, int blocksize, uint64 prime) {
   cStart  = clock();
 
   // computation of blocks
+  std::cout << "OMP NESTED? " << omp_get_nested() << std::endl;
   A(a_entries, 0, boundary-1, 0, m-1, 0, n-1, m, n,
     boundary, prime, neg_inv_piv, nthrds);
 

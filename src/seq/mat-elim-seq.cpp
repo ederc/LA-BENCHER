@@ -365,6 +365,7 @@ void A( mat *M, const uint32 k1, const uint32 k2,
   // 
   //if (size <= 2) {
   if (size <= __F4RT_CPU_L1_CACHE) {
+    printf("size %lu\n", size);
     elimCoSEQBaseModP (M, k1, i1, j1, rows, cols, size, prime, neg_inv_piv);
   } else {
     size = size / 2;
