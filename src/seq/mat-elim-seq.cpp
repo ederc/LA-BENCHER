@@ -30,16 +30,14 @@ void elimCoSEQBaseModP( mat *M, const uint32 k1, const uint32 i1,
     // if the pivots are in the same row part of the matrix as Mmdf then we can
     // always start at the next row (k+1), otherwise we need to start at
     // row 0
-    const uint32 istart  = (k1 == i1) ? k+1 : 0;
-    uint64 i;
-    for (i = istart; i < size; i++) {
+    const uint64 istart  = (k1 == i1) ? k+1 : 0;
+    for (uint64 i = istart; i < size; i++) {
       const mat tmp = (M[k+k1+(i1+i)*cols] * inv_piv) % prime;
       // if the pivots are in the same column part of the matrix as Mmdf then we can
       // always start at the next column (k+1), otherwise we need to start at
       // column 0
-      const uint32 jstart  = (k1 == j1) ? k+1 : 0;
-      uint64 j;
-      for (j = jstart; j < size; j++) {
+      const uint64 jstart  = (k1 == j1) ? k+1 : 0;
+      for (uint64 j = jstart; j < size; j++) {
   	    M[(j1+j)+(i1+i)*cols]  +=  M[(j1+j)+(k1+k)*cols] * tmp;
   	    M[(j1+j)+(i1+i)*cols]  %=  prime;
       }

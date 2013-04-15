@@ -1360,23 +1360,23 @@ void elimCoTBBBaseModP( mat *M, const uint32 k1, const uint32 i1,
     // if the pivots are in the same row part of the matrix as Mmdf then we can
     // always start at the next row (k+1), otherwise we need to start at
     // row 0
-    const uint32 istart  = (k1 == i1) ? k+1 : 0;
-    uint64 i, j;
-//#pragma omp parallel
-//{
-//#pragma omp for schedule(dynamic) private(i,j)
-    for (i = istart; i < size; i++) {
+    const uint64 istart  = (k1 == i1) ? k+1 : 0;
+    //tbb::parallel_for(tbb::blocked_range<uint32>(istart, size, 1),
+    //    [&](const tbb::blocked_range<uint32>& r)
+    //    {
+    for (uint64 i = istart; i < size; i++) {
+      //for (uint64 i = r.begin(); i != r.end(); ++i) {
       const mat tmp = (M[k+k1+(i1+i)*cols] * inv_piv) % prime;
       // if the pivots are in the same column part of the matrix as Mmdf then we can
       // always start at the next column (k+1), otherwise we need to start at
       // column 0
-      const uint32 jstart  = (k1 == j1) ? k+1 : 0;
-      for (j = jstart; j < size; j++) {
+      const uint64 jstart  = (k1 == j1) ? k+1 : 0;
+      for (uint64 j = jstart; j < size; j++) {
         M[(j1+j)+(i1+i)*cols]  +=  M[(j1+j)+(k1+k)*cols] * tmp;
         M[(j1+j)+(i1+i)*cols]  %=  prime;
       }
     }
-//}
+    //});
   }
 }
 
@@ -1400,47 +1400,53 @@ void D1TBB( mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-# pragma omp parallel sections
-{
-# pragma omp section
-    // X11
-    D1TBB( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
-    // X12
-    D1TBB( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
-    // X21
-    D1TBB( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
-    // X22
-    D1TBB( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-}
+    tbb::parallel_invoke(
+      [&] () {
+        // X11
+        D1TBB( M, k1, km, i1, im, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X12
+        D1TBB( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X21
+        D1TBB( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X22
+        D1TBB( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
-{
-# pragma omp section
-    // X11
-    D1TBB( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
-    // X12
-    D1TBB( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
-    // X21
-    D1TBB( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
-    // X22
-    D1TBB( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-}
+    tbb::parallel_invoke(
+      [&] () {
+        // X11
+        D1TBB( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X12
+        D1TBB( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X21
+        D1TBB( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X22
+        D1TBB( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
     // parallel - end
   }
 }
@@ -1465,59 +1471,63 @@ void C1TBB(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-# pragma omp parallel sections
-{
-# pragma omp section
-    // X11
-    C1TBB( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
-    // X21
-    C1TBB( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-}
+    tbb::parallel_invoke(
+      [&] () {
+        // X11
+        C1TBB( M, k1, km, i1, im, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X21
+        C1TBB( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
-{
-# pragma omp section
-    // X12
-    D1TBB( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
-    // X22
-    D1TBB( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-}
+    tbb::parallel_invoke(
+      [&] () {
+        // X12
+        D1TBB( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X22
+        D1TBB( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
-{
-# pragma omp section
-    // X12
-    C1TBB( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
-    // X22
-    C1TBB( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-}
+    tbb::parallel_invoke(
+      [&] () {
+        // X12
+        C1TBB( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X22
+        C1TBB( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
-{
-# pragma omp section
-    // X11
-    D1TBB( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
-    // X12
-    D1TBB( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-}
+    tbb::parallel_invoke(
+      [&] () {
+        // X11
+        D1TBB( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X12
+        D1TBB( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
     // parallel - end
   }
 }
