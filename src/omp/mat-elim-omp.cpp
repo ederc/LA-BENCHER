@@ -11,11 +11,11 @@
 
 #define F4RT_DBG  0
 
-void elimOMP(Matrix& A, int blocksize) {
+void elimOMP(Matrix& A, uint32 blocksize) {
   //blockElimSEQ(A, 
 }
 
-void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, int blocksize, uint64 prime) {
+void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
   int thrdCounter = nthrds;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
@@ -103,7 +103,7 @@ void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, int blocksize, uint64 prime)
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
-void elimNaiveOMPModP1dOuterPivot(Matrix& A, int nthrds, int blocksize, uint64 prime) {
+void elimNaiveOMPModP1dOuterPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
   int thrdCounter = nthrds;
   uint32 l;
   uint32 m         = A.nRows();
@@ -289,11 +289,11 @@ void D1OMP( mat *M, const uint32 k1, const uint32 k2,
 		        const uint32 j1, const uint32 j2,
 		        const uint32 rows, const uint32 cols,
             uint64 size, uint64 prime, mat *neg_inv_piv,
-            int nthrds) {
+            int nthrds, uint32 blocksize) {
   if (i2 <= k1 || j2 <= k1)
     return;
 
-  if (size <= __F4RT_CPU_L1_CACHE) {
+  if (size <= blocksize) {
     elimCoOMPBaseModP(M, k1, i1, j1, rows, cols, size, prime,
                       neg_inv_piv, nthrds);
   } else {
@@ -309,19 +309,19 @@ void D1OMP( mat *M, const uint32 k1, const uint32 k2,
 # pragma omp section
     // X11
     D1OMP( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X12
     D1OMP( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X21
     D1OMP( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X22
     D1OMP( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
 
@@ -331,19 +331,19 @@ void D1OMP( mat *M, const uint32 k1, const uint32 k2,
 # pragma omp section
     // X11
     D1OMP( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X12
     D1OMP( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X21
     D1OMP( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X22
     D1OMP( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
   }
@@ -354,11 +354,11 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds) {
+        int nthrds, uint32 blocksize) {
   if (i2 <= k1 || j2 <= k1)
     return;
 
-  if (size <= __F4RT_CPU_L1_CACHE) {
+  if (size <= blocksize) {
     elimCoOMPBaseModP(M, k1, i1, j1, rows, cols, size, prime,
                       neg_inv_piv, nthrds);
   } else {
@@ -374,11 +374,11 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
 # pragma omp section
     // X11
     C1OMP( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X21
     C1OMP( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
 
@@ -388,11 +388,11 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
 # pragma omp section
     // X12
     D1OMP( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X22
     D1OMP( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
 
@@ -402,11 +402,11 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
 # pragma omp section
     // X12
     C1OMP( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X22
     C1OMP( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
 
@@ -416,11 +416,11 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
 # pragma omp section
     // X11
     D1OMP( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X12
     D1OMP( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
   }
@@ -431,11 +431,11 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds) {
+        int nthrds, uint32 blocksize) {
   if (i2 <= k1 || j2 <= k1)
     return;
 
-  if (size <= __F4RT_CPU_L1_CACHE) {
+  if (size <= blocksize) {
     elimCoOMPBaseModP(M, k1, i1, j1, rows, cols, size, prime,
                       neg_inv_piv, nthrds);
   } else {
@@ -451,11 +451,11 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
 # pragma omp section
     // X11
     B1OMP( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X12
     B1OMP( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
 
@@ -465,11 +465,11 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
 # pragma omp section
     // X21
     D1OMP( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X22
     D1OMP( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
 
@@ -479,11 +479,11 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
 # pragma omp section
     // X21
     B1OMP( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X22
     B1OMP( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
 
@@ -493,11 +493,11 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
 # pragma omp section
     // X11
     D1OMP( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     // X12
     D1OMP( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
 
@@ -509,12 +509,12 @@ void AOMP( mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds) {
+        int nthrds, uint32 blocksize) {
   if (i2 <= k1 || j2 <= k1)
     return;
 
   //if (size <= 2) {
-  if (size <= __F4RT_CPU_L1_CACHE) {
+  if (size <= blocksize) {
     elimCoOMPBaseModP(M, k1, i1, j1, rows, cols, size, prime,
                       neg_inv_piv, nthrds);
   } else {
@@ -527,29 +527,29 @@ void AOMP( mat *M, const uint32 k1, const uint32 k2,
     // forward step
 
     AOMP(M, k1, km, i1, im, j1, jm, rows, cols, size,
-      prime, neg_inv_piv, nthrds);
+      prime, neg_inv_piv, nthrds, blocksize);
     // parallel - start
 # pragma omp parallel sections
 {
 # pragma omp section
     B1OMP( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 # pragma omp section
     C1OMP( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 }
     // parallel - end
     D1OMP( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds);
+        prime, neg_inv_piv, nthrds, blocksize);
 
     // backward step
 
     AOMP(M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-      prime, neg_inv_piv, nthrds);
+      prime, neg_inv_piv, nthrds, blocksize);
   }
 }
 
-void elimCoOMPModP(Matrix& M, int nthrds, int blocksize, uint64 prime) {
+void elimCoOMPModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   int thrdCounter   = nthrds;
   if (nthrds > 0)
     omp_set_num_threads(nthrds);
@@ -580,12 +580,12 @@ void elimCoOMPModP(Matrix& M, int nthrds, int blocksize, uint64 prime) {
 
   // computation of blocks
   AOMP( a_entries, 0, boundary-1, 0, m-1, 0, n-1, m, n,
-        boundary, prime, neg_inv_piv, nthrds);
+        boundary, prime, neg_inv_piv, nthrds, blocksize);
 
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
-  std::cout << "Method:           Open MP collapse(1) outer loop" << std::endl;
+  std::cout << "Method:           Open MP parallel sections" << std::endl;
   // compute FLOPS:
   // assume addition and multiplication in the mult kernel are 2 operations
   // done A.nRows() * B.nRows() * B.nCols()

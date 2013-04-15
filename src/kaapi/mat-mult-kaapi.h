@@ -87,13 +87,13 @@ struct TaskBodyCPU<TaskMatProductL1> {
 };
 */
 // multiplies A*B^T and stores it in *this
-void multKAAPIC1d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose);
+void multKAAPIC1d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uint32 blocksize, int impose);
 
 // multiplies A*B^T and stores it in *this
-void multKAAPIC2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose);
+void multKAAPIC2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uint32 blocksize, int impose);
 
 // multiplies A*B^T and stores it in *this
-void multKAAPI(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose);
+void multKAAPI(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uint32 blocksize, int impose);
 
 #endif
 #endif

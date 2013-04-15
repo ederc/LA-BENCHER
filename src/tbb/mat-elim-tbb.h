@@ -13,21 +13,58 @@
 #include <matrix.h>
 #include "../mat-elim-tools.h"
 
-void elimTBB(Matrix& A, int blocksize);
+void elimTBB(Matrix& A, uint32 blocksize);
 
-void elimNaiveTBBModP1dAuto(Matrix& A, int nthrds, int blocksize, uint64 prime);
-void elimNaiveTBBModP1dAffine(Matrix& A, int nthrds, int blocksize, uint64 prime);
-void elimNaiveTBBModP1dSimple(Matrix& A, int nthrds, int blocksize, uint64 prime);
+void elimNaiveTBBModP1dAuto(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
+void elimNaiveTBBModP1dAffine(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
+void elimNaiveTBBModP1dSimple(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
 
-void elimNaiveTBBModP2dAuto(Matrix& A, int nthrds, int blocksize, uint64 prime);
-void elimNaiveTBBModP2dAffine(Matrix& A, int nthrds, int blocksize, uint64 prime);
-void elimNaiveTBBModP2dSimple(Matrix& A, int nthrds, int blocksize, uint64 prime);
+void elimNaiveTBBModP2dAuto(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
+void elimNaiveTBBModP2dAffine(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
+void elimNaiveTBBModP2dSimple(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
 
-void elimNaiveTBBModP1dAutoPivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
-void elimNaiveTBBModP1dAffinePivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
-void elimNaiveTBBModP1dSimplePivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
+void elimNaiveTBBModP1dAutoPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
+void elimNaiveTBBModP1dAffinePivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
+void elimNaiveTBBModP1dSimplePivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
 
-void elimNaiveTBBModP2dAutoPivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
-void elimNaiveTBBModP2dAffinePivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
-void elimNaiveTBBModP2dSimplePivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
+void elimNaiveTBBModP2dAutoPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
+void elimNaiveTBBModP2dAffinePivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
+void elimNaiveTBBModP2dSimplePivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
+
+// cache-oblivious stuff
+
+void elimCoTBBBaseModP( mat *M, const uint32 k1, const uint32 i1,
+                        const uint32 j1, const uint32 rows, const uint32 cols,
+                        uint64 size, uint64 prime, mat *neg_inv_piv,
+                        int nthrds, uint32 blocksize);
+
+void ATBB( mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize);
+
+void B1TBB(mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize);
+
+void C1TBB(mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize);
+
+void D1TBB(mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize);
+
+void elimCoTBBModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime);
 #endif

@@ -14,7 +14,7 @@
 #ifdef __F4RT_HAVE_INTEL_TBB
 // multiplies A*B^T and stores it in *this
 void multTBBAuto( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
-                  int blocksize, int impose) {
+                  uint32 blocksize, int impose) {
   uint32 l, m, n;
   if (impose == 1) {
     l = A.nRows();
@@ -113,7 +113,7 @@ void multTBBAuto( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 
 // multiplies A*B^T and stores it in *this
 void multTBBAffine( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
-                    int blocksize, int impose) {
+                    uint32 blocksize, int impose) {
   uint32 l, m, n;
   if (impose == 1) {
     l = A.nRows();
@@ -212,7 +212,7 @@ void multTBBAffine( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 
 // multiplies A*B^T and stores it in *this
 void multTBBSimple( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
-                    int blocksize, int impose) {
+                    uint32 blocksize, int impose) {
   uint32 l, m, n;
   if (impose == 1) {
     l = A.nRows();
@@ -312,7 +312,7 @@ void multTBBSimple( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 
 // multiplies A*B^T and stores it in *this
 void multTBBAuto2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
-                    int blocksize, int impose) {
+                    uint32 blocksize, int impose) {
   uint32 l, m, n;
   if (impose == 1) {
     l = A.nRows();
@@ -413,7 +413,7 @@ void multTBBAuto2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 
 // multiplies A*B^T and stores it in *this
 void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
-                      int blocksize, int impose) {
+                      uint32 blocksize, int impose) {
   uint32 l, m, n;
   if (impose == 1) {
     l = A.nRows();
@@ -514,7 +514,7 @@ void multTBBAffine2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 
 // multiplies A*B^T and stores it in *this
 void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
-                      int blocksize, int impose) {
+                      uint32 blocksize, int impose) {
   uint32 l, m, n;
   if (impose == 1) {
     l = A.nRows();
@@ -618,7 +618,7 @@ void multTBBSimple2d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 /*
 // multiplies A*B^T and stores it in *this
 void multTBBAuto3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
-                    int blocksize, int impose) {
+                    uint32 blocksize, int impose) {
   uint32 l, m, n;
   if (impose == 1) {
     l = A.nRows();
@@ -719,7 +719,7 @@ void multTBBAuto3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 
 // multiplies A*B^T and stores it in *this
 void multTBBAffine3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
-                      int blocksize, int impose) {
+                      uint32 blocksize, int impose) {
   uint32 l, m, n;
   if (impose == 1) {
     l = A.nRows();
@@ -820,7 +820,7 @@ void multTBBAffine3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 
 // multiplies A*B^T and stores it in *this
 void multTBBSimple3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
-                      int blocksize, int impose) {
+                      uint32 blocksize, int impose) {
   uint32 l, m, n;
   if (impose == 1) {
     l = A.nRows();

@@ -9,7 +9,7 @@
 
 #include "mat-elim.h"
 
-void eliminate(Matrix& A, const int nthrds, const int blocksize, 
+void eliminate(Matrix& A, const int nthrds, const uint32 blocksize, 
               const int method, const int dimension, const int affinity, 
               int outerloop, int pivoting, int cacheOblivious, uint64 prime) {
   // sequential method
@@ -46,48 +46,62 @@ void eliminate(Matrix& A, const int nthrds, const int blocksize,
   // TBB
   if (method == 2) {
 #ifdef __F4RT_HAVE_INTEL_TBB
-    if (dimension == 1) {
-      if (affinity == 1) {
-        if (pivoting == 1) {
-          elimNaiveTBBModP1dAffinePivot(A, nthrds, blocksize, prime);
-        } else {
-          elimNaiveTBBModP1dAffine(A, nthrds, blocksize, prime);
-        }
-      } else {
-        if (affinity == 2) {
+    if (cacheOblivious == 0) {
+      if (dimension == 1) {
+        if (affinity == 1) {
           if (pivoting == 1) {
-            elimNaiveTBBModP1dSimplePivot(A, nthrds, blocksize, prime);
+            elimNaiveTBBModP1dAffinePivot(A, nthrds, blocksize, prime);
           } else {
-            elimNaiveTBBModP1dSimple(A, nthrds, blocksize, prime);
+            elimNaiveTBBModP1dAffine(A, nthrds, blocksize, prime);
           }
         } else {
-          if (pivoting == 1) {
-            elimNaiveTBBModP1dAutoPivot(A, nthrds, blocksize, prime);
+          if (affinity == 2) {
+            if (pivoting == 1) {
+              elimNaiveTBBModP1dSimplePivot(A, nthrds, blocksize, prime);
+            } else {
+              elimNaiveTBBModP1dSimple(A, nthrds, blocksize, prime);
+            }
           } else {
-            elimNaiveTBBModP1dAuto(A, nthrds, blocksize, prime);
+            if (pivoting == 1) {
+              elimNaiveTBBModP1dAutoPivot(A, nthrds, blocksize, prime);
+            } else {
+              elimNaiveTBBModP1dAuto(A, nthrds, blocksize, prime);
+            }
           }
         }
       }
-    }
-    if (dimension == 2) {
-      if (affinity == 1) {
-        if (pivoting == 1) {
-          elimNaiveTBBModP2dAffinePivot(A, nthrds, blocksize, prime);
-        } else {
-          elimNaiveTBBModP2dAffine(A, nthrds, blocksize, prime);
-        }
-      } else {
-        if (affinity == 2) {
+      if (dimension == 2) {
+        if (affinity == 1) {
           if (pivoting == 1) {
-            elimNaiveTBBModP2dSimplePivot(A, nthrds, blocksize, prime);
+            elimNaiveTBBModP2dAffinePivot(A, nthrds, blocksize, prime);
           } else {
-            elimNaiveTBBModP2dSimple(A, nthrds, blocksize, prime);
+            elimNaiveTBBModP2dAffine(A, nthrds, blocksize, prime);
           }
         } else {
-          if (pivoting == 1) {
-            elimNaiveTBBModP2dAutoPivot(A, nthrds, blocksize, prime);
+          if (affinity == 2) {
+            if (pivoting == 1) {
+              elimNaiveTBBModP2dSimplePivot(A, nthrds, blocksize, prime);
+            } else {
+              elimNaiveTBBModP2dSimple(A, nthrds, blocksize, prime);
+            }
           } else {
-            elimNaiveTBBModP2dAuto(A, nthrds, blocksize, prime);
+            if (pivoting == 1) {
+              elimNaiveTBBModP2dAutoPivot(A, nthrds, blocksize, prime);
+            } else {
+              elimNaiveTBBModP2dAuto(A, nthrds, blocksize, prime);
+            }
+          }
+        }
+      }
+    } else {
+      if (dimension == 1) {
+        if (affinity == 1) {
+          // TODO
+        } else {
+          if (affinity == 2) {
+            // TODO
+          } else {
+            elimCoTBBModP(A, nthrds, blocksize, prime);
           }
         }
       }
@@ -127,7 +141,7 @@ void eliminate(Matrix& A, const int nthrds, const int blocksize,
 }
 
 void eliminateMatrix( char* str, int nthrds, int method, int affinity,
-                      int blocksize, int dimension, int outerloop, 
+                      uint32 blocksize, int dimension, int outerloop, 
                       int pivoting, int cacheOblivious, uint64 prime, 
                       int print) {
   Matrix A;

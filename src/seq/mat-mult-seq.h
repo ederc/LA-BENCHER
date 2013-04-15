@@ -13,5 +13,6 @@
 #include <matrix.h>
 
 // multiplies A*B^T and stores it in *this
-void multSEQ(Matrix& C, const Matrix& A, const Matrix& B, int blocksize, int impose);
+void multSEQ( Matrix& C, const Matrix& A, const Matrix& B, uint32 blocksize,
+              int impose);
 #endif

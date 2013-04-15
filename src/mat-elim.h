@@ -26,11 +26,11 @@
 #endif
 #include "seq/mat-elim-seq.h"
 
-void eliminate(Matrix& A, const int nthrds, const int blocksize, 
+void eliminate(Matrix& A, const int nthrds, const uint32 blocksize, 
               const int method, const int dimension, const int affinity, 
               int outerloop, int pivoting, int cacheOblivious, uint64 prime);
 
 void eliminateMatrix( char* str, int nthrds, int method, int affinity, 
-                      int blocksize, int dimension, int outerloop, 
+                      uint32 blocksize, int dimension, int outerloop, 
                       int pivoting, int cacheOblivious, uint64 prime, int print);
 #endif

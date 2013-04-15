@@ -30,7 +30,9 @@ void print_help(int exval) {
  printf("       -a        sets CPU affinity of task scheduler; note this only works\n");
  printf("                 with TBB right now\n");
  printf("       -A FILE   set first intput file; if only -A is set but not -B then A*A^T is computed.\n");
- printf("       -b        sets the block size/grain of task scheduler; default = 2\n");
+ printf("       -b        sets the block size/grain of task scheduler.\n");
+ printf("                 Default for matrix multiplication = 2,\n");
+ printf("                         for matrix elimination = __F4RT_CPU_L1_CACHE\n");
  printf("       -B FILE   set second intput file\n");
  printf("       -C        number of cols of matrix to be generated\n");
  printf("       -c        if option -E for Gaussian Elimination: Cache-oblivious implementation\n");
@@ -80,11 +82,13 @@ int main(int argc, char *argv[]) {
  int opt;
  char *fileNameA = NULL, *fileNameB = NULL;
  int print = 0, multiply  = 0, nthrds = 0, method = 0, affinity = 0,
-     blocksize = 2, dimension = 1, impose = 1, rows = 0, cols = 0,
+     dimension = 1, impose = 1, rows = 0, cols = 0,
      generate = 0, outerloop = 1, eliminate = 0, pivoting = 0,
      cacheOblivious = 0;
  // biggest prime < 2^16
  uint64 prime = 65521;
+
+ uint32 blocksize = 0;
 
  /* 
  // no arguments given
@@ -191,6 +195,8 @@ int main(int argc, char *argv[]) {
     genMatrix(rows,cols);
   }
   if (multiply && fileNameA) {
+    if (blocksize == 0)
+      blocksize = 2;
     if (fileNameB) {
       multMatrices( fileNameA, fileNameB, nthrds, method, affinity, blocksize,
                     dimension, impose, outerloop,print);  
@@ -200,9 +206,11 @@ int main(int argc, char *argv[]) {
     }
   }
   if (eliminate && fileNameA) {
-      eliminateMatrix(fileNameA, nthrds, method, affinity, 
-                      blocksize, dimension, outerloop,
-                      pivoting, cacheOblivious, prime, print);  
+    if (blocksize == 0)
+      blocksize = __F4RT_CPU_L1_CACHE;
+    eliminateMatrix(fileNameA, nthrds, method, affinity, 
+                    blocksize, dimension, outerloop,
+                    pivoting, cacheOblivious, prime, print);  
   }
   return 0;
 }

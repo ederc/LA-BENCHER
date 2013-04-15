@@ -13,7 +13,7 @@
 
 #ifdef __F4RT_HAVE_OPENMP
 // multiplies A*B^T and stores it in *this
-void multOMP1dInner(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose) {
+void multOMP1dInner(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uint32 blocksize, int impose) {
   uint32 l, m, n;
   int thrdCounter = nthrds;
   if (impose == 1) {
@@ -120,7 +120,7 @@ if (impose == 1) {
 }
 
 // multiplies A*B^T and stores it in *this
-void multOMP1dOuter(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose) {
+void multOMP1dOuter(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uint32 blocksize, int impose) {
   uint32 l, m, n;
   int thrdCounter = nthrds;
   if (impose == 1) {
@@ -227,7 +227,7 @@ if (impose == 1) {
 }
 
 // multiplies A*B^T and stores it in *this
-void multOMP2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose) {
+void multOMP2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uint32 blocksize, int impose) {
   uint32 l, m, n;
   int thrdCounter = nthrds;
   if (impose == 1) {

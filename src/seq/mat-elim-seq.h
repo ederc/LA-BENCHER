@@ -13,36 +13,41 @@
 #include <matrix.h>
 #include "../mat-elim-tools.h"
 
-void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime);
-void elimNaiveSEQModPPivot(Matrix& A, int blocksize, uint64 prime);
+void elimNaiveSEQModP(Matrix& A, uint32 blocksize, uint64 prime);
+void elimNaiveSEQModPPivot(Matrix& A, uint32 blocksize, uint64 prime);
 
 void A( mat *M, const uint32 k1, const uint32 k2, 
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
 		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv);
+        uint64 size, uint64 prime,
+        mat *neg_inv_piv, uint32 blocksize);
 
 void B1(mat *M, const uint32 k1, const uint32 k2, 
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
 		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv);
+        uint64 size, uint64 prime,
+        mat *neg_inv_piv, uint32 blocksize);
 
 void C1(mat *M, const uint32 k1, const uint32 k2, 
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
 		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv);
+        uint64 size, uint64 prime,
+        mat *neg_inv_piv, uint32 blocksize);
 
 void D1(mat *M, const uint32 k1, const uint32 k2, 
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
 		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv);
+        uint64 size, uint64 prime,
+        mat *neg_inv_piv, uint32 blocksize);
 
 void elimCoSEQBaseModP( mat *M, const uint32 k1, const uint32 i1, 
                         const uint32 j1, const uint32 rows, const uint32 cols,
-                        uint64 size, uint64 prime, mat *neg_inv_piv);
-void elimCoSEQModPOld(Matrix& A, int blocksize, uint64 prime);
-void elimCoSEQModP(Matrix& A, int blocksize, uint64 prime);
+                        uint64 size, uint64 prime,
+                        mat *neg_inv_piv, uint32 blocksize);
+void elimCoSEQModPOld(Matrix& A, uint32 blocksize, uint64 prime);
+void elimCoSEQModP(Matrix& A, uint32 blocksize, uint64 prime);
 #endif

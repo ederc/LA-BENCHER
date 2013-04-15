@@ -30,7 +30,7 @@ void *elimPTHRD(void *p) {
   return 0;
 }
 
-void elimNaivePTHRDModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
+void elimNaivePTHRDModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
   uint32 m        = A.nRows();
   uint32 n        = A.nCols(); 
   mat *a_entries  = A.entries.data();
@@ -127,7 +127,7 @@ void elimNaivePTHRDModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
-void elimNaivePTHRDModP1dPivot(Matrix& A, int nthrds, int blocksize, uint64 prime) {
+void elimNaivePTHRDModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
   uint32 l;
   uint32 m        = A.nRows();
   uint32 n        = A.nCols(); 

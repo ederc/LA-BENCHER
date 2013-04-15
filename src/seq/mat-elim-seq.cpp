@@ -88,11 +88,12 @@ void D1(mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
 		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv) {
+        uint64 size, uint64 prime,
+        mat *neg_inv_piv, uint32 blocksize) {
   if (i2 <= k1 || j2 <= k1) 
     return;
 
-  if (size <= __F4RT_CPU_L1_CACHE) {
+  if (size <= blocksize) {
     elimCoSEQBaseModP (M, k1, i1, j1, rows, cols, size, prime, neg_inv_piv);
   } else {
     size = size / 2;
@@ -104,31 +105,31 @@ void D1(mat *M, const uint32 k1, const uint32 k2,
     // parallel - start
     // X11
     D1( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X12
     D1( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X21
     D1( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X22
     D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
     
     // parallel - start
     // X11
     D1( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X12
     D1( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X21
     D1( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X22
     D1( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
   }
 }
@@ -137,11 +138,12 @@ void C1(mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
 		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv) {
+        uint64 size, uint64 prime,
+        mat *neg_inv_piv, uint32 blocksize) {
   if (i2 <= k1 || j2 <= k1) 
     return;
 
-  if (size <= __F4RT_CPU_L1_CACHE) {
+  if (size <= blocksize) {
     elimCoSEQBaseModP (M, k1, i1, j1, rows, cols, size, prime, neg_inv_piv);
   } else {
     size = size / 2;
@@ -153,37 +155,37 @@ void C1(mat *M, const uint32 k1, const uint32 k2,
     // parallel - start
     // X11
     C1( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X21
     C1( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
 
     // parallel - start
     // X12
     D1( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X22
     D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
     
     // parallel - start
     // X12
     C1( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X22
     C1( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
     
     // parallel - start
     // X11
     D1( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X12
     D1( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
   }
 }
@@ -192,11 +194,12 @@ void B1(mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
 		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv) {
+        uint64 size, uint64 prime,
+        mat *neg_inv_piv, uint32 blocksize) {
   if (i2 <= k1 || j2 <= k1) 
     return;
 
-  if (size <= __F4RT_CPU_L1_CACHE) {
+  if (size <= blocksize) {
     elimCoSEQBaseModP (M, k1, i1, j1, rows, cols, size, prime, neg_inv_piv);
   } else {
     size = size / 2;
@@ -208,37 +211,37 @@ void B1(mat *M, const uint32 k1, const uint32 k2,
     // parallel - start
     // X11
     B1( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X12
     B1( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
 
     // parallel - start
     // X21
     D1( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X22
     D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
     
     // parallel - start
     // X21
     B1( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X22
     B1( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
     
     // parallel - start
     // X11
     D1( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // X12
     D1( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
 
   }
@@ -248,12 +251,13 @@ void A( mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2, 
 		    const uint32 rows, const uint32 cols, 
-        uint64 size, uint64 prime, mat *neg_inv_piv) {
+        uint64 size, uint64 prime,
+        mat *neg_inv_piv, uint32 blocksize) {
   if (i2 <= k1 || j2 <= k1) 
     return;
   // 
   //if (size <= 2) {
-  if (size <= __F4RT_CPU_L1_CACHE) {
+  if (size <= blocksize) {
     elimCoSEQBaseModP (M, k1, i1, j1, rows, cols, size, prime, neg_inv_piv);
   } else {
     size = size / 2;
@@ -265,24 +269,24 @@ void A( mat *M, const uint32 k1, const uint32 k2,
     // forward step
 
     A(M, k1, km, i1, im, j1, jm, rows, cols, size,
-      prime, neg_inv_piv);
+      prime, neg_inv_piv, blocksize);
     // parallel - start
     B1( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     C1( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     // parallel - end
     D1( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv);
+        prime, neg_inv_piv, blocksize);
     
     // backward step
     
     A(M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-      prime, neg_inv_piv);
+      prime, neg_inv_piv, blocksize);
   }
 }
 
-void elimCoSEQModPOld(Matrix& A, int blocksize, uint64 prime) {
+void elimCoSEQModPOld(Matrix& A, uint32 blocksize, uint64 prime) {
   uint32 m          = A.nRows();
   uint32 n          = A.nCols();
   // if m > n then only n eliminations are possible
@@ -342,7 +346,7 @@ void elimCoSEQModPOld(Matrix& A, int blocksize, uint64 prime) {
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
-void elimCoSEQModP(Matrix& M, int blocksize, uint64 prime) {
+void elimCoSEQModP(Matrix& M, uint32 blocksize, uint64 prime) {
   uint32 m          = M.nRows();
   uint32 n          = M.nCols();
   // if m > n then only n eliminations are possible
@@ -362,7 +366,7 @@ void elimCoSEQModP(Matrix& M, int blocksize, uint64 prime) {
   
   // computation of blocks
   A(a_entries, 0, boundary-1, 0, m-1, 0, n-1, m, n, boundary,
-                              prime, neg_inv_piv);
+                              prime, neg_inv_piv, blocksize);
   
   gettimeofday(&stop, NULL);
   cStop = clock();
@@ -401,7 +405,7 @@ void elimCoSEQModP(Matrix& M, int blocksize, uint64 prime) {
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
-void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
+void elimNaiveSEQModP(Matrix& A, uint32 blocksize, uint64 prime) {
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 
   // if m > n then only n eliminations are possible
@@ -528,7 +532,7 @@ void elimNaiveSEQModP(Matrix& A, int blocksize, uint64 prime) {
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
-void elimNaiveSEQModPPivot(Matrix& A, int blocksize, uint64 prime) {
+void elimNaiveSEQModPPivot(Matrix& A, uint32 blocksize, uint64 prime) {
   uint32 l;
   uint32 m         = A.nRows();
   uint32 n         = A.nCols(); 

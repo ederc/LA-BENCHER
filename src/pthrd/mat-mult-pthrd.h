@@ -28,6 +28,6 @@ void *multPThread(void *p);
 
 // multiplies A*B^T and stores it in C
 void multPT(Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
-            int blocksize, int impose);
+            uint32 blocksize, int impose);
 
 #endif

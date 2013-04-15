@@ -102,7 +102,7 @@ static void multMat1d(
  * 1 Dimensional implementation
  *******************************/
 
-void multKAAPIC1d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose) {
+void multKAAPIC1d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uint32 blocksize, int impose) {
   uint32 l, m, n;
   int thrdCounter = nthrds;
   if (impose == 1) {
@@ -196,7 +196,7 @@ if (impose == 1) {
  * 2 Dimensional implementation
  *******************************/
 
-void multKAAPIC2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, int blocksize, int impose) {
+void multKAAPIC2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uint32 blocksize, int impose) {
   uint32 l, m, n;
   int thrdCounter = nthrds;
   if (impose == 1) {
@@ -307,7 +307,7 @@ struct TaskBodyCPU<TaskMatProduct> {
     const Matrix& A,
     const Matrix& B,
     const int nthrds,
-    const int blocksize,
+    const uint32 blocksize,
     const int impose
     ) {
     // NOTE:  At the moment blocksize = 1 since it is not clear how to enlarge
@@ -410,7 +410,7 @@ struct TaskBodyCPU<TaskMatProduct> {
 
 // multiplies A*B^T and stores it in *this
 void multKAAPI( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
-                int blocksize, int impose) {
+                uint32 blocksize, int impose) {
   try {
     // Join the initial group of computation : it is defining
     // when launching the program by a1run.

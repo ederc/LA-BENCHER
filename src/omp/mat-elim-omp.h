@@ -13,44 +13,45 @@
 #include <matrix.h>
 #include "../mat-elim-tools.h"
 
-void elimOMP(Matrix& A, int blocksize);
-void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, int blocksize, uint64 prime);
+void elimOMP(Matrix& A, uint32 blocksize);
+void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
 
-void elimNaiveOMPModP1dOuterPivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
+void elimNaiveOMPModP1dOuterPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
 
 // cache-oblivious stuff
 
 void elimCoOMPBaseModP( mat *M, const uint32 k1, const uint32 i1,
                         const uint32 j1, const uint32 rows, const uint32 cols,
-                        uint64 size, uint64 prime, mat *neg_inv_piv, int nthrds);
+                        uint64 size, uint64 prime, mat *neg_inv_piv,
+                        int nthrds, uint32 blocksize);
 
 void AOMP( mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds);
+        int nthrds, uint32 blocksize);
 
 void B1OMP(mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds);
+        int nthrds, uint32 blocksize);
 
 void C1OMP(mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds);
+        int nthrds, uint32 blocksize);
 
 void D1OMP(mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds);
+        int nthrds, uint32 blocksize);
 
-void elimCoOMPModP(Matrix& M, int nthrds, int blocksize, uint64 prime);
+void elimCoOMPModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime);
 #endif

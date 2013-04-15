@@ -13,9 +13,9 @@
 #include <matrix.h>
 #include "../mat-elim-tools.h"
 
-void elimKAAPIC(Matrix& A, int blocksize);
+void elimKAAPIC(Matrix& A, uint32 blocksize);
 
-void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime);
+void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
 
-void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, int blocksize, uint64 prime);
+void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
 #endif

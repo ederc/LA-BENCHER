@@ -27,11 +27,11 @@ static void matElim1d(
   }
 }
 
-void elimKAAPIC(Matrix& A, int blocksize) {
+void elimKAAPIC(Matrix& A, uint32 blocksize) {
   //blockElimSEQ(A, 
 }
 
-void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
+void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
   uint32 m        = A.nRows();
   uint32 n        = A.nCols(); 
   mat *a_entries  = A.entries.data();
@@ -98,7 +98,7 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, int blocksize, uint64 prime) {
   std::cout << "---------------------------------------------------" << std::endl;
 }
 
-void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, int blocksize, uint64 prime) {
+void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
   uint32 l;
   uint32 m        = A.nRows();
   uint32 n        = A.nCols(); 

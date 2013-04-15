@@ -30,17 +30,17 @@ void prepareMult(Matrix& A, Matrix& B, char* str);
 
 void multiply(
   Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
-  const int blocksize, const int method, const int dimension, 
+  const uint32 blocksize, const int method, const int dimension, 
   const int affinity, int impose, int outerloop
   );
 
 void multMatrices(
   char* str1, char* str2, int nthrds, int method, int affinity,
-  int blocksize, int dimension, int impose, int outerloop, int print
+  uint32 blocksize, int dimension, int impose, int outerloop, int print
   );
 
 void multEqualMatrices(
-  char* str, int nthrds, int method, int affinity, int blocksize, 
+  char* str, int nthrds, int method, int affinity, uint32 blocksize, 
   int dimension, int impose, int outerloop, int print
   );
 #endif
