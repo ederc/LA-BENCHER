@@ -268,53 +268,39 @@ void D1KAAPIC( mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        // X11
-        D1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X12
-        D1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X21
-        D1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X22
-        D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    // X11
+    D1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X12
+    D1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X21
+    D1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X22
+    D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
 
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        // X11
-        D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X12
-        D1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X21
-        D1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X22
-        D1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    // X11
+    D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X12
+    D1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X21
+    D1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X22
+    D1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
   }
 }
@@ -339,63 +325,51 @@ void C1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        // X11
-        C1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X21
-        C1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    // X11
+    C1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X21
+    C1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
 
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        // X12
-        D1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X22
-        D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    // X12
+    D1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X22
+    D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
 
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        // X12
-        C1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X22
-        C1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    // X12
+    C1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X22
+    C1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
 
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        // X11
-        D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X12
-        D1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    // X11
+    D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X12
+    D1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
   }
 }
@@ -420,63 +394,51 @@ void B1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        // X11
-        B1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X11
-        B1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    // X11
+    B1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X11
+    B1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
 
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        // X21
-        D1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X22
-        D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    // X21
+    D1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X22
+    D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
 
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        // X21
-        B1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X22
-        B1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    // X21
+    B1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X22
+    B1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
 
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        // X11
-        D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      },
-      [&] () {
-        // X12
-        D1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-            prime, neg_inv_piv, nthrds, blocksize);
-      }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    // X11
+    D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    // X12
+    D1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
 
   }
@@ -506,18 +468,17 @@ void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
 
     AKAAPIC(M, k1, km, i1, im, j1, jm, rows, cols, size,
       prime, neg_inv_piv, nthrds, blocksize);
+
     // parallel - start
-    tbb::parallel_invoke(
-      [&] () {
-        B1KAAPIC(M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-              prime, neg_inv_piv, nthrds, blocksize);
-        },
-      [&] () {
-        C1KAAPIC(M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-              prime, neg_inv_piv, nthrds, blocksize);
-        }
-    );
+    kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    B1KAAPIC(M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+          prime, neg_inv_piv, nthrds, blocksize);
+    C1KAAPIC(M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+          prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_sync();
+    kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
+    
     D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
 
@@ -537,8 +498,6 @@ void elimCoKAAPICModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   mat *neg_inv_piv  =   (mat *)calloc(boundary, sizeof(mat));
   int err = kaapic_init(1);
   int thrdCounter = kaapic_get_concurrency();
-  kaapic_foreach_attr_t attr;
-  kaapic_foreach_attr_init(&attr);
   a_entries[0]      %=  prime;
   neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime);
   timeval start, stop;
