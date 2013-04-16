@@ -13,6 +13,7 @@
 #include <matrix.h>
 #include "../mat-elim-tools.h"
 
+#ifdef __F4RT_HAVE_OPENMP
 void elimOMP(Matrix& A, uint32 blocksize);
 void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
 
@@ -54,4 +55,5 @@ void D1OMP(mat *M, const uint32 k1, const uint32 k2,
         int nthrds, uint32 blocksize);
 
 void elimCoOMPModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime);
+#endif
 #endif

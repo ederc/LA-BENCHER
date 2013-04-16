@@ -12,6 +12,7 @@
 
 #include <matrix.h>
 
+#ifdef __F4RT_HAVE_OPENMP
 // multiplies A*B^T and stores it in *this
 void multOMP1dInner(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uint32 blocksize, int impose);
 
@@ -20,4 +21,5 @@ void multOMP1dOuter(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uin
 
 // multiplies A*B^T and stores it in *this
 void multOMP2d(Matrix& C, const Matrix& A, const Matrix& B, int nthrds, uint32 blocksize, int impose);
+#endif
 #endif

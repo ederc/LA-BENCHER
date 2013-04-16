@@ -12,6 +12,8 @@
 
 #include <matrix.h>
 
+#ifdef __F4RT_HAVE_PTHREAD_H
+
 struct params {
   const mat *a;
   const mat *b;
@@ -30,4 +32,5 @@ void *multPThread(void *p);
 void multPT(Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
             uint32 blocksize, int impose);
 
+#endif
 #endif

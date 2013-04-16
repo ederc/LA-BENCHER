@@ -13,6 +13,7 @@
 #include <matrix.h>
 #include "../mat-elim-tools.h"
 
+#ifdef __F4RT_HAVE_INTEL_TBB
 void elimTBB(Matrix& A, uint32 blocksize);
 
 void elimNaiveTBBModP1dAuto(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
@@ -67,4 +68,5 @@ void D1TBB(mat *M, const uint32 k1, const uint32 k2,
         int nthrds, uint32 blocksize);
 
 void elimCoTBBModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime);
+#endif
 #endif

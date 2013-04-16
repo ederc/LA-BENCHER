@@ -11,6 +11,8 @@
 
 #define F4RT_DBG  0
 
+#ifdef __F4RT_HAVE_PTHREAD_H
+
 void *elimPTHRD(void *p) {
   paramsElim *_p  = (paramsElim *)p;
   uint32 start    = _p->start + _p->index;
@@ -273,3 +275,4 @@ void elimNaivePTHRDModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 p
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
+#endif

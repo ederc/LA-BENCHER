@@ -13,6 +13,8 @@
 #include <matrix.h>
 #include "../mat-elim-tools.h"
 
+#ifdef __F4RT_HAVE_PTHREAD_H
+
 struct paramsElim {
   mat *a;
   int size;
@@ -32,4 +34,5 @@ void elimNaivePTHRDModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime)
 
 void elimNaivePTHRDModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
 
+#endif
 #endif

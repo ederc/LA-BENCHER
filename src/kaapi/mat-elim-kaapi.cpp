@@ -11,6 +11,7 @@
 
 #define F4RT_DBG  0
 
+#if defined(__F4RT_HAVE_KAAPI)
 static void matElim1d(
     size_t start, size_t end, int32_t tid, 
     uint32 m, uint32 n, mat *a_entries, mat inv, uint64 prime, uint32 index) {
@@ -543,3 +544,4 @@ void elimCoKAAPICModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
+#endif

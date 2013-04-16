@@ -11,6 +11,7 @@
 
 #define F4RT_DBG  0
 
+#ifdef __F4RT_HAVE_OPENMP
 void elimOMP(Matrix& A, uint32 blocksize) {
   //blockElimSEQ(A, 
 }
@@ -611,3 +612,4 @@ void elimCoOMPModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
+#endif

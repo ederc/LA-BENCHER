@@ -13,6 +13,8 @@
 #include <matrix.h>
 #include "../mat-elim-tools.h"
 
+#if defined(__F4RT_HAVE_KAAPI)
+
 void elimKAAPIC(Matrix& A, uint32 blocksize);
 
 void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
@@ -55,4 +57,5 @@ void D1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
         int nthrds, uint32 blocksize);
 
 void elimCoKAAPICModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime);
+#endif
 #endif

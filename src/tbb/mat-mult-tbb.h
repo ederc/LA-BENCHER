@@ -8,10 +8,10 @@
  */
 
 #ifndef F4RT_MAT_MULT_TBB_H
-#define F4RT_MAT_MULTTBB_H
+#define F4RT_MAT_MULT_TBB_H
 
-#include <tbb/tbb.h>
 #include <matrix.h>
+#ifdef __F4RT_HAVE_INTEL_TBB
 
 // multiplies A*B^T and stores it in *this
 void multTBBAuto( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
@@ -49,4 +49,5 @@ void multTBBAffine3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds,
 void multTBBSimple3d( Matrix& C, const Matrix& A, const Matrix& B, int nthrds, 
                       uint32 blocksize, int impose);
 */
+#endif
 #endif
