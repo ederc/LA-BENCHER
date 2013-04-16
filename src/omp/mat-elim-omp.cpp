@@ -553,7 +553,7 @@ void elimCoOMPModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   int thrdCounter   = nthrds;
   if (nthrds > 0)
     omp_set_num_threads(nthrds);
-  omp_set_nested(1);
+  omp_set_nested(0);
 #pragma omp parallel
 {
   #pragma omp master

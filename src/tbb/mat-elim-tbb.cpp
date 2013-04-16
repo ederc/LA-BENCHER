@@ -1628,6 +1628,10 @@ void elimCoTBBModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   timeval start, stop;
   clock_t cStart, cStop;
   std::cout << "Cache-oblivious Gaussian Elimination without pivoting" << std::endl;
+  if (nthrds <= 0) {
+    nthrds  = tbb::task_scheduler_init::default_num_threads();
+  }
+  tbb::task_scheduler_init init(nthrds);
   gettimeofday(&start, NULL);
   cStart  = clock();
 
