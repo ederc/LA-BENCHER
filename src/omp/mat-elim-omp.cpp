@@ -66,15 +66,11 @@ void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, uint32 blocksize, uint64 pri
     }
   }
 }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Open MP collapse(1) outer loop" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -103,7 +99,9 @@ void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, uint32 blocksize, uint64 pri
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
-void elimNaiveOMPModP1dOuterPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
+
+void elimNaiveOMPModP1dOuterPivot(Matrix& A, int nthrds, uint32 blocksize,
+                                  uint64 prime) {
   int thrdCounter = nthrds;
   uint32 l;
   uint32 m         = A.nRows();
@@ -203,8 +201,6 @@ void elimNaiveOMPModP1dOuterPivot(Matrix& A, int nthrds, uint32 blocksize, uint6
     }
   }
 }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
@@ -251,7 +247,6 @@ void elimCoOMPBaseModP( mat *M, const uint32 k1, const uint32 i1,
 
   for (k = 0; k < size; k++) {
     M[(k1+k)+(k1+k)*cols] %= prime;
-    //const mat *Mpivk  = Mpiv[k];
     // possibly the negative inverses of the pivots at place (k,k) were already
     // computed in another call. otherwise we need to compute and store it
 
@@ -266,6 +261,10 @@ void elimCoOMPBaseModP( mat *M, const uint32 k1, const uint32 i1,
     // row 0
     //uint32 i, j;
     const uint64 istart  = (k1 == i1) ? k+1 : 0;
+
+// NOTE: Parallelizing this part of the GEP slows down the computations on my
+// machine for 4096 x 4096 by roughly 5%
+
 //#pragma omp parallel
 //{
 //#pragma omp for schedule(static)
@@ -565,11 +564,8 @@ void elimCoOMPModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   uint32 n          = M.nCols();
   // if m > n then only n eliminations are possible
   uint32 boundary   = (m > n) ? n : m;
-  //mat *a_entries    = (mat *)malloc(A.entries.size() * sizeof(mat));
-  //memcpy(a_entries, M.entries.data(), A.entries.size() * sizeof(mat));
   mat *a_entries    = M.entries.data();
   mat *neg_inv_piv  =   (mat *)calloc(boundary, sizeof(mat));
-  cleanUpModP(M, prime);
   a_entries[0]      %=  prime;
   neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime);
   timeval start, stop;
@@ -587,8 +583,6 @@ void elimCoOMPModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Open MP parallel sections" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 +

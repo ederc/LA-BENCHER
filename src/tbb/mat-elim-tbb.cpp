@@ -62,15 +62,11 @@ void elimNaiveTBBModP1dAuto(Matrix& A, int nthrds, uint32 blocksize, uint64 prim
         }
         });
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D auto partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -148,15 +144,11 @@ void elimNaiveTBBModP1dAffine(Matrix& A, int nthrds, uint32 blocksize, uint64 pr
         }
         }, ap);
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D affinity partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -234,15 +226,11 @@ void elimNaiveTBBModP1dSimple(Matrix& A, int nthrds, uint32 blocksize, uint64 pr
         }
         }, sp);
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D simple partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -319,15 +307,11 @@ void elimNaiveTBBModP2dAuto(Matrix& A, int nthrds, uint32 blocksize, uint64 prim
         }
         });
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D auto partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -405,15 +389,11 @@ void elimNaiveTBBModP2dAffine(Matrix& A, int nthrds, uint32 blocksize, uint64 pr
         }
         }, ap);
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D affinity partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -491,15 +471,11 @@ void elimNaiveTBBModP2dSimple(Matrix& A, int nthrds, uint32 blocksize, uint64 pr
         }
         }, sp);
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D simple partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -625,15 +601,11 @@ void elimNaiveTBBModP1dAutoPivot(Matrix& A, int nthrds, uint32 blocksize, uint64
         }
         });
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D auto partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -760,15 +732,11 @@ void elimNaiveTBBModP1dAffinePivot(Matrix& A, int nthrds, uint32 blocksize, uint
         }
         }, ap);
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D affinity partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -895,15 +863,11 @@ void elimNaiveTBBModP1dSimplePivot(Matrix& A, int nthrds, uint32 blocksize, uint
         }
         }, sp);
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 1D simple partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -1029,15 +993,11 @@ void elimNaiveTBBModP2dAutoPivot(Matrix& A, int nthrds, uint32 blocksize, uint64
         }
         });
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D auto partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -1164,15 +1124,11 @@ void elimNaiveTBBModP2dAffinePivot(Matrix& A, int nthrds, uint32 blocksize, uint
         }
         }, ap);
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D affinity partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -1299,15 +1255,11 @@ void elimNaiveTBBModP2dSimplePivot(Matrix& A, int nthrds, uint32 blocksize, uint
         }
         }, sp);
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB 2D simple partitioner" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -1347,7 +1299,6 @@ void elimCoTBBBaseModP( mat *M, const uint32 k1, const uint32 i1,
 
   for (k = 0; k < size; k++) {
     M[(k1+k)+(k1+k)*cols] %= prime;
-    //const mat *Mpivk  = Mpiv[k];
     // possibly the negative inverses of the pivots at place (k,k) were already
     // computed in another call. otherwise we need to compute and store it
 
@@ -1361,6 +1312,10 @@ void elimCoTBBBaseModP( mat *M, const uint32 k1, const uint32 i1,
     // always start at the next row (k+1), otherwise we need to start at
     // row 0
     const uint64 istart  = (k1 == i1) ? k+1 : 0;
+
+    // NOTE: Parallelizing the GEP here, too, we get a slow down of roughly 3-5%
+    // on my machine for 4096 x 4096
+
     //tbb::parallel_for(tbb::blocked_range<uint32>(istart, size, 1),
     //    [&](const tbb::blocked_range<uint32>& r)
     //    {
@@ -1665,11 +1620,8 @@ void elimCoTBBModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   uint32 n          = M.nCols();
   // if m > n then only n eliminations are possible
   uint32 boundary   = (m > n) ? n : m;
-  //mat *a_entries    = (mat *)malloc(A.entries.size() * sizeof(mat));
-  //memcpy(a_entries, M.entries.data(), A.entries.size() * sizeof(mat));
   mat *a_entries    = M.entries.data();
   mat *neg_inv_piv  =   (mat *)calloc(boundary, sizeof(mat));
-  cleanUpModP(M, prime);
   a_entries[0]      %=  prime;
   neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime);
   timeval start, stop;
@@ -1687,8 +1639,6 @@ void elimCoTBBModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Intel TBB Invoke" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 

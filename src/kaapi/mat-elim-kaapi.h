@@ -18,4 +18,41 @@ void elimKAAPIC(Matrix& A, uint32 blocksize);
 void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
 
 void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime);
+
+// cache-oblivious stuff
+
+void elimCoKAAPICBaseModP( mat *M, const uint32 k1, const uint32 i1,
+                        const uint32 j1, const uint32 rows, const uint32 cols,
+                        uint64 size, uint64 prime, mat *neg_inv_piv,
+                        int nthrds, uint32 blocksize);
+
+void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize);
+
+void B1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize);
+
+void C1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize);
+
+void D1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize);
+
+void elimCoKAAPICModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime);
 #endif

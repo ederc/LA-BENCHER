@@ -18,7 +18,6 @@ void elimCoSEQBaseModP( mat *M, const uint32 k1, const uint32 i1,
     
   for (k = 0; k < size; k++) {
     M[(k1+k)+(k1+k)*cols] %= prime;
-    //const mat *Mpivk  = Mpiv[k];
     // possibly the negative inverses of the pivots at place (k,k) were already
     // computed in another call. otherwise we need to compute and store it
     if (!neg_inv_piv[k+k1]) {
@@ -289,11 +288,8 @@ void elimCoSEQModPOld(Matrix& A, uint32 blocksize, uint64 prime) {
   uint32 n          = A.nCols();
   // if m > n then only n eliminations are possible
   uint32 boundary   = (m > n) ? n : m;
-  //mat *a_entries    = (mat *)malloc(A.entries.size() * sizeof(mat));
-  //memcpy(a_entries, A.entries.data(), A.entries.size() * sizeof(mat));
   mat *a_entries    = A.entries.data();
   mat *neg_inv_piv  =   (mat *)calloc(boundary, sizeof(mat));
-  cleanUpModP(A, prime);
   a_entries[0]      %=  prime;
   neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime); 
   timeval start, stop;
@@ -309,12 +305,9 @@ void elimCoSEQModPOld(Matrix& A, uint32 blocksize, uint64 prime) {
   
   gettimeofday(&stop, NULL);
   cStop = clock();
-  //cleanUpModP(A, prime);
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Raw sequential" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -349,11 +342,8 @@ void elimCoSEQModP(Matrix& M, uint32 blocksize, uint64 prime) {
   uint32 n          = M.nCols();
   // if m > n then only n eliminations are possible
   uint32 boundary   = (m > n) ? n : m;
-  //mat *a_entries    = (mat *)malloc(A.entries.size() * sizeof(mat));
-  //memcpy(a_entries, M.entries.data(), A.entries.size() * sizeof(mat));
   mat *a_entries    = M.entries.data();
   mat *neg_inv_piv  =   (mat *)calloc(boundary, sizeof(mat));
-  cleanUpModP(M, prime);
   a_entries[0]      %=  prime;
   neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime); 
   timeval start, stop;
@@ -368,12 +358,9 @@ void elimCoSEQModP(Matrix& M, uint32 blocksize, uint64 prime) {
   
   gettimeofday(&stop, NULL);
   cStop = clock();
-  //cleanUpModP(A, prime);
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Raw sequential" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -492,15 +479,11 @@ void elimNaiveSEQModP(Matrix& A, uint32 blocksize, uint64 prime) {
       }
     }
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Raw sequential" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -618,15 +601,11 @@ void elimNaiveSEQModPPivot(Matrix& A, uint32 blocksize, uint64 prime) {
       }
     }
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           Raw sequential" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 

@@ -113,10 +113,14 @@ void eliminate(Matrix& A, const int nthrds, const uint32 blocksize,
   // KAAPI
   if (method == 3) {
 #ifdef __F4RT_HAVE_KAAPI
-    if (pivoting == 1) {
-      elimNaiveKAAPICModP1dPivot(A, nthrds, blocksize, prime);
+    if (cacheOblivious == 0) {
+      if (pivoting == 1) {
+        elimNaiveKAAPICModP1dPivot(A, nthrds, blocksize, prime);
+      } else {
+        elimNaiveKAAPICModP1d(A, nthrds, blocksize, prime);
+      }
     } else {
-      elimNaiveKAAPICModP1d(A, nthrds, blocksize, prime);
+      elimCoKAAPICModP(A, nthrds, blocksize, prime);
     }
 #else
     elimNaiveSEQModP(A, blocksize, prime);

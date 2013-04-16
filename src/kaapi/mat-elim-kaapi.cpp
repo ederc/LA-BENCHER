@@ -17,10 +17,10 @@ static void matElim1d(
   
   mat mult;
   int thrdNumber  = kaapic_get_thread_num();
-  uint32 i = index;
-  for (uint32 j = start; j < end; ++j) {
+  uint64 i = index;
+  for (uint64 j = start; j < end; ++j) {
     mult  = (a_entries[i+j*n] * inv) % prime;
-    for (uint32 k = i+1; k < n; ++k) {
+    for (uint64 k = i+1; k < n; ++k) {
       a_entries[k+j*n]  +=  a_entries[k+i*n] * mult;
       a_entries[k+j*n]  %=  prime;
     }
@@ -60,15 +60,11 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime
 #endif
     kaapic_foreach(i+1, m, &attr, 6, matElim1d, m, n, a_entries, inv, prime, i);
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           KAAPIC 1D" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
@@ -176,15 +172,390 @@ void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 
 #endif
     kaapic_foreach(i+1, m, &attr, 6, matElim1d, m, n, a_entries, inv, prime, i);
   }
-  //cleanUpModP(A, prime);
-  //A.print();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
   std::cout << "Method:           KAAPIC 1D" << std::endl;
   // compute FLOPS:
-  // assume addition and multiplication in the mult kernel are 2 operations
-  // done A.nRows() * B.nRows() * B.nCols()
+  double flops = countGEPFlops(m, n, prime);
+  float epsilon = 0.0000000001;
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 +
+                    (stop.tv_usec - start.tv_usec)) / 1e6;
+  double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
+  char buffer[50];
+  // get digits before decimal point of cputime (the longest number) and setw
+  // with it: digits + 1 (point) + 4 (precision)
+  int digits = sprintf(buffer,"%.0f",cputime);
+  double ratio = cputime/realtime;
+  std::cout << "# Threads:        " << thrdCounter << std::endl;
+  std::cout << "Block size:       " << blocksize << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "Real time:        " << std::setw(digits+1+4)
+    << std::setprecision(4) << std::fixed << realtime << " sec"
+    << std::endl;
+  std::cout << "CPU time:         " << std::setw(digits+1+4)
+    << std::setprecision(4) << std::fixed << cputime
+    << " sec" << std::endl;
+  if (cputime > epsilon)
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4)
+      << std::setprecision(4) << std::fixed << ratio << std::endl;
+  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4)
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime)
+    << std:: endl;
+  std::cout << "---------------------------------------------------" << std::endl;
+}
+
+
+// cache-oblivious stuff
+
+void elimCoKAAPICBaseModP( mat *M, const uint32 k1, const uint32 i1,
+                        const uint32 j1, const uint32 rows, const uint32 cols,
+                        uint64 size, uint64 prime, mat *neg_inv_piv, int nthrds) {
+  uint64 k;
+
+  for (k = 0; k < size; k++) {
+    M[(k1+k)+(k1+k)*cols] %= prime;
+    // possibly the negative inverses of the pivots at place (k,k) were already
+    // computed in another call. otherwise we need to compute and store it
+
+    if (!neg_inv_piv[k+k1]) {
+      if (M[(k1+k)+(k1+k)*cols] != 0) {
+        neg_inv_piv[k+k1] = negInverseModP(M[(k1+k)+(k1+k)*cols], prime);
+      }
+    }
+    const mat inv_piv   = neg_inv_piv[k+k1];
+    // if the pivots are in the same row part of the matrix as Mmdf then we can
+    // always start at the next row (k+1), otherwise we need to start at
+    // row 0
+    const uint64 istart  = (k1 == i1) ? k+1 : 0;
+    //tbb::parallel_for(tbb::blocked_range<uint32>(istart, size, 1),
+    //    [&](const tbb::blocked_range<uint32>& r)
+    //    {
+    for (uint64 i = istart; i < size; i++) {
+      //for (uint64 i = r.begin(); i != r.end(); ++i) {
+      const mat tmp = (M[k+k1+(i1+i)*cols] * inv_piv) % prime;
+      // if the pivots are in the same column part of the matrix as Mmdf then we can
+      // always start at the next column (k+1), otherwise we need to start at
+      // column 0
+      const uint64 jstart  = (k1 == j1) ? k+1 : 0;
+      for (uint64 j = jstart; j < size; j++) {
+        M[(j1+j)+(i1+i)*cols]  +=  M[(j1+j)+(k1+k)*cols] * tmp;
+        M[(j1+j)+(i1+i)*cols]  %=  prime;
+      }
+    }
+    //});
+  }
+}
+
+void D1KAAPIC( mat *M, const uint32 k1, const uint32 k2,
+            const uint32 i1, const uint32 i2,
+		        const uint32 j1, const uint32 j2,
+		        const uint32 rows, const uint32 cols,
+            uint64 size, uint64 prime, mat *neg_inv_piv,
+            int nthrds, uint32 blocksize) {
+  if (i2 <= k1 || j2 <= k1)
+    return;
+
+  if (size <= blocksize) {
+    elimCoKAAPICBaseModP(M, k1, i1, j1, rows, cols, size, prime,
+                      neg_inv_piv, nthrds);
+  } else {
+    size = size / 2;
+
+    uint32 km = (k1+k2) / 2 ;
+    uint32 im = (i1+i2) / 2;
+    uint32 jm = (j1+j2) / 2;
+
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        // X11
+        D1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X12
+        D1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X21
+        D1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X22
+        D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
+    // parallel - end
+
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        // X11
+        D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X12
+        D1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X21
+        D1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X22
+        D1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
+    // parallel - end
+  }
+}
+
+void C1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize) {
+  if (i2 <= k1 || j2 <= k1)
+    return;
+
+  if (size <= blocksize) {
+    elimCoKAAPICBaseModP(M, k1, i1, j1, rows, cols, size, prime,
+                      neg_inv_piv, nthrds);
+  } else {
+    size = size / 2;
+
+    uint32 km = (k1+k2) / 2 ;
+    uint32 im = (i1+i2) / 2;
+    uint32 jm = (j1+j2) / 2;
+
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        // X11
+        C1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X21
+        C1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
+    // parallel - end
+
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        // X12
+        D1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X22
+        D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
+    // parallel - end
+
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        // X12
+        C1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X22
+        C1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
+    // parallel - end
+
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        // X11
+        D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X12
+        D1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
+    // parallel - end
+  }
+}
+
+void B1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize) {
+  if (i2 <= k1 || j2 <= k1)
+    return;
+
+  if (size <= blocksize) {
+    elimCoKAAPICBaseModP(M, k1, i1, j1, rows, cols, size, prime,
+                      neg_inv_piv, nthrds);
+  } else {
+    size = size / 2;
+
+    uint32 km = (k1+k2) / 2 ;
+    uint32 im = (i1+i2) / 2;
+    uint32 jm = (j1+j2) / 2;
+
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        // X11
+        B1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X11
+        B1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
+    // parallel - end
+
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        // X21
+        D1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X22
+        D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
+    // parallel - end
+
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        // X21
+        B1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X22
+        B1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
+    // parallel - end
+
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        // X11
+        D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      },
+      [&] () {
+        // X12
+        D1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
+            prime, neg_inv_piv, nthrds, blocksize);
+      }
+    );
+    // parallel - end
+
+  }
+}
+
+void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
+        const uint32 i1, const uint32 i2,
+		    const uint32 j1, const uint32 j2,
+		    const uint32 rows, const uint32 cols,
+        uint64 size, uint64 prime, mat *neg_inv_piv,
+        int nthrds, uint32 blocksize) {
+  if (i2 <= k1 || j2 <= k1)
+    return;
+
+  //if (size <= 2) {
+  if (size <= blocksize) {
+    elimCoKAAPICBaseModP(M, k1, i1, j1, rows, cols, size, prime,
+                      neg_inv_piv, nthrds);
+  } else {
+    size = size / 2;
+
+    uint32 km = (k1+k2) / 2 ;
+    uint32 im = (i1+i2) / 2;
+    uint32 jm = (j1+j2) / 2;
+
+    // forward step
+
+    AKAAPIC(M, k1, km, i1, im, j1, jm, rows, cols, size,
+      prime, neg_inv_piv, nthrds, blocksize);
+    // parallel - start
+    tbb::parallel_invoke(
+      [&] () {
+        B1KAAPIC(M, k1, km, i1, im, jm+1, j2, rows, cols, size,
+              prime, neg_inv_piv, nthrds, blocksize);
+        },
+      [&] () {
+        C1KAAPIC(M, k1, km, im+1, i2, j1, jm, rows, cols, size,
+              prime, neg_inv_piv, nthrds, blocksize);
+        }
+    );
+    // parallel - end
+    D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+        prime, neg_inv_piv, nthrds, blocksize);
+
+    // backward step
+
+    AKAAPIC(M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
+      prime, neg_inv_piv, nthrds, blocksize);
+  }
+}
+
+void elimCoKAAPICModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
+  uint32 m          = M.nRows();
+  uint32 n          = M.nCols();
+  // if m > n then only n eliminations are possible
+  uint32 boundary   = (m > n) ? n : m;
+  mat *a_entries    = M.entries.data();
+  mat *neg_inv_piv  =   (mat *)calloc(boundary, sizeof(mat));
+  int err = kaapic_init(1);
+  int thrdCounter = kaapic_get_concurrency();
+  kaapic_foreach_attr_t attr;
+  kaapic_foreach_attr_init(&attr);
+  a_entries[0]      %=  prime;
+  neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime);
+  timeval start, stop;
+  clock_t cStart, cStop;
+  std::cout << "Cache-oblivious Gaussian Elimination without pivoting" << std::endl;
+  gettimeofday(&start, NULL);
+  cStart  = clock();
+
+  // computation of blocks
+  AKAAPIC( a_entries, 0, boundary-1, 0, m-1, 0, n-1, m, n,
+        boundary, prime, neg_inv_piv, nthrds, blocksize);
+
+  gettimeofday(&stop, NULL);
+  cStop = clock();
+  std::cout << "---------------------------------------------------" << std::endl;
+  std::cout << "Method:           KAAPIC 1D" << std::endl;
+  // compute FLOPS:
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
