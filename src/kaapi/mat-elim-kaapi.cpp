@@ -13,9 +13,9 @@
 
 #if defined(__F4RT_HAVE_KAAPI)
 static void matElim1d(
-    size_t start, size_t end, int32_t tid, 
+    size_t start, size_t end, int32_t tid,
     uint32 m, uint32 n, mat *a_entries, mat inv, uint64 prime, uint32 index) {
-  
+
   mat mult;
   int thrdNumber  = kaapic_get_thread_num();
   uint64 i = index;
@@ -29,12 +29,12 @@ static void matElim1d(
 }
 
 void elimKAAPIC(Matrix& A, uint32 blocksize) {
-  //blockElimSEQ(A, 
+  //blockElimSEQ(A,
 }
 
 void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
   uint32 m        = A.nRows();
-  uint32 n        = A.nCols(); 
+  uint32 n        = A.nCols();
   mat *a_entries  = A.entries.data();
   // if m > n then only n eliminations are possible
   uint32 boundary  = (m > n) ? n : m;
@@ -61,6 +61,7 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime
 #endif
     kaapic_foreach(i+1, m, &attr, 6, matElim1d, m, n, a_entries, inv, prime, i);
   }
+  err = kaapic_finalize();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
@@ -68,29 +69,29 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime
   // compute FLOPS:
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
-  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 +
                     (stop.tv_usec - start.tv_usec)) / 1e6;
   double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
   char buffer[50];
   // get digits before decimal point of cputime (the longest number) and setw
-  // with it: digits + 1 (point) + 4 (precision) 
+  // with it: digits + 1 (point) + 4 (precision)
   int digits = sprintf(buffer,"%.0f",cputime);
   double ratio = cputime/realtime;
   std::cout << "# Threads:        " << thrdCounter << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << std::setw(digits+1+4) 
-    << std::setprecision(4) << std::fixed << realtime << " sec" 
+  std::cout << "Real time:        " << std::setw(digits+1+4)
+    << std::setprecision(4) << std::fixed << realtime << " sec"
     << std::endl;
-  std::cout << "CPU time:         " << std::setw(digits+1+4) 
+  std::cout << "CPU time:         " << std::setw(digits+1+4)
     << std::setprecision(4) << std::fixed << cputime
     << " sec" << std::endl;
   if (cputime > epsilon)
-    std::cout << "CPU/real time:    " << std::setw(digits+1+4) 
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4)
       << std::setprecision(4) << std::fixed << ratio << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4) 
-    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime) 
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4)
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime)
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
@@ -98,7 +99,7 @@ void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime
 void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
   uint32 l;
   uint32 m        = A.nRows();
-  uint32 n        = A.nCols(); 
+  uint32 n        = A.nCols();
   mat *a_entries  = A.entries.data();
   // if m > n then only n eliminations are possible
   uint32 boundary  = (m > n) ? n : m;
@@ -121,12 +122,12 @@ void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 
     if (A(i,i) == 0) {
       l = i+1;
 #if F4RT_DBG
-      std::cout << "l1 " << l << std::endl; 
+      std::cout << "l1 " << l << std::endl;
 #endif
       while (l < m && A(l,i) % prime == 0) {
         l++;
 #if F4RT_DBG
-        std::cout << "l2 " << l << std::endl; 
+        std::cout << "l2 " << l << std::endl;
 #endif
       }
       if (l == m) {
@@ -173,6 +174,7 @@ void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 
 #endif
     kaapic_foreach(i+1, m, &attr, 6, matElim1d, m, n, a_entries, inv, prime, i);
   }
+  err = kaapic_finalize();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
@@ -445,6 +447,25 @@ void B1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
   }
 }
 
+/*
+ * the following procedure does not compile even though it is just a copy of a
+ * test example from the xkaapi repository!
+ *
+void fibotest(const int n, int* res) {
+  if (n<2)
+    *res +=  n;
+  else {
+    kaapic_spawn(0, 2, fibotest,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, n-1,
+        KAAPIC_MODE_CW, KAAPIC_REDOP_PLUS, KAAPIC_TYPE_INT, 1, res
+    );
+    kaapic_spawn(0, 2, fibotest,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, n-2,
+        KAAPIC_MODE_CW, KAAPIC_REDOP_PLUS, KAAPIC_TYPE_INT, 1, res
+    );
+  }
+}
+*/
 void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2,
@@ -466,10 +487,26 @@ void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // forward step
-
     AKAAPIC(M, k1, km, i1, im, j1, jm, rows, cols, size,
       prime, neg_inv_piv, nthrds, blocksize);
-
+/*
+    kaapic_spawn(0, 14, AKAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+*/
     // parallel - start
     kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
     B1KAAPIC(M, k1, km, i1, im, jm+1, j2, rows, cols, size,
@@ -479,7 +516,7 @@ void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
     kaapic_sync();
     kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
-    
+
     D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
 
@@ -511,6 +548,7 @@ void elimCoKAAPICModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   AKAAPIC( a_entries, 0, boundary-1, 0, m-1, 0, n-1, m, n,
         boundary, prime, neg_inv_piv, nthrds, blocksize);
 
+  err = kaapic_finalize();
   gettimeofday(&stop, NULL);
   cStop = clock();
   std::cout << "---------------------------------------------------" << std::endl;
@@ -518,29 +556,29 @@ void elimCoKAAPICModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   // compute FLOPS:
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
-  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 + 
+  double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 +
                     (stop.tv_usec - start.tv_usec)) / 1e6;
   double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
   char buffer[50];
   // get digits before decimal point of cputime (the longest number) and setw
-  // with it: digits + 1 (point) + 4 (precision) 
+  // with it: digits + 1 (point) + 4 (precision)
   int digits = sprintf(buffer,"%.0f",cputime);
   double ratio = cputime/realtime;
   std::cout << "# Threads:        " << thrdCounter << std::endl;
   std::cout << "Block size:       " << blocksize << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << std::setw(digits+1+4) 
-    << std::setprecision(4) << std::fixed << realtime << " sec" 
+  std::cout << "Real time:        " << std::setw(digits+1+4)
+    << std::setprecision(4) << std::fixed << realtime << " sec"
     << std::endl;
-  std::cout << "CPU time:         " << std::setw(digits+1+4) 
+  std::cout << "CPU time:         " << std::setw(digits+1+4)
     << std::setprecision(4) << std::fixed << cputime
     << " sec" << std::endl;
   if (cputime > epsilon)
-    std::cout << "CPU/real time:    " << std::setw(digits+1+4) 
+    std::cout << "CPU/real time:    " << std::setw(digits+1+4)
       << std::setprecision(4) << std::fixed << ratio << std::endl;
   std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4) 
-    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime) 
+  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4)
+    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime)
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
 }
