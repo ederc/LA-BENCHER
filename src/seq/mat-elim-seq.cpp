@@ -277,7 +277,6 @@ void A( mat *M, const uint32 k1, const uint32 k2,
         prime, neg_inv_piv, blocksize);
     
     // backward step
-    
     A(M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
       prime, neg_inv_piv, blocksize);
   }

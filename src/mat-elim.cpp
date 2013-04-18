@@ -129,10 +129,14 @@ void eliminate(Matrix& A, const int nthrds, const uint32 blocksize,
   // pthread
   if (method == 4) {
 #ifdef __F4RT_HAVE_PTHREAD_H
-    if (pivoting == 1) {
-      elimNaivePTHRDModP1dPivot(A, nthrds, blocksize, prime);
+    if (cacheOblivious == 0) {
+      if (pivoting == 1) {
+        elimNaivePTHRDModP1dPivot(A, nthrds, blocksize, prime);
+      } else {
+        elimNaivePTHRDModP1d(A, nthrds, blocksize, prime);
+      }
     } else {
-      elimNaivePTHRDModP1d(A, nthrds, blocksize, prime);
+      elimCoPTHRDModP(A, nthrds, blocksize, prime);
     }
 #else
     elimNaiveSEQModP(A, blocksize, prime);
