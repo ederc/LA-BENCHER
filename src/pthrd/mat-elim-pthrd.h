@@ -58,27 +58,9 @@ void elimCoPTHRDBaseModP( mat *M, const uint32 k1, const uint32 i1,
                         uint64 size, uint64 prime, mat *neg_inv_piv,
                         int nthrds, uint32 blocksize);
 
-void APTHRD( mat *M, const uint32 k1, const uint32 k2,
-        const uint32 i1, const uint32 i2,
-		    const uint32 j1, const uint32 j2,
-		    const uint32 rows, const uint32 cols,
-        uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds, uint32 blocksize);
-
-void B1PTHRD(mat *M, const uint32 k1, const uint32 k2,
-        const uint32 i1, const uint32 i2,
-		    const uint32 j1, const uint32 j2,
-		    const uint32 rows, const uint32 cols,
-        uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds, uint32 blocksize);
-
-void C1PTHRD(mat *M, const uint32 k1, const uint32 k2,
-        const uint32 i1, const uint32 i2,
-		    const uint32 j1, const uint32 j2,
-		    const uint32 rows, const uint32 cols,
-        uint64 size, uint64 prime, mat *neg_inv_piv,
-        int nthrds, uint32 blocksize);
-
+void* APTHRD(void *p);
+void* B1PTHRD(void *p);
+void* C1PTHRD(void *p);
 void* D1PTHRD(void *p);
 
 void elimCoPTHRDModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime);
