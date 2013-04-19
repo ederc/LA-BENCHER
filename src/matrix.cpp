@@ -242,27 +242,34 @@ void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = f
     std::string strTime;
     time_t t = time(0);   // get time now
     struct tm * now = localtime( & t );
-    strTime.append(std::to_string(now->tm_year + 1900));
+    char buffer[50];
+    sprintf(buffer,"%d",now->tm_year + 1900);
+    strTime.append(buffer);
     strTime.append("-");
     if (now->tm_mon+1 < 10)
       strTime.append("0");
-    strTime.append(std::to_string(now->tm_mon + 1));
+    sprintf(buffer,"%d",now->tm_mon + 1);
+    strTime.append(buffer);
     strTime.append("-");
     if (now->tm_mday < 10)
       strTime.append("0");
-    strTime.append(std::to_string(now->tm_mday));
+    sprintf(buffer,"%d",now->tm_mday);
+    strTime.append(buffer);
     strTime.append("-");
     if (now->tm_hour < 10)
       strTime.append("0");
-    strTime.append(std::to_string(now->tm_hour));
+    sprintf(buffer,"%d",now->tm_hour);
+    strTime.append(buffer);
     strTime.append("-");
     if (now->tm_min < 10)
       strTime.append("0");
-    strTime.append(std::to_string(now->tm_min));
+    sprintf(buffer,"%d",now->tm_min);
+    strTime.append(buffer);
     strTime.append("-");
     if (now->tm_sec < 10)
       strTime.append("0");
-    strTime.append(std::to_string(now->tm_sec));
+    sprintf(buffer,"%d",now->tm_sec);
+    strTime.append(buffer);
 
     fileName << "random-mat-" << m << "-" << n << "-" << strTime << ".mat";
   } else {
