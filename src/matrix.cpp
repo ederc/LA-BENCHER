@@ -192,8 +192,8 @@ int check(const Matrix& A, const Matrix& B, int unittest = 0) {
   return 0;
 }
 void Matrix::read(FILE* file) {
-  const auto rowCount   = readOne(file);
-  const auto colCount   = readOne(file);
+  const uint32 rowCount   = readOne(file);
+  const uint32 colCount   = readOne(file);
   m = rowCount;
   n = colCount;
   entries.resize(rowCount * colCount);

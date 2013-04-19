@@ -33,9 +33,9 @@
 #include <omp.h>
 #endif
 #if defined(__F4RT_HAVE_KAAPI)
-#include <kaapi.h>
+//#include <kaapi.h>
 #include <kaapic.h>
-#include <kaapi++>
+//#include <kaapi++>
 #endif
 //#include "auxiliary.h"
 

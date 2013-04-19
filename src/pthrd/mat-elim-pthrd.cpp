@@ -849,6 +849,7 @@ void elimCoPTHRDModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   if (nthrds <= 0) {
     nthrds  = 1;
   }
+  pthread_setconcurrency(1);
   // if m > n then only n eliminations are possible
   uint32 m                    = M.nRows();
   uint32 n                    = M.nCols();

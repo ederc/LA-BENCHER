@@ -447,6 +447,7 @@ void B1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
   }
 }
 
+
 /*
  * the following procedure does not compile even though it is just a copy of a
  * test example from the xkaapi repository!
