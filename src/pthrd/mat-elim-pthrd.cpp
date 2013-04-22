@@ -18,6 +18,8 @@
 pthread_mutex_t mutex1  = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond1    = PTHREAD_COND_INITIALIZER;
 int counter             = 0;
+int jobsRunning         = 0;
+int maxThreads          = 0;
 
 void *elimPTHRD(void *p) {
   paramsElim *_p  = (paramsElim *)p;
@@ -846,6 +848,7 @@ void* APTHRD(void *p) {
     thread_params[1].k2 = km;
 
     // parallel - start
+    if (jobsRunning < maxThreads)
     pthread_create(&thread[0], NULL, &B1PTHRD, (void *) &data[0]);
     pthread_create(&thread[1], NULL, &C1PTHRD, (void *) &data[1]);
     for (int i = 0; i < 2; ++i)
@@ -896,7 +899,9 @@ void elimCoPTHRDModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   data->pool          = pool;
   data->params        = thread_params;
   pool->maxNumThreads = nthrds;
-  pool->runningJobs   = 0;
+  pool->runningJobs   = 1;
+  jobsRunning         = 1;
+  maxThreads          = nthrds;
   pool->bitmask       = ULONG_MAX;
   // if m > n then only n eliminations are possible
   uint32 m          = M.nRows();

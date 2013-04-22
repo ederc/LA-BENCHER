@@ -304,21 +304,21 @@ void D1OMP( mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     // X11
     D1OMP( M, k1, km, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X12
     D1OMP( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X21
     D1OMP( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X22
     D1OMP( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -326,21 +326,21 @@ void D1OMP( mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     // X11
     D1OMP( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X12
     D1OMP( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X21
     D1OMP( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X22
     D1OMP( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -369,13 +369,13 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     // X11
     C1OMP( M, k1, km, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X21
     C1OMP( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -383,13 +383,13 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     // X12
     D1OMP( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X22
     D1OMP( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -397,13 +397,13 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     // X12
     C1OMP( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X22
     C1OMP( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -411,13 +411,13 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     // X11
     D1OMP( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X12
     D1OMP( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -446,13 +446,13 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     // X11
     B1OMP( M, k1, km, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X12
     B1OMP( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -460,13 +460,13 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     // X21
     D1OMP( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X22
     D1OMP( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -474,13 +474,13 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     // X21
     B1OMP( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X22
     B1OMP( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -488,13 +488,13 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     // X11
     D1OMP( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     // X12
     D1OMP( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -529,12 +529,12 @@ void AOMP( mat *M, const uint32 k1, const uint32 k2,
     AOMP(M, k1, km, i1, im, j1, jm, rows, cols, size,
       prime, neg_inv_piv, nthrds, blocksize);
     // parallel - start
-# pragma omp parallel sections
+#pragma omp parallel sections
 {
-# pragma omp section
+#pragma omp section
     B1OMP( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-# pragma omp section
+#pragma omp section
     C1OMP( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
 }
