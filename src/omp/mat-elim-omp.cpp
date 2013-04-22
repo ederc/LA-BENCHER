@@ -290,6 +290,7 @@ void D1OMP( mat *M, const uint32 k1, const uint32 k2,
 		        const uint32 rows, const uint32 cols,
             uint64 size, uint64 prime, mat *neg_inv_piv,
             int nthrds, uint32 blocksize) {
+  omp_set_nested(1);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -304,7 +305,7 @@ void D1OMP( mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     // X11
@@ -326,7 +327,7 @@ void D1OMP( mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     // X11
@@ -355,6 +356,7 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds, uint32 blocksize) {
+  omp_set_nested(1);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -369,7 +371,7 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     // X11
@@ -383,7 +385,7 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     // X12
@@ -397,7 +399,7 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     // X12
@@ -411,7 +413,7 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     // X11
@@ -432,6 +434,7 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds, uint32 blocksize) {
+  omp_set_nested(1);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -446,7 +449,7 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
     uint32 jm = (j1+j2) / 2;
 
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     // X11
@@ -460,7 +463,7 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     // X21
@@ -474,7 +477,7 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     // X21
@@ -488,7 +491,7 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
     // parallel - end
 
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     // X11
@@ -510,6 +513,7 @@ void AOMP( mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds, uint32 blocksize) {
+  omp_set_nested(1);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -529,7 +533,7 @@ void AOMP( mat *M, const uint32 k1, const uint32 k2,
     AOMP(M, k1, km, i1, im, j1, jm, rows, cols, size,
       prime, neg_inv_piv, nthrds, blocksize);
     // parallel - start
-#pragma omp parallel sections
+#pragma omp parallel sections shared(im,jm,km,prime,M, neg_inv_piv)
 {
 #pragma omp section
     B1OMP( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
@@ -553,7 +557,7 @@ void elimCoOMPModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   int thrdCounter   = nthrds;
   if (nthrds > 0)
     omp_set_num_threads(nthrds);
-  omp_set_nested(0);
+  omp_set_nested(1);
 #pragma omp parallel
 {
   #pragma omp master
