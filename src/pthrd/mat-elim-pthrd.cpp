@@ -327,28 +327,32 @@ void elimCoPTHRDBaseModP( mat *M, const uint32 k1, const uint32 i1,
 }
 
 void* D1PTHRD(void *p) {
-  paramsCoElim *_p  = (paramsCoElim *)p;
+  thrdData *_data       = (thrdData *)p;
+  thrdPool *pool        = _data->pool;
+  paramsCoElim *params  = _data->params;
   // increase number of active threads
   pthread_mutex_lock(&mutex1);
   counter++;
   //printf("Counter value: %d\n",counter);
   pthread_mutex_unlock(&mutex1);
 
-  if (_p->i2 <= _p->k1 || _p->j2 <= _p->k1)
+  if (params->i2 <= params->k1 || params->j2 <= params->k1)
     return 0;
 
-  uint64 size = _p->size;
+  uint64 size = params->size;
 
-  if (size <= _p->blocksize) {
-    elimCoPTHRDBaseModP(_p->M, _p->k1, _p->i1, _p->j1, _p->rows, _p->cols,
-                        _p->size, _p->prime, _p->neg_inv_piv, _p->nthrds);
+  if (size <= params->blocksize) {
+    elimCoPTHRDBaseModP(params->M, params->k1, params->i1, params->j1,
+                        params->rows, params->cols, params->size,
+                        params->prime, params->neg_inv_piv,
+                        params->nthrds);
   } else {
-    const uint32 i1 = _p->i1;
-    const uint32 i2 = _p->i2;
-    const uint32 j1 = _p->j1;
-    const uint32 j2 = _p->j2;
-    const uint32 k1 = _p->k1;
-    const uint32 k2 = _p->k2;
+    const uint32 i1 = params->i1;
+    const uint32 i2 = params->i2;
+    const uint32 j1 = params->j1;
+    const uint32 j2 = params->j2;
+    const uint32 k1 = params->k1;
+    const uint32 k2 = params->k2;
 
     size = size / 2;
 
@@ -359,18 +363,22 @@ void* D1PTHRD(void *p) {
     pthread_t thread[4];
     paramsCoElim *thread_params = (paramsCoElim *)
                                     malloc(4 * sizeof(paramsCoElim));
-
-
-    // get parameters
+    thrdData *data  = (thrdData *) malloc(4 * sizeof(thrdData));
     for (int i = 0; i < 4; ++i) {
-      thread_params[i].M            = _p->M;
-      thread_params[i].neg_inv_piv  = _p->neg_inv_piv;
-      thread_params[i].blocksize    = _p->blocksize;
+      data[i].pool    = pool;
+      data[i].params  = &thread_params[i];
+    }
+
+    // get not thread-specific parameters -- once for all
+    for (int i = 0; i < 4; ++i) {
+      thread_params[i].M            = params->M;
+      thread_params[i].neg_inv_piv  = params->neg_inv_piv;
       thread_params[i].size         = size;
-      thread_params[i].nthrds       = _p->nthrds;
-      thread_params[i].prime        = _p->prime;
-      thread_params[i].rows         = _p->rows;
-      thread_params[i].cols         = _p->cols;
+      thread_params[i].blocksize    = params->blocksize;
+      thread_params[i].nthrds       = params->nthrds;
+      thread_params[i].prime        = params->prime;
+      thread_params[i].rows         = params->rows;
+      thread_params[i].cols         = params->cols;
     }
 
     // X11
@@ -401,9 +409,10 @@ void* D1PTHRD(void *p) {
     thread_params[3].j2 = j2;
     thread_params[3].k1 = k1;
     thread_params[3].k2 = km;
+
     // parallel - start
     for (int i = 0; i < 4; ++i)
-      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &thread_params[i]);
+      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &data[i]);
     for (int i = 0; i < 4; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -435,9 +444,10 @@ void* D1PTHRD(void *p) {
     thread_params[3].j2 = j2;
     thread_params[3].k1 = km+1;
     thread_params[3].k2 = k2;
+
     // parallel - start
     for (int i = 0; i < 4; ++i)
-      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &thread_params[i]);
+      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &data[i]);
     for (int i = 0; i < 4; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -454,28 +464,32 @@ void* D1PTHRD(void *p) {
 
 
 void* C1PTHRD(void *p) {
-  paramsCoElim *_p  = (paramsCoElim *)p;
+  thrdData *_data       = (thrdData *)p;
+  thrdPool *pool        = _data->pool;
+  paramsCoElim *params  = _data->params;
   // increase number of active threads
   pthread_mutex_lock(&mutex1);
   counter++;
   //printf("Counter value: %d\n",counter);
   pthread_mutex_unlock(&mutex1);
 
-  if (_p->i2 <= _p->k1 || _p->j2 <= _p->k1)
+  if (params->i2 <= params->k1 || params->j2 <= params->k1)
     return 0;
 
-  uint64 size = _p->size;
+  uint64 size = params->size;
 
-  if (size <= _p->blocksize) {
-    elimCoPTHRDBaseModP(_p->M, _p->k1, _p->i1, _p->j1, _p->rows, _p->cols,
-                        _p->size, _p->prime, _p->neg_inv_piv, _p->nthrds);
+  if (size <= params->blocksize) {
+    elimCoPTHRDBaseModP(params->M, params->k1, params->i1, params->j1,
+                        params->rows, params->cols, params->size,
+                        params->prime, params->neg_inv_piv,
+                        params->nthrds);
   } else {
-    const uint32 i1 = _p->i1;
-    const uint32 i2 = _p->i2;
-    const uint32 j1 = _p->j1;
-    const uint32 j2 = _p->j2;
-    const uint32 k1 = _p->k1;
-    const uint32 k2 = _p->k2;
+    const uint32 i1 = params->i1;
+    const uint32 i2 = params->i2;
+    const uint32 j1 = params->j1;
+    const uint32 j2 = params->j2;
+    const uint32 k1 = params->k1;
+    const uint32 k2 = params->k2;
 
     size = size / 2;
 
@@ -486,17 +500,22 @@ void* C1PTHRD(void *p) {
     pthread_t thread[2];
     paramsCoElim *thread_params = (paramsCoElim *)
                                     malloc(2 * sizeof(paramsCoElim));
+    thrdData *data  = (thrdData *) malloc(2 * sizeof(thrdData));
+    for (int i = 0; i < 2; ++i) {
+      data[i].pool    = pool;
+      data[i].params  = &thread_params[i];
+    }
 
     // get not thread-specific parameters -- once for all
     for (int i = 0; i < 2; ++i) {
-      thread_params[i].M            = _p->M;
-      thread_params[i].neg_inv_piv  = _p->neg_inv_piv;
+      thread_params[i].M            = params->M;
+      thread_params[i].neg_inv_piv  = params->neg_inv_piv;
       thread_params[i].size         = size;
-      thread_params[i].blocksize    = _p->blocksize;
-      thread_params[i].nthrds       = _p->nthrds;
-      thread_params[i].prime        = _p->prime;
-      thread_params[i].rows         = _p->rows;
-      thread_params[i].cols         = _p->cols;
+      thread_params[i].blocksize    = params->blocksize;
+      thread_params[i].nthrds       = params->nthrds;
+      thread_params[i].prime        = params->prime;
+      thread_params[i].rows         = params->rows;
+      thread_params[i].cols         = params->cols;
     }
 
     // X11
@@ -513,9 +532,10 @@ void* C1PTHRD(void *p) {
     thread_params[1].j2 = jm;
     thread_params[1].k1 = k1;
     thread_params[1].k2 = km;
+
     // parallel - start
     for (int i = 0; i < 2; ++i)
-      pthread_create(&thread[i], NULL, &C1PTHRD, (void *) &thread_params[i]);
+      pthread_create(&thread[i], NULL, &C1PTHRD, (void *) &data[i]);
     for (int i = 0; i < 2; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -536,7 +556,7 @@ void* C1PTHRD(void *p) {
     thread_params[1].k2 = km;
     // parallel - start
     for (int i = 0; i < 2; ++i)
-      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &thread_params[i]);
+      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &data[i]);
     for (int i = 0; i < 2; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -557,7 +577,7 @@ void* C1PTHRD(void *p) {
     thread_params[1].k2 = k2;
     // parallel - start
     for (int i = 0; i < 2; ++i)
-      pthread_create(&thread[i], NULL, &C1PTHRD, (void *) &thread_params[i]);
+      pthread_create(&thread[i], NULL, &C1PTHRD, (void *) &data[i]);
     for (int i = 0; i < 2; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -578,7 +598,7 @@ void* C1PTHRD(void *p) {
     thread_params[1].k2 = k2;
     // parallel - start
     for (int i = 0; i < 2; ++i)
-      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &thread_params[i]);
+      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &data[i]);
     for (int i = 0; i < 2; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -594,28 +614,32 @@ void* C1PTHRD(void *p) {
 }
 
 void* B1PTHRD(void *p) {
-  paramsCoElim *_p  = (paramsCoElim *)p;
+  thrdData *_data       = (thrdData *)p;
+  thrdPool *pool        = _data->pool;
+  paramsCoElim *params  = _data->params;
   // increase number of active threads
   pthread_mutex_lock(&mutex1);
   counter++;
   //printf("Counter value: %d\n",counter);
   pthread_mutex_unlock(&mutex1);
 
-  if (_p->i2 <= _p->k1 || _p->j2 <= _p->k1)
+  if (params->i2 <= params->k1 || params->j2 <= params->k1)
     return 0;
 
-  uint64 size = _p->size;
+  uint64 size = params->size;
 
-  if (size <= _p->blocksize) {
-    elimCoPTHRDBaseModP(_p->M, _p->k1, _p->i1, _p->j1, _p->rows, _p->cols,
-                        _p->size, _p->prime, _p->neg_inv_piv, _p->nthrds);
+  if (size <= params->blocksize) {
+    elimCoPTHRDBaseModP(params->M, params->k1, params->i1, params->j1,
+                        params->rows, params->cols, params->size,
+                        params->prime, params->neg_inv_piv,
+                        params->nthrds);
   } else {
-    const uint32 i1 = _p->i1;
-    const uint32 i2 = _p->i2;
-    const uint32 j1 = _p->j1;
-    const uint32 j2 = _p->j2;
-    const uint32 k1 = _p->k1;
-    const uint32 k2 = _p->k2;
+    const uint32 i1 = params->i1;
+    const uint32 i2 = params->i2;
+    const uint32 j1 = params->j1;
+    const uint32 j2 = params->j2;
+    const uint32 k1 = params->k1;
+    const uint32 k2 = params->k2;
 
     size = size / 2;
 
@@ -626,17 +650,22 @@ void* B1PTHRD(void *p) {
     pthread_t thread[2];
     paramsCoElim *thread_params = (paramsCoElim *)
                                     malloc(2 * sizeof(paramsCoElim));
+    thrdData *data  = (thrdData *) malloc(2 * sizeof(thrdData));
+    for (int i = 0; i < 2; ++i) {
+      data[i].pool    = pool;
+      data[i].params  = &thread_params[i];
+    }
 
     // get not thread-specific parameters -- once for all
     for (int i = 0; i < 2; ++i) {
-      thread_params[i].M            = _p->M;
-      thread_params[i].neg_inv_piv  = _p->neg_inv_piv;
+      thread_params[i].M            = params->M;
+      thread_params[i].neg_inv_piv  = params->neg_inv_piv;
       thread_params[i].size         = size;
-      thread_params[i].blocksize    = _p->blocksize;
-      thread_params[i].nthrds       = _p->nthrds;
-      thread_params[i].prime        = _p->prime;
-      thread_params[i].rows         = _p->rows;
-      thread_params[i].cols         = _p->cols;
+      thread_params[i].blocksize    = params->blocksize;
+      thread_params[i].nthrds       = params->nthrds;
+      thread_params[i].prime        = params->prime;
+      thread_params[i].rows         = params->rows;
+      thread_params[i].cols         = params->cols;
     }
 
     // X11
@@ -655,7 +684,7 @@ void* B1PTHRD(void *p) {
     thread_params[1].k2 = km;
     // parallel - start
     for (int i = 0; i < 2; ++i)
-      pthread_create(&thread[i], NULL, &B1PTHRD, (void *) &thread_params[i]);
+      pthread_create(&thread[i], NULL, &B1PTHRD, (void *) &data[i]);
     for (int i = 0; i < 2; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -677,7 +706,7 @@ void* B1PTHRD(void *p) {
     // parallel - start
 
     for (int i = 0; i < 2; ++i)
-      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &thread_params[i]);
+      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &data[i]);
     for (int i = 0; i < 2; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -699,7 +728,7 @@ void* B1PTHRD(void *p) {
     // parallel - start
 
     for (int i = 0; i < 2; ++i)
-      pthread_create(&thread[i], NULL, &B1PTHRD, (void *) &thread_params[i]);
+      pthread_create(&thread[i], NULL, &B1PTHRD, (void *) &data[i]);
     for (int i = 0; i < 2; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -720,7 +749,7 @@ void* B1PTHRD(void *p) {
     thread_params[1].k2 = k2;
     // parallel - start
     for (int i = 0; i < 2; ++i)
-      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &thread_params[i]);
+      pthread_create(&thread[i], NULL, &D1PTHRD, (void *) &data[i]);
     for (int i = 0; i < 2; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -736,28 +765,32 @@ void* B1PTHRD(void *p) {
 }
 
 void* APTHRD(void *p) {
-  paramsCoElim *_p  = (paramsCoElim *)p;
+  thrdData *_data       = (thrdData *)p;
+  thrdPool *pool        = _data->pool;
+  paramsCoElim *params  = _data->params;
   // increase number of active threads
   pthread_mutex_lock(&mutex1);
   counter++;
   //printf("Counter value: %d\n",counter);
   pthread_mutex_unlock(&mutex1);
 
-  if (_p->i2 <= _p->k1 || _p->j2 <= _p->k1)
+  if (params->i2 <= params->k1 || params->j2 <= params->k1)
     return 0;
 
-  uint64 size = _p->size;
+  uint64 size = params->size;
 
-  if (size <= _p->blocksize) {
-    elimCoPTHRDBaseModP(_p->M, _p->k1, _p->i1, _p->j1, _p->rows, _p->cols,
-                        _p->size, _p->prime, _p->neg_inv_piv, _p->nthrds);
+  if (size <= params->blocksize) {
+    elimCoPTHRDBaseModP(params->M, params->k1, params->i1, params->j1,
+                        params->rows, params->cols, params->size,
+                        params->prime, params->neg_inv_piv,
+                        params->nthrds);
   } else {
-    const uint32 i1 = _p->i1;
-    const uint32 i2 = _p->i2;
-    const uint32 j1 = _p->j1;
-    const uint32 j2 = _p->j2;
-    const uint32 k1 = _p->k1;
-    const uint32 k2 = _p->k2;
+    const uint32 i1 = params->i1;
+    const uint32 i2 = params->i2;
+    const uint32 j1 = params->j1;
+    const uint32 j2 = params->j2;
+    const uint32 k1 = params->k1;
+    const uint32 k2 = params->k2;
 
     size = size / 2;
 
@@ -768,17 +801,22 @@ void* APTHRD(void *p) {
     pthread_t thread[2];
     paramsCoElim *thread_params = (paramsCoElim *)
                                     malloc(2 * sizeof(paramsCoElim));
+    thrdData *data  = (thrdData *) malloc(2 * sizeof(thrdData));
+    for (int i = 0; i < 2; ++i) {
+      data[i].pool    = pool;
+      data[i].params  = &thread_params[i];
+    }
 
     // get not thread-specific parameters -- once for all
     for (int i = 0; i < 2; ++i) {
-      thread_params[i].M            = _p->M;
-      thread_params[i].neg_inv_piv  = _p->neg_inv_piv;
+      thread_params[i].M            = params->M;
+      thread_params[i].neg_inv_piv  = params->neg_inv_piv;
       thread_params[i].size         = size;
-      thread_params[i].blocksize    = _p->blocksize;
-      thread_params[i].nthrds       = _p->nthrds;
-      thread_params[i].prime        = _p->prime;
-      thread_params[i].rows         = _p->rows;
-      thread_params[i].cols         = _p->cols;
+      thread_params[i].blocksize    = params->blocksize;
+      thread_params[i].nthrds       = params->nthrds;
+      thread_params[i].prime        = params->prime;
+      thread_params[i].rows         = params->rows;
+      thread_params[i].cols         = params->cols;
     }
 
     // X11
@@ -790,7 +828,7 @@ void* APTHRD(void *p) {
     thread_params[0].k2 = km;
 
     // forward step
-    APTHRD((void *) &thread_params[0]);
+    APTHRD((void *) &data[0]);
 
     // X12
     thread_params[0].i1 = i1;
@@ -808,8 +846,8 @@ void* APTHRD(void *p) {
     thread_params[1].k2 = km;
 
     // parallel - start
-    pthread_create(&thread[0], NULL, &B1PTHRD, (void *) &thread_params[0]);
-    pthread_create(&thread[1], NULL, &C1PTHRD, (void *) &thread_params[1]);
+    pthread_create(&thread[0], NULL, &B1PTHRD, (void *) &data[0]);
+    pthread_create(&thread[1], NULL, &C1PTHRD, (void *) &data[1]);
     for (int i = 0; i < 2; ++i)
       pthread_join(thread[i], NULL);
     // parallel - end
@@ -822,7 +860,7 @@ void* APTHRD(void *p) {
     thread_params[0].k1 = k1;
     thread_params[0].k2 = km;
 
-    D1PTHRD((void *) &thread_params[0]);
+    D1PTHRD((void *) &data[0]);
 
     // backward step
 
@@ -833,7 +871,7 @@ void* APTHRD(void *p) {
     thread_params[0].k1 = km+1;
     thread_params[0].k2 = k2;
 
-    APTHRD((void *) &thread_params[0]);
+    APTHRD((void *) &data[0]);
   }
 
   // decrease number of active threads
@@ -849,18 +887,30 @@ void elimCoPTHRDModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   if (nthrds <= 0) {
     nthrds  = 1;
   }
-  pthread_setconcurrency(1);
-  // if m > n then only n eliminations are possible
-  uint32 m                    = M.nRows();
-  uint32 n                    = M.nCols();
-  uint32 boundary             = (m > n) ? n : m;
-  mat *a_entries              = M.entries.data();
-  mat *neg_inv_piv            =   (mat *)calloc(boundary, sizeof(mat));
-  a_entries[0]                %=  prime;
-  neg_inv_piv[0]              =   negInverseModP(a_entries[0], prime);
-
+  // allocated thread pool
+  pthread_t *threads          = (pthread_t *) malloc(nthrds * sizeof(pthread_t));
+  thrdPool *pool              = (thrdPool *) malloc(sizeof(thrdPool));
   paramsCoElim *thread_params = (paramsCoElim *)
                                   malloc(sizeof(paramsCoElim));
+  thrdData * data             = (thrdData *) malloc(sizeof(thrdData));
+  data->pool          = pool;
+  data->params        = thread_params;
+  pool->maxNumThreads = nthrds;
+  pool->runningJobs   = 0;
+  pool->bitmask       = ULONG_MAX;
+  // if m > n then only n eliminations are possible
+  uint32 m          = M.nRows();
+  uint32 n          = M.nCols();
+  uint32 boundary   = (m > n) ? n : m;
+  mat *a_entries    = M.entries.data();
+  mat *neg_inv_piv  = (mat *)calloc(boundary, sizeof(mat));
+  a_entries[0]      %=  prime;
+  neg_inv_piv[0]    = negInverseModP(a_entries[0], prime);
+
+
+  printf("Pool: maxNumThreads %d\n", pool->maxNumThreads);
+  printf("      runningJobs   %d -- number of bits %d\n", pool->runningJobs, sizeof(pool->runningJobs) * 8);
+  printf("      bitmask       %lu -- number of bits %d\n", pool->bitmask, sizeof(pool->bitmask) * 8);
   thread_params->M            = a_entries;
   thread_params->neg_inv_piv  = neg_inv_piv;
   thread_params->blocksize    = blocksize;
@@ -883,7 +933,7 @@ void elimCoPTHRDModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   cStart  = clock();
 
   // computation of blocks
-  APTHRD((void *) thread_params);
+  APTHRD((void *) data);
 
   gettimeofday(&stop, NULL);
   cStop = clock();

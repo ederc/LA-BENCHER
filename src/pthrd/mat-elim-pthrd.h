@@ -44,6 +44,23 @@ struct paramsCoElim {
   int nthrds;
 };
 
+struct thrdPool {
+  int maxNumThreads;
+  int runningJobs;
+  // with the bitmask we know which thread is available:
+  // bit set      =>  thread is running another job already
+  // bit not set  =>  thread is idle and can be used
+  // 64 cores should be enough for the moment
+  unsigned long bitmask;
+  // pointer to array of threads
+  pthread_t *threads;
+};
+
+struct thrdData {
+  thrdPool      *pool;
+  paramsCoElim  *params;
+};
+
 
 void elimPTHRD(Matrix& A, uint32 blocksize);
 
