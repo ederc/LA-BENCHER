@@ -332,15 +332,16 @@ void* D1PTHRD(void *p) {
   thrdData *_data       = (thrdData *)p;
   thrdPool *pool        = _data->pool;
   paramsCoElim *params  = _data->params;
-  // increase number of active threads
-  pthread_mutex_lock(&mutex1);
-  counter++;
-  //printf("Counter value: %d\n",counter);
-  pthread_mutex_unlock(&mutex1);
-
+  
   if (params->i2 <= params->k1 || params->j2 <= params->k1)
     return 0;
 
+  //printf("[D] Running jobs: %d\n", pool->runningJobs);
+  // increase number of active threads
+  pthread_mutex_lock(&mutex1);
+  pool->runningJobs++;
+  //printf("Counter value: %d\n",counter);
+  pthread_mutex_unlock(&mutex1);
   uint64 size = params->size;
 
   if (size <= params->blocksize) {
@@ -454,13 +455,11 @@ void* D1PTHRD(void *p) {
       pthread_join(thread[i], NULL);
     // parallel - end
   }
-
   // decrease number of active threads
   pthread_mutex_lock(&mutex1);
-  counter--;
+  pool->runningJobs--;
   //printf("Counter value: %d\n",counter);
   pthread_mutex_unlock(&mutex1);
-
   return 0;
 }
 
@@ -469,15 +468,15 @@ void* C1PTHRD(void *p) {
   thrdData *_data       = (thrdData *)p;
   thrdPool *pool        = _data->pool;
   paramsCoElim *params  = _data->params;
-  // increase number of active threads
-  pthread_mutex_lock(&mutex1);
-  counter++;
-  //printf("Counter value: %d\n",counter);
-  pthread_mutex_unlock(&mutex1);
-
   if (params->i2 <= params->k1 || params->j2 <= params->k1)
     return 0;
 
+  //printf("[C] Running jobs: %d\n", pool->runningJobs);
+  // increase number of active threads
+  pthread_mutex_lock(&mutex1);
+  pool->runningJobs++;
+  //printf("Counter value: %d\n",counter);
+  pthread_mutex_unlock(&mutex1);
   uint64 size = params->size;
 
   if (size <= params->blocksize) {
@@ -605,13 +604,11 @@ void* C1PTHRD(void *p) {
       pthread_join(thread[i], NULL);
     // parallel - end
   }
-
   // decrease number of active threads
   pthread_mutex_lock(&mutex1);
-  counter--;
+  pool->runningJobs;
   //printf("Counter value: %d\n",counter);
   pthread_mutex_unlock(&mutex1);
-
   return 0;
 }
 
@@ -619,15 +616,15 @@ void* B1PTHRD(void *p) {
   thrdData *_data       = (thrdData *)p;
   thrdPool *pool        = _data->pool;
   paramsCoElim *params  = _data->params;
-  // increase number of active threads
-  pthread_mutex_lock(&mutex1);
-  counter++;
-  //printf("Counter value: %d\n",counter);
-  pthread_mutex_unlock(&mutex1);
-
   if (params->i2 <= params->k1 || params->j2 <= params->k1)
     return 0;
 
+  //printf("[B] Running jobs: %d\n", pool->runningJobs);
+  // increase number of active threads
+  pthread_mutex_lock(&mutex1);
+  pool->runningJobs++;
+  //printf("Counter value: %d\n",counter);
+  pthread_mutex_unlock(&mutex1);
   uint64 size = params->size;
 
   if (size <= params->blocksize) {
@@ -756,13 +753,11 @@ void* B1PTHRD(void *p) {
       pthread_join(thread[i], NULL);
     // parallel - end
   }
-
   // decrease number of active threads
   pthread_mutex_lock(&mutex1);
-  counter--;
+  pool->runningJobs--;
   //printf("Counter value: %d\n",counter);
   pthread_mutex_unlock(&mutex1);
-
   return 0;
 }
 
@@ -770,15 +765,15 @@ void* APTHRD(void *p) {
   thrdData *_data       = (thrdData *)p;
   thrdPool *pool        = _data->pool;
   paramsCoElim *params  = _data->params;
-  // increase number of active threads
-  pthread_mutex_lock(&mutex1);
-  counter++;
-  //printf("Counter value: %d\n",counter);
-  pthread_mutex_unlock(&mutex1);
-
   if (params->i2 <= params->k1 || params->j2 <= params->k1)
     return 0;
 
+  //printf("[A] Running jobs: %d\n", pool->runningJobs);
+  // increase number of active threads
+  pthread_mutex_lock(&mutex1);
+  pool->runningJobs++;
+  //printf("Counter value: %d\n",counter);
+  pthread_mutex_unlock(&mutex1);
   uint64 size = params->size;
 
   if (size <= params->blocksize) {
@@ -879,10 +874,9 @@ void* APTHRD(void *p) {
 
   // decrease number of active threads
   pthread_mutex_lock(&mutex1);
-  counter--;
+  pool->runningJobs--;
   //printf("Counter value: %d\n",counter);
   pthread_mutex_unlock(&mutex1);
-
   return 0;
 }
 
@@ -900,6 +894,7 @@ void elimCoPTHRDModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   data->params        = thread_params;
   pool->maxNumThreads = nthrds;
   pool->runningJobs   = 1;
+  printf("[MAIN] Running jobs: %d\n", pool->runningJobs);
   jobsRunning         = 1;
   maxThreads          = nthrds;
   pool->bitmask       = ULONG_MAX;
@@ -939,6 +934,7 @@ void elimCoPTHRDModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
 
   // computation of blocks
   APTHRD((void *) data);
+  printf("[MAIN] Running jobs at the end: %d\n", pool->runningJobs);
 
   gettimeofday(&stop, NULL);
   cStop = clock();
