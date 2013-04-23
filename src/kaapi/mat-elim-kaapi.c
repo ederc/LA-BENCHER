@@ -8,9 +8,6 @@
  */
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 #include "mat-elim-kaapi.h"
 #define F4RT_DBG  0
 
@@ -20,7 +17,7 @@ static void matElim1d(
     uint32 m, uint32 n, mat *a_entries, mat inv, uint64 prime, uint32 index) {
 
   mat mult;
-  int thrdNumber  = kaapic_get_thread_num();
+  //int thrdNumber  = kaapic_get_thread_num();
   uint64 i = index;
   for (uint64 j = start; j < end; ++j) {
     mult  = (a_entries[i+j*n] * inv) % prime;
@@ -31,10 +28,6 @@ static void matElim1d(
   }
 }
 
-void elimKAAPIC(mat *a_entries, uint32 blocksize) {
-  //blockElimSEQ(A,
-}
-
 void elimNaiveKAAPICModP1d(mat *a_entries, uint32 rows, uint32 cols, int nthrds, uint32 blocksize, uint64 prime) {
   uint32 m        = rows;
   uint32 n        = cols;
@@ -42,22 +35,22 @@ void elimNaiveKAAPICModP1d(mat *a_entries, uint32 rows, uint32 cols, int nthrds,
   // if m > n then only n eliminations are possible
   uint32 boundary  = (m > n) ? n : m;
   mat inv;
-  timeval start, stop;
+  struct timeval start, stop;
   clock_t cStart, cStop;
   int err = kaapic_init(1);
   int thrdCounter = kaapic_get_concurrency();
   kaapic_foreach_attr_t attr;
   kaapic_foreach_attr_init(&attr);
-  std::cout << "Naive Gaussian Elimination without pivoting" << std::endl;
+  printf("Naive Gaussian Elimination without pivoting\n");
   gettimeofday(&start, NULL);
   cStart  = clock();
   for (uint32 i = 0; i < boundary; ++i) {
-    A(i,i) %= prime;
+    a_entries[i+i*cols] %= prime;
 #if F4RT_DBG
     std::cout << "!! A(" << i << "," << i << ") " << A(i,i) << std::endl;
     std::cout << "A(" << i << "," << i << ") " << A(i,i) % prime << std::endl;
 #endif
-    inv  = negInverseModP(A(i,i), prime);
+    inv  = negInverseModP(a_entries[i+i*n], prime);
     //kaapic_foreach_attr_set_grains(&attr, chunkSize+pad, chunkSize+pad);
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
@@ -67,67 +60,58 @@ void elimNaiveKAAPICModP1d(mat *a_entries, uint32 rows, uint32 cols, int nthrds,
   err = kaapic_finalize();
   gettimeofday(&stop, NULL);
   cStop = clock();
-  std::cout << "---------------------------------------------------" << std::endl;
-  std::cout << "Method:           KAAPIC 1D" << std::endl;
+  printf("---------------------------------------------------\n");
+  printf("Method:           KAAPIC 1D\n");
   // compute FLOPS:
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 +
                     (stop.tv_usec - start.tv_usec)) / 1e6;
   double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
-  char buffer[50];
   // get digits before decimal point of cputime (the longest number) and setw
   // with it: digits + 1 (point) + 4 (precision)
-  int digits = sprintf(buffer,"%.0f",cputime);
   double ratio = cputime/realtime;
-  std::cout << "# Threads:        " << thrdCounter << std::endl;
-  std::cout << "Block size:       " << blocksize << std::endl;
-  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << std::setw(digits+1+4)
-    << std::setprecision(4) << std::fixed << realtime << " sec"
-    << std::endl;
-  std::cout << "CPU time:         " << std::setw(digits+1+4)
-    << std::setprecision(4) << std::fixed << cputime
-    << " sec" << std::endl;
+  printf("# Threads:        %d\n", thrdCounter);
+  printf("Block size:       %u\n", blocksize);
+  printf("- - - - - - - - - - - - - - - - - - - - - - - - - -\n");
+  printf("Real time:        %.5f sec\n", realtime);
+  printf("CPU time:         %.5f sec\n", cputime);
   if (cputime > epsilon)
-    std::cout << "CPU/real time:    " << std::setw(digits+1+4)
-      << std::setprecision(4) << std::fixed << ratio << std::endl;
-  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4)
-    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime)
-    << std:: endl;
-  std::cout << "---------------------------------------------------" << std::endl;
+    printf("CPU/real time:    %.5f\n", ratio);
+  printf("- - - - - - - - - - - - - - - - - - - - - - - - - -\n");
+  printf("GFLOPS/sec:       %.5f\n", flops / (1000000000 * realtime));
+  printf("---------------------------------------------------\n");
 }
 
-void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
+void elimNaiveKAAPICModP1dPivot(mat *a_entries, uint32 rows, uint32 cols, int nthrds, uint32 blocksize, uint64 prime) {
   uint32 l;
-  uint32 m        = A.nRows();
-  uint32 n        = A.nCols();
-  mat *a_entries  = A.entries.data();
+  uint32 m        = rows;
+  uint32 n        = cols;
+  //mat *a_entries  = A.entries.data();
   // if m > n then only n eliminations are possible
   uint32 boundary  = (m > n) ? n : m;
   mat inv;
-  timeval start, stop;
+  struct timeval start, stop;
   clock_t cStart, cStop;
   int err = kaapic_init(1);
   int thrdCounter = kaapic_get_concurrency();
   kaapic_foreach_attr_t attr;
   kaapic_foreach_attr_init(&attr);
-  std::cout << "Naive Gaussian Elimination with pivoting" << std::endl;
+  printf("Naive Gaussian Elimination with pivoting\n");
   gettimeofday(&start, NULL);
   cStart  = clock();
   for (uint32 i = 0; i < boundary; ++i) {
-    A(i,i) %= prime;
+    a_entries[i+i*cols] %= prime;
 #if F4RT_DBG
     std::cout << "!! A(" << i << "," << i << ") " << A(i,i) << std::endl;
     std::cout << "A(" << i << "," << i << ") " << A(i,i) % prime << std::endl;
 #endif
-    if (A(i,i) == 0) {
+    if (a_entries[i+i*cols] == 0) {
       l = i+1;
 #if F4RT_DBG
       std::cout << "l1 " << l << std::endl;
 #endif
-      while (l < m && A(l,i) % prime == 0) {
+      while (l < m && a_entries[i+l*cols] % prime == 0) {
         l++;
 #if F4RT_DBG
         std::cout << "l2 " << l << std::endl;
@@ -147,6 +131,15 @@ void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 
         std::cout << "l  " << l << std::endl;
         std::cout << "i  " << i << std::endl;
 #endif
+        mat *temp = (mat *)malloc((n-i)*sizeof(mat));
+        for (uint32 it = i; it < n; ++it)
+          temp[it-i]  = a_entries[it+l*n];
+        for (uint32 it = i; it < n; ++it)
+          a_entries[it+l*n] = a_entries[it+i*n];
+        for (uint32 it = i; it < n; ++it)
+          a_entries[it+i*n] = temp[it-i];
+
+        /*
         std::vector<mat> tempRow(
             A.entries.begin()+i+(l*n),
             A.entries.begin()+n-1+(l*n)+1);
@@ -160,6 +153,7 @@ void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 
         for (uint32 it = i; it < n; ++it) {
           A.entries[it+i*n] = tempRow[it-i];
         }
+
 #if F4RT_DBG
         std::cout << "after swapping" << std::endl;
         for (int kk=i; kk < n; ++kk) {
@@ -168,9 +162,10 @@ void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 
         }
 #endif
         tempRow.clear();
+        */
       }
     }
-    inv  = negInverseModP(A(i,i), prime);
+    inv  = negInverseModP(a_entries[i+i*cols], prime);
     //kaapic_foreach_attr_set_grains(&attr, chunkSize+pad, chunkSize+pad);
 #if F4RT_DBG
     std::cout << "inv  " << inv << std::endl;
@@ -180,36 +175,27 @@ void elimNaiveKAAPICModP1dPivot(Matrix& A, int nthrds, uint32 blocksize, uint64 
   err = kaapic_finalize();
   gettimeofday(&stop, NULL);
   cStop = clock();
-  std::cout << "---------------------------------------------------" << std::endl;
-  std::cout << "Method:           KAAPIC 1D" << std::endl;
+  printf("---------------------------------------------------\n");
+  printf("Method:           KAAPIC 1D\n");
   // compute FLOPS:
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 +
                     (stop.tv_usec - start.tv_usec)) / 1e6;
   double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
-  char buffer[50];
   // get digits before decimal point of cputime (the longest number) and setw
   // with it: digits + 1 (point) + 4 (precision)
-  int digits = sprintf(buffer,"%.0f",cputime);
   double ratio = cputime/realtime;
-  std::cout << "# Threads:        " << thrdCounter << std::endl;
-  std::cout << "Block size:       " << blocksize << std::endl;
-  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << std::setw(digits+1+4)
-    << std::setprecision(4) << std::fixed << realtime << " sec"
-    << std::endl;
-  std::cout << "CPU time:         " << std::setw(digits+1+4)
-    << std::setprecision(4) << std::fixed << cputime
-    << " sec" << std::endl;
+  printf("# Threads:        %d\n", thrdCounter);
+  printf("Block size:       %u\n", blocksize);
+  printf("- - - - - - - - - - - - - - - - - - - - - - - - - -\n");
+  printf("Real time:        %.5f sec\n", realtime);
+  printf("CPU time:         %.5f sec\n", cputime);
   if (cputime > epsilon)
-    std::cout << "CPU/real time:    " << std::setw(digits+1+4)
-      << std::setprecision(4) << std::fixed << ratio << std::endl;
-  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4)
-    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime)
-    << std:: endl;
-  std::cout << "---------------------------------------------------" << std::endl;
+    printf("CPU/real time:    %.5f\n", ratio);
+  printf("- - - - - - - - - - - - - - - - - - - - - - - - - -\n");
+  printf("GFLOPS/sec:       %.5f\n", flops / (1000000000 * realtime));
+  printf("---------------------------------------------------\n");
 }
 
 
@@ -527,9 +513,9 @@ void elimCoKAAPICModP(mat *a_entries, uint32 rows, uint32 cols, int nthrds, uint
   int thrdCounter = kaapic_get_concurrency();
   a_entries[0]      %=  prime;
   neg_inv_piv[0]    =   negInverseModP(a_entries[0], prime);
-  timeval start, stop;
+  struct timeval start, stop;
   clock_t cStart, cStop;
-  std::cout << "Cache-oblivious Gaussian Elimination without pivoting" << std::endl;
+  printf("Cache-oblivious Gaussian Elimination without pivoting\n");
   gettimeofday(&start, NULL);
   cStart  = clock();
 
@@ -540,38 +526,26 @@ void elimCoKAAPICModP(mat *a_entries, uint32 rows, uint32 cols, int nthrds, uint
   err = kaapic_finalize();
   gettimeofday(&stop, NULL);
   cStop = clock();
-  std::cout << "---------------------------------------------------" << std::endl;
-  std::cout << "Method:           KAAPIC 1D" << std::endl;
+  printf("---------------------------------------------------\n");
+  printf("Method:           KAAPIC 1D\n");
   // compute FLOPS:
   double flops = countGEPFlops(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 +
                     (stop.tv_usec - start.tv_usec)) / 1e6;
   double cputime  = (double)((cStop - cStart)) / CLOCKS_PER_SEC;
-  char buffer[50];
   // get digits before decimal point of cputime (the longest number) and setw
   // with it: digits + 1 (point) + 4 (precision)
-  int digits = sprintf(buffer,"%.0f",cputime);
   double ratio = cputime/realtime;
-  std::cout << "# Threads:        " << thrdCounter << std::endl;
-  std::cout << "Block size:       " << blocksize << std::endl;
-  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "Real time:        " << std::setw(digits+1+4)
-    << std::setprecision(4) << std::fixed << realtime << " sec"
-    << std::endl;
-  std::cout << "CPU time:         " << std::setw(digits+1+4)
-    << std::setprecision(4) << std::fixed << cputime
-    << " sec" << std::endl;
+  printf("# Threads:        %d\n", thrdCounter);
+  printf("Block size:       %u\n", blocksize);
+  printf("- - - - - - - - - - - - - - - - - - - - - - - - - -\n");
+  printf("Real time:        %.5f sec\n", realtime);
+  printf("CPU time:         %.5f sec\n", cputime);
   if (cputime > epsilon)
-    std::cout << "CPU/real time:    " << std::setw(digits+1+4)
-      << std::setprecision(4) << std::fixed << ratio << std::endl;
-  std::cout << "- - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-  std::cout << "GFLOPS/sec:       " << std::setw(digits+1+4)
-    << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime)
-    << std:: endl;
-  std::cout << "---------------------------------------------------" << std::endl;
-}
-#endif
-#ifdef __cplusplus
+    printf("CPU/real time:    %.5f\n", ratio);
+  printf("- - - - - - - - - - - - - - - - - - - - - - - - - -\n");
+  printf("GFLOPS/sec:       %.5f\n", flops / (1000000000 * realtime));
+  printf("---------------------------------------------------\n");
 }
 #endif

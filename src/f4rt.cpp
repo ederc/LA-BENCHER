@@ -52,7 +52,7 @@ void print_help(int exval) {
 #ifdef __F4RT_HAVE_INTEL_TBB
  printf("                 2 = TBB\n");
 #endif
-#if defined(__F4RT_HAVE_KAAPI)
+#if defined(__F4RT_HAVE_KAAPIC)
  printf("                 3 = KAAPI\n");
 #endif
 #ifdef __F4RT_HAVE_PTHREAD_H

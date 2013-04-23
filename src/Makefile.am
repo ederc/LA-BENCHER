@@ -42,7 +42,7 @@ SOURCES=										\
 	seq/mat-mult-seq.cpp			\
 	tbb/mat-mult-tbb.cpp			\
 	mat-elim.cpp							\
-	mat-elim-tools.cpp				\
+	mat-elim-tools.c					\
 	kaapi/mat-elim-kaapi.c		\
 	omp/mat-elim-omp.cpp			\
 	pthrd/mat-elim-pthrd.cpp	\
@@ -55,6 +55,7 @@ pkginclude_HEADERS =	\
 
 libf4rt_la_CPPFLAGS	= $(AM_CXXFLAGS) -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
 libf4rt_la_CXXFLAGS	= $(AM_CXXFLAGS) -std=gnu++0x -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
+libf4rt_la_CFLAGS	= $(AM_CFLAGS) -std=gnu99 -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
 
 libf4rt_la_SOURCES	=	\
 	$(SOURCES)
@@ -64,6 +65,7 @@ if ENABLE_DEBUG
 lib_LTLIBRARIES	=	libf4rt.la libf4rt_debug.la
 libf4rt_debug_la_CPPFLAGS	=	$(AM_CXXFLAGS) -g3 -ggdb -Wall -D__F4RT_DEBUG -DDEBUG $(INCLUDES)
 libf4rt_debug_la_CXXFLAGS	=	$(AM_CXXFLAGS) -g3 -ggdb -Wall -std=gnu++0x -D__F4RT_DEBUG -DDEBUG $(INCLUDES)
+libf4rt__debug_la_CFLAGS	= $(AM_CFLAGS) -std=gnu99 -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
 libf4rt_debug_la_SOURCES	=	\
 	$(SOURCES)
 libf4rt_debug_la_LIBADD=
@@ -78,6 +80,7 @@ intrinsics_SOURCES= intrinsics.c intrinsics.h
 intrinsics_LDADD=libf4rt.la
 
 f4rt_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x
+f4rt_CFLAGS= $(AM_CFLAGS) -std=gnu99
 f4rt_SOURCES=  							\
 	f4rt.cpp 									\
 	matrix.cpp 								\
@@ -88,7 +91,7 @@ f4rt_SOURCES=  							\
 	seq/mat-mult-seq.cpp			\
 	tbb/mat-mult-tbb.cpp			\
 	mat-elim.cpp							\
-	mat-elim-tools.cpp				\
+	mat-elim-tools.c					\
 	kaapi/mat-elim-kaapi.c		\
 	omp/mat-elim-omp.cpp			\
 	pthrd/mat-elim-pthrd.cpp	\

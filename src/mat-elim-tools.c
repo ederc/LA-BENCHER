@@ -1,5 +1,5 @@
 /**
- * \file   mat-elim-tools.cpp
+ * \file   mat-elim-tools.c
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   March 2013
  * \brief  Source file for GEP tools.
@@ -36,9 +36,7 @@ double countGEPFlops(uint32 m, uint32 n, uint64 prime) {
   double logp = (double) bitlog(prime);
   double res = 0;
   for (uint32 i = 1; i <= boundary; ++i) {
-    //std::cout << "round " << (2*(n-i)+1)*(m-i) << std::endl;
     res +=  (2*(n-i)+1+logp)*(m-i) + logp * (n-i) * (m-i);
-    //std::cout << "res " << res << std::endl;
   }
   return res;
 }
@@ -59,7 +57,7 @@ mat negInverseModP(mat a, uint64 p) {
   mat b           = p;
   mat minusLastX  = 0;
   mat x           = 1;
-  while (true) {
+  while (1) {
     // 1st turn
     if (a == 1)
       break;

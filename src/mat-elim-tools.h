@@ -22,17 +22,21 @@ typedef signed int int32;
 typedef signed short int16;
 typedef signed char int8;
 
-
 // matrix entry type:
 // if uint16 entries are used we store uint64
 // if float entries are used we store double
 typedef uint64 mat; // mat entry type
 typedef uint16 rmat; // real type of entry
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 double countGEPFlops(uint32 m, uint32 n, uint64 prime);
 
 //void cleanUpModP(Matrix& A, uint64 prime);
 
 mat negInverseModP(mat a, uint64 p);
+#ifdef __cplusplus
+}
+#endif
 #endif
