@@ -205,7 +205,6 @@ void elimCoKAAPICBaseModP( mat *M, const uint32 k1, const uint32 i1,
                         const uint32 j1, const uint32 rows, const uint32 cols,
                         uint64 size, uint64 prime, mat *neg_inv_piv, int nthrds) {
   uint64 k;
-  printf("base drin\n");
 
   for (k = 0; k < size; k++) {
     M[(k1+k)+(k1+k)*cols] %= prime;
@@ -247,12 +246,11 @@ void D1KAAPIC( mat *M, const uint32 k1, const uint32 k2,
 		        const uint32 rows, const uint32 cols,
             uint64 size, uint64 prime, mat *neg_inv_piv,
             int nthrds, uint32 blocksize) {
-  printf("D1 -- %u -- %u -- %u -- %u -- %u -- %u\n", i1, i2, j1, j2, k1, k2);
+  //printf("D1 -- %u -- %u -- %u -- %u -- %u -- %u\n", i1, i2, j1, j2, k1, k2);
   if (i2 <= k1 || j2 <= k1)
     return;
 
   if (size <= blocksize) {
-    printf("from D1\n");
     elimCoKAAPICBaseModP(M, k1, i1, j1, rows, cols, size, prime,
                       neg_inv_piv, nthrds);
   } else {
@@ -270,68 +268,72 @@ void D1KAAPIC( mat *M, const uint32 k1, const uint32 k2,
     kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
     // X11
     kaapic_spawn(&attr, 14, D1KAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X12
     kaapic_spawn(&attr, 14, D1KAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X21
     kaapic_spawn(&attr, 14, D1KAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X22
     kaapic_spawn(&attr, 14, D1KAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     /*
     D1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
@@ -351,68 +353,72 @@ void D1KAAPIC( mat *M, const uint32 k1, const uint32 k2,
     // parallel - start
     // X11
     kaapic_spawn(&attr, 14, D1KAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X12
     kaapic_spawn(&attr, 14, D1KAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X21
     kaapic_spawn(&attr, 14, D1KAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X22
     kaapic_spawn(&attr, 14, D1KAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     /*
     // X11
     D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
@@ -439,7 +445,7 @@ void C1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds, uint32 blocksize) {
-  printf("C1\n");
+  //printf("C1 -- %u -- %u -- %u -- %u -- %u -- %u\n", i1, i2, j1, j2, k1, k2);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -453,44 +459,154 @@ void C1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
     uint32 im = (i1+i2) / 2;
     uint32 jm = (j1+j2) / 2;
 
+    kaapic_spawn_attr_t attr;
+
+    kaapic_spawn_attr_init(&attr);
+
     // parallel - start
     kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
     // X11
-    C1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_spawn(&attr, 14, C1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X21
-    C1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_spawn(&attr, 14, C1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     kaapic_sync();
     // parallel - end
 
     // parallel - start
     // X12
-    D1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_spawn(&attr, 14, D1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X22
-    D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_spawn(&attr, 14, D1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     kaapic_sync();
     // parallel - end
 
     // parallel - start
     // X12
-    C1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_spawn(&attr, 14, C1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X22
-    C1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_spawn(&attr, 14, C1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     kaapic_sync();
     // parallel - end
 
     // parallel - start
     // X11
-    D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_spawn(&attr, 14, D1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X12
-    D1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_spawn(&attr, 14, D1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     kaapic_sync();
     kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
@@ -503,7 +619,7 @@ void B1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds, uint32 blocksize) {
-  printf("B1\n");
+  //printf("B1 -- %u -- %u -- %u -- %u -- %u -- %u\n", i1, i2, j1, j2, k1, k2);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -517,44 +633,153 @@ void B1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
     uint32 im = (i1+i2) / 2;
     uint32 jm = (j1+j2) / 2;
 
+    kaapic_spawn_attr_t attr;
+
+    kaapic_spawn_attr_init(&attr);
+
     // parallel - start
     kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
     // X11
-    B1KAAPIC( M, k1, km, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-    // X11
-    B1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-    kaapic_sync();
-    // parallel - end
-
-    // parallel - start
-    // X21
-    D1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-    // X22
-    D1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-    kaapic_sync();
-    // parallel - end
-
-    // parallel - start
-    // X21
-    B1KAAPIC( M, km+1, k2, im+1, i2, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-    // X22
-    B1KAAPIC( M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
-    kaapic_sync();
-    // parallel - end
-
-    // parallel - start
-    // X11
-    D1KAAPIC( M, km+1, k2, i1, im, j1, jm, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_spawn(&attr, 14, B1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     // X12
-    D1KAAPIC( M, km+1, k2, i1, im, jm+1, j2, rows, cols, size,
-        prime, neg_inv_piv, nthrds, blocksize);
+    kaapic_spawn(&attr, 14, B1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
+    kaapic_sync();
+    // parallel - end
+
+    // parallel - start
+    // X21
+    kaapic_spawn(&attr, 14, D1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
+    // X22
+    kaapic_spawn(&attr, 14, D1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
+    kaapic_sync();
+    // parallel - end
+
+    // parallel - start
+    // X21
+    kaapic_spawn(&attr, 14, B1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
+    // X22
+    kaapic_spawn(&attr, 14, B1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
+    kaapic_sync();
+    // parallel - end
+
+    // parallel - start
+    // X11
+    kaapic_spawn(&attr, 14, D1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
+    // X12
+    kaapic_spawn(&attr, 14, D1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
     kaapic_sync();
     kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
@@ -569,7 +794,7 @@ void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds, uint32 blocksize) {
-  printf("A\n");
+  //printf("A -- %u -- %u -- %u -- %u -- %u -- %u\n", i1, i2, j1, j2, k1, k2);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -589,70 +814,70 @@ void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
     kaapic_spawn_attr_init(&attr);
 
     // forward step
+    /*
     AKAAPIC(M, k1, km, i1, im, j1, jm, rows, cols, size,
       prime, neg_inv_piv, nthrds, blocksize);
-    /*
+    */
     kaapic_spawn(&attr, 14, AKAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
         //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
 
     kaapic_sync();
-    */
 
     // parallel - start
     kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
+    /*
     B1KAAPIC( M, k1, km, i1, im, jm+1, j2, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-    C1KAAPIC( M, k1, km, im+1, i2, jm+1, j2, rows, cols, size,
+    C1KAAPIC( M, k1, km, im+1, i2, j1, jm, rows, cols, size,
         prime, neg_inv_piv, nthrds, blocksize);
-    /*
-    kaapic_spawn(&attr, 14, B1KAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
-        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
-    kaapic_spawn(0, 14, C1KAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
-        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
-    kaapic_sync();
     */
+    kaapic_spawn(&attr, 14, B1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
+    kaapic_spawn(0, 14, C1KAAPIC,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
+        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
+    kaapic_sync();
     kaapic_end_parallel(KAAPIC_FLAG_DEFAULT);
     // parallel - end
 
@@ -681,28 +906,28 @@ void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
 
     // backward step
 
+    /*
     AKAAPIC(M, km+1, k2, im+1, i2, jm+1, j2, rows, cols, size,
       prime, neg_inv_piv, nthrds, blocksize);
-    /*
+    */
     kaapic_spawn(&attr, 14, AKAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, km+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, im+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, i2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, jm+1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, j2,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, size,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, M,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, km+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, k2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, im+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, i2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, jm+1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, j2,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, size,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
         //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
 
     kaapic_sync();
-    */
   }
 }
 
@@ -724,33 +949,33 @@ void elimCoKAAPICModP(mat *a_entries, uint32 rows, uint32 cols, int nthrds, uint
   cStart  = clock();
 
   // computation of blocks
-  /*
   kaapic_spawn_attr_t attr;
 
   kaapic_spawn_attr_init(&attr);
 
   kaapic_spawn(&attr, 14, AKAAPIC,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, a_entries,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, 0,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, boundary-1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, 0,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, m-1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, 0,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, n-1,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, rows,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, cols,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, boundary,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, prime,
-        KAAPIC_MODE_RW, KAAPIC_TYPE_INT, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, rows*cols, a_entries,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, 0,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, boundary-1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, 0,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, m-1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, 0,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, n-1,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, rows,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, cols,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, boundary,
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT64, 1, prime,
+        KAAPIC_MODE_RW, KAAPIC_TYPE_UINT64, sizeof(neg_inv_piv)/sizeof(neg_inv_piv[0]), neg_inv_piv,
         //KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
-        KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
+        KAAPIC_MODE_V, KAAPIC_TYPE_UINT32, 1, blocksize);
 
   kaapic_sync();
-  */
 
+  /*
   AKAAPIC( a_entries, 0, boundary-1, 0, m-1, 0, n-1, m, n,
         boundary, prime, neg_inv_piv, nthrds, blocksize);
+  */
   err = kaapic_finalize();
   gettimeofday(&stop, NULL);
   cStop = clock();
