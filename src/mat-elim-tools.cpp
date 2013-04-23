@@ -9,9 +9,31 @@
 
 #include "mat-elim-tools.h"
 
+uint32 bitlog(uint32 x) {
+  uint8    b;
+  uint32 res;
+
+  if (x <=  8 ) { /* Shorten computation for small numbers */
+    res = 2 * x;
+  } else {
+    b = 15; /* Find the highest non zero bit in the input argument */
+    while ((b > 2) && ((int32)x > 0)) {
+      --b;
+      x <<= 1;
+    }
+    x &= 0x7000;
+    x >>= 12;
+
+    res = x + 8 * (b - 1);
+  }
+
+  return res;
+}
+
+
 double countGEPFlops(uint32 m, uint32 n, uint64 prime) {
   uint32 boundary = m > n ? n : m;
-  double logp = std::log(prime);
+  double logp = (double) bitlog(prime);
   double res = 0;
   for (uint32 i = 1; i <= boundary; ++i) {
     //std::cout << "round " << (2*(n-i)+1)*(m-i) << std::endl;
@@ -21,10 +43,12 @@ double countGEPFlops(uint32 m, uint32 n, uint64 prime) {
   return res;
 }
 
+/*
 void cleanUpModP(Matrix& A, uint64 p) {
   for (uint64 i = 0; i < A.entries.size(); ++i)
     A.entries[i] %= p;
 }
+*/
 
 mat negInverseModP(mat a, uint64 p) {
   // we do two turns of the extended Euclidian algorithm per

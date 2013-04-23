@@ -223,10 +223,10 @@ AC_CHECK_LIB([tbb], [main], [
     ], [echo "libtbb not found."])
 
 dnl Search for KAAPI
-AC_CHECK_LIB([kaapi], [main], [
-    AC_DEFINE([HAVE_KAAPI],[],"KAAPI available.")
-    LIBS="-lkaapi $LIBS"
-    ], [echo "libkaapi not found."])
+dnl AC_CHECK_LIB([kaapi], [main], [
+dnl    AC_DEFINE([HAVE_KAAPI],[],"KAAPI available.")
+dnl    LIBS="-lkaapi $LIBS"
+dnl    ], [echo "libkaapi not found."])
 
 dnl Search for KAAPIC
 AC_CHECK_LIB([kaapic], [main], [
@@ -235,10 +235,10 @@ AC_CHECK_LIB([kaapic], [main], [
     ], [echo "libkaapic not found."])
 
 dnl Search for KAAPI++
-AC_CHECK_LIB([kaapi++], [main], [
-    AC_DEFINE([HAVE_KAAPIPP],[],"KAAPI++ available.")
-    LIBS="-lkaapi++ $LIBS"
-    ], [echo "libkaapi++ not found."])
+dnl AC_CHECK_LIB([kaapi++], [main], [
+dnl    AC_DEFINE([HAVE_KAAPIPP],[],"KAAPI++ available.")
+dnl    LIBS="-lkaapi++ $LIBS"
+dnl    ], [echo "libkaapi++ not found."])
 
 dnl Do not silence irrelevant compiler warnings by default, since enabling this
 dnl option incurs a performance penalty.

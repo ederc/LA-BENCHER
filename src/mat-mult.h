@@ -21,7 +21,7 @@
 #ifdef __F4RT_HAVE_OPENMP
 #include "omp/mat-mult-omp.h"
 #endif
-#if defined(__F4RT_HAVE_KAAPI)
+#if defined(__F4RT_HAVE_KAAPIC)
 #include "kaapi/mat-mult-kaapi.h"
 #endif
 #include "seq/mat-mult-seq.h"

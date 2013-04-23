@@ -1,5 +1,5 @@
 /**
- * \file   mat-elim-kaapi.cpp
+ * \file   mat-elim-kaapi.c
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   March 2013
  * \brief  Source file for Gaussian Elimination using XKAAPI.
@@ -7,11 +7,14 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#include "mat-elim-kaapi.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "mat-elim-kaapi.h"
 #define F4RT_DBG  0
 
-#if defined(__F4RT_HAVE_KAAPI)
+#if defined(__F4RT_HAVE_KAAPIC)
 static void matElim1d(
     size_t start, size_t end, int32_t tid,
     uint32 m, uint32 n, mat *a_entries, mat inv, uint64 prime, uint32 index) {
@@ -28,14 +31,14 @@ static void matElim1d(
   }
 }
 
-void elimKAAPIC(Matrix& A, uint32 blocksize) {
+void elimKAAPIC(mat *a_entries, uint32 blocksize) {
   //blockElimSEQ(A,
 }
 
-void elimNaiveKAAPICModP1d(Matrix& A, int nthrds, uint32 blocksize, uint64 prime) {
-  uint32 m        = A.nRows();
-  uint32 n        = A.nCols();
-  mat *a_entries  = A.entries.data();
+void elimNaiveKAAPICModP1d(mat *a_entries, uint32 rows, uint32 cols, int nthrds, uint32 blocksize, uint64 prime) {
+  uint32 m        = rows;
+  uint32 n        = cols;
+  //mat *a_entries  = A.entries.data();
   // if m > n then only n eliminations are possible
   uint32 boundary  = (m > n) ? n : m;
   mat inv;
@@ -437,7 +440,7 @@ void B1KAAPIC(mat *M, const uint32 k1, const uint32 k2,
 /*
  * the following procedure does not compile even though it is just a copy of a
  * test example from the xkaapi repository!
- *
+ */
 void fibotest(const int n, int* res) {
   if (n<2)
     *res +=  n;
@@ -452,7 +455,6 @@ void fibotest(const int n, int* res) {
     );
   }
 }
-*/
 void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
         const uint32 i1, const uint32 i2,
 		    const uint32 j1, const uint32 j2,
@@ -476,7 +478,7 @@ void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
     // forward step
     AKAAPIC(M, k1, km, i1, im, j1, jm, rows, cols, size,
       prime, neg_inv_piv, nthrds, blocksize);
-/*
+    /*
     kaapic_spawn(0, 14, AKAAPIC,
         KAAPIC_MODE_RW, KAAPIC_TYPE_INT, rows*cols, M,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, k1,
@@ -493,7 +495,7 @@ void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
         KAAPIC_MODE_RW, KAAPIC_TYPE_INT, 4, neg_inv_piv,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, nthrds,
         KAAPIC_MODE_V, KAAPIC_TYPE_INT, 1, blocksize);
-*/
+    */
     // parallel - start
     kaapic_begin_parallel(KAAPIC_FLAG_DEFAULT);
     B1KAAPIC(M, k1, km, i1, im, jm+1, j2, rows, cols, size,
@@ -514,12 +516,12 @@ void AKAAPIC( mat *M, const uint32 k1, const uint32 k2,
   }
 }
 
-void elimCoKAAPICModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
-  uint32 m          = M.nRows();
-  uint32 n          = M.nCols();
+void elimCoKAAPICModP(mat *a_entries, uint32 rows, uint32 cols, int nthrds, uint32 blocksize, uint64 prime) {
+  uint32 m          = rows;
+  uint32 n          = cols;
   // if m > n then only n eliminations are possible
   uint32 boundary   = (m > n) ? n : m;
-  mat *a_entries    = M.entries.data();
+  //mat *a_entries    = M.entries.data();
   mat *neg_inv_piv  =   (mat *)calloc(boundary, sizeof(mat));
   int err = kaapic_init(1);
   int thrdCounter = kaapic_get_concurrency();
@@ -568,5 +570,8 @@ void elimCoKAAPICModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
     << std::setprecision(4) << std::fixed << flops / (1000000000 * realtime)
     << std:: endl;
   std::cout << "---------------------------------------------------" << std::endl;
+}
+#endif
+#ifdef __cplusplus
 }
 #endif

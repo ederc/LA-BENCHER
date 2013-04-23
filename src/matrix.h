@@ -32,7 +32,7 @@
 #ifdef __F4RT_HAVE_OPENMP
 #include <omp.h>
 #endif
-#if defined(__F4RT_HAVE_KAAPI)
+#if defined(__F4RT_HAVE_KAAPIC)
 //#include <kaapi.h>
 #include <kaapic.h>
 //#include <kaapi++>

@@ -12,7 +12,7 @@
 
 #include <matrix.h>
 
-#if defined(__F4RT_HAVE_KAAPI)
+#if defined(__F4RT_HAVE_KAAPIC)
 
 /********************************
  * 2 Dimensional implementation

@@ -9,6 +9,7 @@
 
 #include "mat-elim.h"
 
+
 void eliminate(Matrix& A, const int nthrds, const uint32 blocksize, 
               const int method, const int dimension, const int affinity, 
               int outerloop, int pivoting, int cacheOblivious, uint64 prime) {
@@ -112,15 +113,17 @@ void eliminate(Matrix& A, const int nthrds, const uint32 blocksize,
   }
   // KAAPI
   if (method == 3) {
-#ifdef __F4RT_HAVE_KAAPI
+#ifdef __F4RT_HAVE_KAAPIC
+
+    mat *a_entries    = A.entries.data();
     if (cacheOblivious == 0) {
       if (pivoting == 1) {
-        elimNaiveKAAPICModP1dPivot(A, nthrds, blocksize, prime);
+        elimNaiveKAAPICModP1dPivot(a_entries, A.nRows(), A.nCols(), nthrds, blocksize, prime);
       } else {
-        elimNaiveKAAPICModP1d(A, nthrds, blocksize, prime);
+        elimNaiveKAAPICModP1d(a_entries, A.nRows(), A.nCols(), nthrds, blocksize, prime);
       }
     } else {
-      elimCoKAAPICModP(A, nthrds, blocksize, prime);
+      elimCoKAAPICModP(a_entries, A.nRows(), A.nCols(), nthrds, blocksize, prime);
     }
 #else
     elimNaiveSEQModP(A, blocksize, prime);

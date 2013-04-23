@@ -81,7 +81,7 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
   if (method == 0) // plain sequential w/o scheduler overhead
     multSEQ(C, A, B, blocksize, impose);
   if (method == 3) {// xkaapi 
-#if defined(__F4RT_HAVE_KAAPI)
+#if defined(__F4RT_HAVE_KAAPIC)
     // TODO: How to enlarge blocksize without corrupting the computation?
     if (dimension == 1) {
       multKAAPIC1d(C, A, B, nthrds, blocksize, impose);

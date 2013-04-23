@@ -43,7 +43,7 @@ SOURCES=										\
 	tbb/mat-mult-tbb.cpp			\
 	mat-elim.cpp							\
 	mat-elim-tools.cpp				\
-	kaapi/mat-elim-kaapi.cpp	\
+	kaapi/mat-elim-kaapi.c		\
 	omp/mat-elim-omp.cpp			\
 	pthrd/mat-elim-pthrd.cpp	\
 	seq/mat-elim-seq.cpp			\
@@ -89,7 +89,7 @@ f4rt_SOURCES=  							\
 	tbb/mat-mult-tbb.cpp			\
 	mat-elim.cpp							\
 	mat-elim-tools.cpp				\
-	kaapi/mat-elim-kaapi.cpp	\
+	kaapi/mat-elim-kaapi.c		\
 	omp/mat-elim-omp.cpp			\
 	pthrd/mat-elim-pthrd.cpp	\
 	seq/mat-elim-seq.cpp			\
