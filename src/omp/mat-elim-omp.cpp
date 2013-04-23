@@ -290,7 +290,7 @@ void D1OMP( mat *M, const uint32 k1, const uint32 k2,
 		        const uint32 rows, const uint32 cols,
             uint64 size, uint64 prime, mat *neg_inv_piv,
             int nthrds, uint32 blocksize) {
-  omp_set_nested(1);
+  //omp_set_nested(1);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -356,7 +356,7 @@ void C1OMP(mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds, uint32 blocksize) {
-  omp_set_nested(1);
+  //omp_set_nested(1);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -434,7 +434,7 @@ void B1OMP(mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds, uint32 blocksize) {
-  omp_set_nested(1);
+  //omp_set_nested(1);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -513,7 +513,7 @@ void AOMP( mat *M, const uint32 k1, const uint32 k2,
 		    const uint32 rows, const uint32 cols,
         uint64 size, uint64 prime, mat *neg_inv_piv,
         int nthrds, uint32 blocksize) {
-  omp_set_nested(1);
+  //omp_set_nested(1);
   if (i2 <= k1 || j2 <= k1)
     return;
 
@@ -555,9 +555,9 @@ void AOMP( mat *M, const uint32 k1, const uint32 k2,
 
 void elimCoOMPModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   int thrdCounter   = nthrds;
+  omp_set_nested(1);
   if (nthrds > 0)
     omp_set_num_threads(nthrds);
-  omp_set_nested(1);
 #pragma omp parallel
 {
   #pragma omp master
