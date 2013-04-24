@@ -86,6 +86,8 @@ if int(args.alg) == 2:
   algorithm = 'E -w'
 if int(args.alg) == 3:
   algorithm = 'E'
+if int(args.alg) == 4:
+  algorithm = 'E -c'
 
 # range of threads
 threads = list()
@@ -120,7 +122,7 @@ if int(args.alg) == 1:
     'Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
     'Intel TBB 1D simple partitioner','Intel TBB 2D auto partitioner',
     'Intel TBB 2D affinity partitioner','Intel TBB 2D simple partitioner']
-else :
+if int(args.alg) == 2 or int(args.alg) == 3:
   if start_threads == 1:
     methods = ['Raw sequential','pThread 1D','Open MP collapse(1) outer loop',
     'KAAPIC 1D','Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
@@ -130,6 +132,14 @@ else :
     'KAAPIC 1D','Intel TBB 1D auto partitioner','Intel TBB 1D affinity partitioner',
     'Intel TBB 1D simple partitioner']
   
+if int(args.alg) == 4:
+  if start_threads == 1:
+    methods = ['Raw sequential','pThread 1D','Open MP parallel sections',
+    'KAAPIC 1D','Intel TBB Invoke']
+  else :
+    methods = ['pThread 1D','Open MP parallel sections',
+    'KAAPIC 1D','Intel TBB Invoke']
+
 # lists for all methods we have, those are lists of lists:
 # e.g. time_series[i] is a list of len(threads) elements of the timings
 # of methods[i]. 
@@ -184,15 +194,23 @@ if int(args.inc) == 0:
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   # pThread computations 1D outer
+  block = 512
+  j = 0
   for i in threads:
-    print(strstr+' -m4 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m4 -t '+str(i)+' >> bench-'+str(hash_value))
+    block = max(block - j * 64,16)
+    j = j+1
+    print(strstr+' -m4 -t '+str(i)+' -b'+str(block)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m4 -t '+str(i)+' -b'+str(block)+' >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   # OpenMP computations 1D outer
+  block = 512
+  j = 0
   for i in threads:
-    print(strstr+' -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m1 -d 1 -t '+str(i)+' >> bench-'+str(hash_value))
+    block = max(block - j * 64,16)
+    j = j+1
+    print(strstr+' -m1 -d 1 -t '+str(i)+' -b'+str(block)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m1 -d 1 -t '+str(i)+' -b'+str(block)+' >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   if int(args.alg) == 1:
@@ -209,9 +227,13 @@ if int(args.inc) == 0:
       print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   # KAAPIC computations 1D
+  block = 512
+  j = 0
   for i in threads:
-    print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-    os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' >> bench-'+str(hash_value))
+    block = max(block - j * 64,16)
+    j = j+1
+    print('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' -b'+str(block)+' >> bench-'+str(hash_value)+'...')
+    os.system('KAAPI_CPUCOUNT='+str(i)+' '+strstr+' -m3 -t '+str(i)+' -b'+str(block)+' >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   if int(args.alg) == 1:
@@ -222,22 +244,27 @@ if int(args.inc) == 0:
       print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   # TBB computations 1D auto
+  block = 272
+  j = 0
   for i in threads:
-    print(strstr+' -m2 -t '+str(i)+' >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m2 -t '+str(i)+' >> bench-'+str(hash_value))
+    block = max(block - j * 64,16)
+    j = j+1
+    print(strstr+' -m2 -t '+str(i)+' -b'+str(block)+' >> bench-'+str(hash_value)+'...')
+    os.system(strstr+' -m2 -t '+str(i)+' -b'+str(block)+' >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-  # TBB computations 1D affinity
-  for i in threads:
-    print(strstr+' -m2 -t '+str(i)+' -a >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m2 -t '+str(i)+' -a >> bench-'+str(hash_value))
-    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+  if int(args.alg) != 4:
+    # TBB computations 1D affinity
+    for i in threads:
+      print(strstr+' -m2 -t '+str(i)+' -a >> bench-'+str(hash_value)+'...')
+      os.system(strstr+' -m2 -t '+str(i)+' -a >> bench-'+str(hash_value))
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-  # TBB computations 1D simple
-  for i in threads:
-    print(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value))
-    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+    # TBB computations 1D simple
+    for i in threads:
+      print(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value)+'...')
+      os.system(strstr+' -m2 -t '+str(i)+' -s >> bench-'+str(hash_value))
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
   if int(args.alg) == 1:
     # TBB computations 2D auto
@@ -334,27 +361,28 @@ else:
     os.system(strstr+' -m2 -t '+str(max_threads)+' >> bench-'+str(hash_value))
     print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-  # TBB computations 1D affinity
-  for k in range(0,int(args.count)+1):
-    rows = int(args.rowsa) + k * int(args.inc)
-    cols = int(args.colsa) + k * int(args.inc)
-    strstr = '../../src/f4rt -'+algorithm+' \
-    -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
+  if int(alg.args) != 4:
+    # TBB computations 1D affinity
+    for k in range(0,int(args.count)+1):
+      rows = int(args.rowsa) + k * int(args.inc)
+      cols = int(args.colsa) + k * int(args.inc)
+      strstr = '../../src/f4rt -'+algorithm+' \
+      -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
 
-    print(strstr+' -m2 -t '+str(max_threads)+' -a >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m2 -t '+str(max_threads)+' -a >> bench-'+str(hash_value))
-    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+      print(strstr+' -m2 -t '+str(max_threads)+' -a >> bench-'+str(hash_value)+'...')
+      os.system(strstr+' -m2 -t '+str(max_threads)+' -a >> bench-'+str(hash_value))
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
-  # TBB computations 1D simple
-  for k in range(0,int(args.count)+1):
-    rows = int(args.rowsa) + k * int(args.inc)
-    cols = int(args.colsa) + k * int(args.inc)
-    strstr = '../../src/f4rt -'+algorithm+' \
-    -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
+    # TBB computations 1D simple
+    for k in range(0,int(args.count)+1):
+      rows = int(args.rowsa) + k * int(args.inc)
+      cols = int(args.colsa) + k * int(args.inc)
+      strstr = '../../src/f4rt -'+algorithm+' \
+      -A random-mat-'+str(rows)+'-'+str(cols)+'.mat '
 
-    print(strstr+' -m2 -t '+str(max_threads)+' -s >> bench-'+str(hash_value)+'...')
-    os.system(strstr+' -m2 -t '+str(max_threads)+' -s >> bench-'+str(hash_value))
-    print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
+      print(strstr+' -m2 -t '+str(max_threads)+' -s >> bench-'+str(hash_value)+'...')
+      os.system(strstr+' -m2 -t '+str(max_threads)+' -s >> bench-'+str(hash_value))
+      print 'Done at '+time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
 
 
 ##############################################
@@ -421,7 +449,7 @@ if args.plot:
       styles = ['-','-','--','-','-','-','-','--',':','-','--',':']
       markers = ['None','None','None','None','o','s','None','None',
         'None','None','None','None']
-  if int(args.alg) == 2 or int(args.alg) == 3 or int(args.alg) == 4:
+  if int(args.alg) == 2 or int(args.alg) == 3:
     if start_threads == 1:
       stride = 1
       coloring = ['k','c','b','y','#7d053f','#7d053f','#7d053f']
@@ -434,6 +462,17 @@ if args.plot:
       styles = ['-','-','-','-','--',':']
       markers = ['None','None','o','None','None',
         'None']
+  if int(args.alg) == 4:
+    if start_threads == 1:
+      stride = 1
+      coloring = ['k','c','b','y','#7d053f']
+      styles = ['None','-','-','-','-']
+      markers = ['^','None','None','o','None']
+    else:
+      stride = 1
+      coloring = ['c','b','y','#7d053f']
+      styles = ['-','-','-','-']
+      markers = ['None','None','o','None']
 
   pl.rc('legend',**{'fontsize':5})
   fig = pl.figure()
@@ -442,12 +481,20 @@ if args.plot:
   if int(args.alg) == 1:
     pl.title('Mat Mult uint64 Matrix dimensions: '+dimensions[0]+
     ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
-  if int(args.alg) == 2 or int(args.alg) == 3 or int(args.alg) == 4:
+  if int(args.alg) == 2 or int(args.alg) == 3:
     if int(args.inc) == 0:
       pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
       ' x '+dimensions[1], fontsize=8)
     else:
       pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
+      ' x '+dimensions[1]+' increasing by '+dimensions[2]+' in each step using '+
+      str(max_threads)+' threads', fontsize=8)
+  if int(args.alg) == 4:
+    if int(args.inc) == 0:
+      pl.title('Cache-oblivious GEP uint64 Matrix dimensions: '+dimensions[0]+
+      ' x '+dimensions[1], fontsize=8)
+    else:
+      pl.title('Cache-oblivious GEP uint64 Matrix dimensions: '+dimensions[0]+
       ' x '+dimensions[1]+' increasing by '+dimensions[2]+' in each step using '+
       str(max_threads)+' threads', fontsize=8)
   if int(args.inc) == 0:
@@ -500,12 +547,20 @@ if args.plot:
   if int(args.alg) == 1:
     pl.title('Mat Mult uint64 Matrix dimensions: '+dimensions[0]+
     ' x '+dimensions[1]+', '+dimensions[1]+' x '+dimensions[2], fontsize=8)
-  if int(args.alg) == 2 or int(args.alg) == 3 or int(args.alg) == 4:
+  if int(args.alg) == 2 or int(args.alg) == 3:
     if int(args.inc) == 0:
       pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
       ' x '+dimensions[1], fontsize=8)
     else:
       pl.title('Naive GEP uint64 Matrix dimensions: '+dimensions[0]+
+      ' x '+dimensions[1]+' increasing by '+dimensions[2]+' in each step using '+
+      str(max_threads)+' threads', fontsize=8)
+  if int(args.alg) == 4:
+    if int(args.inc) == 0:
+      pl.title('Cache-oblivious GEP uint64 Matrix dimensions: '+dimensions[0]+
+      ' x '+dimensions[1], fontsize=8)
+    else:
+      pl.title('Cache-oblivious GEP uint64 Matrix dimensions: '+dimensions[0]+
       ' x '+dimensions[1]+' increasing by '+dimensions[2]+' in each step using '+
       str(max_threads)+' threads', fontsize=8)
   if int(args.inc) == 0:

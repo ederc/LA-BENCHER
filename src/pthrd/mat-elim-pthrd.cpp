@@ -606,7 +606,6 @@ void* C1PTHRD(void *p) {
   }
   // decrease number of active threads
   pthread_mutex_lock(&mutex1);
-  pool->runningJobs;
   //printf("Counter value: %d\n",counter);
   pthread_mutex_unlock(&mutex1);
   return 0;
@@ -843,7 +842,7 @@ void* APTHRD(void *p) {
     thread_params[1].k2 = km;
 
     // parallel - start
-    if (jobsRunning < maxThreads)
+    //if (data->pool->runningJobs < data->pool->maxNumThreads)
     pthread_create(&thread[0], NULL, &B1PTHRD, (void *) &data[0]);
     pthread_create(&thread[1], NULL, &C1PTHRD, (void *) &data[1]);
     for (int i = 0; i < 2; ++i)
@@ -893,7 +892,8 @@ void elimCoPTHRDModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   data->pool          = pool;
   data->params        = thread_params;
   pool->maxNumThreads = nthrds;
-  pool->runningJobs   = 1;
+  pool->runningJobs   = 0;
+  pool->threads       = threads;
   printf("[MAIN] Running jobs: %d\n", pool->runningJobs);
   jobsRunning         = 1;
   maxThreads          = nthrds;
@@ -906,7 +906,6 @@ void elimCoPTHRDModP(Matrix& M, int nthrds, uint32 blocksize, uint64 prime) {
   mat *neg_inv_piv  = (mat *)calloc(boundary, sizeof(mat));
   a_entries[0]      %=  prime;
   neg_inv_piv[0]    = negInverseModP(a_entries[0], prime);
-
 
   printf("Pool: maxNumThreads %d\n", pool->maxNumThreads);
   printf("      runningJobs   %d -- number of bits %d\n", pool->runningJobs, sizeof(pool->runningJobs) * 8);
