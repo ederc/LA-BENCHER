@@ -207,7 +207,10 @@ int main(int argc, char *argv[]) {
   }
   if (eliminate && fileNameA) {
     if (blocksize == 0)
-      blocksize = __F4RT_CPU_L1_CACHE;
+      if (cacheOblivious == 1)
+        blocksize = __F4RT_CPU_L1_CACHE;
+      else
+        blocksize = 2;
     eliminateMatrix(fileNameA, nthrds, method, affinity, 
                     blocksize, dimension, outerloop,
                     pivoting, cacheOblivious, prime, print);  
