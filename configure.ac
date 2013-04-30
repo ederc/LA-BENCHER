@@ -218,6 +218,9 @@ AC_CHECK_LIB([hwloc], [main], [
 dnl Search for Open MP
 AX_OPENMP()
 
+dnl Search for BLAS
+AX_BLAS()
+
 dnl Search for Intel TBB
 AC_CHECK_LIB([tbb], [main], [
     AC_DEFINE([HAVE_INTEL_TBB],[],"Intel TBB available.")
