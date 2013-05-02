@@ -57,6 +57,7 @@ benchmarks
 src/f4rt
 src/intrinsics
 scripts/test-*
+scripts/*.pdf
 tests/unit/*
 !tests/unit/Makefile.am
 !tests/unit/*.c

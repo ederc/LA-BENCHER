@@ -70,6 +70,9 @@
 AC_DEFUN([AX_BLAS], [
 AC_PREREQ(2.50)
 ax_blas_ok=no
+ax_openblas_ok=no
+ax_atlas_ok=no
+ax_mkl_ok=no
 
 AC_ARG_WITH(blas,
 	[AC_HELP_STRING([--with-blas=<lib>], [use BLAS library <lib>])])
@@ -103,6 +106,39 @@ else
     $2
 fi
 
+if test x"$ax_atlas_ok" = xyes; then
+    ifelse([$1],, [
+        AC_DEFINE(HAVE_ATLAS,1, [Define if you have a ATLAS library.])
+        ],
+        [$1])
+    :
+else
+    ax_atlas_ok=no
+    $2
+fi
+
+if test x"$ax_openblas_ok" = xyes; then
+    ifelse([$1],, [
+        AC_DEFINE(HAVE_OPENBLAS,1, [Define if you have an OpenBLAS library.])
+        ],
+        [$1])
+    :
+else
+    ax_openblas_ok=no
+    $2
+fi
+
+if test x"$ax_mkl_ok" = xyes; then
+    ifelse([$1],, [
+        AC_DEFINE(HAVE_INTEL_MKL,1, [Define if you have an Intel MKL library.])
+        ],
+        [$1])
+    :
+else
+    ax_openblas_ok=no
+    $2
+fi
+
 ])dnl AX_BLAS
 
 
@@ -117,8 +153,10 @@ AC_PREREQ(2.50)
 ax_blas_ok=no
 
 # Get fortran linker names of BLAS functions to check for.
-sgemm=s$1
-dgemm=d$1
+# sgemm=s$1
+# dgemm=d$1
+AC_F77_FUNC(sgemm)
+AC_F77_FUNC(dgemm)
 
 ax_blas_save_LIBS="$LIBS"
 LIBS="$LIBS $FLIBS"
@@ -141,12 +179,21 @@ if test $ax_blas_ok = no; then
 	LIBS="$save_LIBS"
 fi
 
+# BLAS in OpenBLAS library? (http://xianyi.github.com/OpenBLAS/)
+if test $ax_blas_ok = no; then
+  AC_CHECK_LIB(openblas, $sgemm, [ax_blas_ok=yes;ax_openblas_ok=yes
+  BLAS_LIBS="-lopenblas"])
+fi
+
+
+
 # BLAS in ATLAS library? (http://math-atlas.sourceforge.net/)
 if test $ax_blas_ok = no; then
 	AC_CHECK_LIB(atlas, ATL_xerbla,
 		[AC_CHECK_LIB(f77blas, $sgemm,
 		[AC_CHECK_LIB(cblas, cblas_dgemm,
 			[ax_blas_ok=yes
+       ax_atlas_ok=yes
 			 BLAS_LIBS="-lcblas -lf77blas -latlas"],
 			[], [-lf77blas -latlas])],
 			[], [-latlas])])
@@ -164,7 +211,7 @@ fi
 
 # BLAS in Intel MKL library?
 if test $ax_blas_ok = no; then
-	AC_CHECK_LIB(mkl, $sgemm, [ax_blas_ok=yes;BLAS_LIBS="-lmkl"])
+	AC_CHECK_LIB(mkl, $sgemm, [ax_blas_ok=yes;ax_mkl_ok=yes;BLAS_LIBS="-lmkl"])
 fi
 
 # BLAS in Apple vecLib library?
