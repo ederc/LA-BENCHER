@@ -7,11 +7,11 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#ifdef __F4RT_HAVE_OPENBLAS
 #include "mat-elim-blas.h"
 
 #define F4RT_DBG  0
 
+#ifdef __F4RT_HAVE_OPENBLAS
 void elimBLAS(Matrix& A, uint32 blocksize, uint64 prime) {
   uint32 m    = A.nRows();
   uint32 n    = A.nCols();

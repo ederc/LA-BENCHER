@@ -44,7 +44,7 @@ SOURCES=										\
 	tbb/mat-mult-tbb.cpp			\
 	mat-elim.cpp							\
 	mat-elim-tools.c					\
-	blas/mat-elim-blas.c			\
+	blas/mat-elim-blas.cpp		\
 	kaapi/mat-elim-kaapi.c		\
 	omp/mat-elim-omp.cpp			\
 	pthrd/mat-elim-pthrd.cpp	\
@@ -94,7 +94,7 @@ f4rt_SOURCES=  							\
 	tbb/mat-mult-tbb.cpp			\
 	mat-elim.cpp							\
 	mat-elim-tools.c					\
-	blas/mat-elim-blas.c			\
+	blas/mat-elim-blas.cpp		\
 	kaapi/mat-elim-kaapi.c		\
 	omp/mat-elim-omp.cpp			\
 	pthrd/mat-elim-pthrd.cpp	\
