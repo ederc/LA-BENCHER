@@ -145,9 +145,13 @@ void eliminate(Matrix& A, const int nthrds, const uint32 blocksize,
     elimNaiveSEQModP(A, blocksize, prime);
 #endif
   }
-  // only for testing purposes, no user option
+  // using OpenBLAS, converts matrix to double matrix first
   if (method == 5) {
-      elimCoSEQModPOld(A, blocksize, prime);
+#ifdef __F4RT_HAVE_OPENBLAS
+    elimBLAS(A, blocksize, prime);
+#else
+    elimNaiveSEQModP(A, blocksize, prime);
+#endif
   }
 }
 

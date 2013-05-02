@@ -58,6 +58,9 @@ void print_help(int exval) {
 #ifdef __F4RT_HAVE_PTHREAD_H
  printf("                 4 = pThread\n");
 #endif
+#ifdef __F4RT_HAVE_OPENBLAS
+ printf("                 5 = OpenBLAS\n");
+#endif
  printf("                 Note: By default the sequential implementation is used\n");
  printf("       -M        if input file is set, multiply matrix with its own transpose\n");
  printf("       -N        Not transposing: B is NOT transposed before multiplication,\n");
@@ -206,11 +209,13 @@ int main(int argc, char *argv[]) {
     }
   }
   if (eliminate && fileNameA) {
-    if (blocksize == 0)
-      if (cacheOblivious == 1)
+    if (blocksize == 0) {
+      if (cacheOblivious == 1) {
         blocksize = __F4RT_CPU_L1_CACHE;
-      else
+      } else {
         blocksize = 2;
+      }
+    }
     eliminateMatrix(fileNameA, nthrds, method, affinity, 
                     blocksize, dimension, outerloop,
                     pivoting, cacheOblivious, prime, print);  

@@ -90,7 +90,7 @@ AC_SUBST(BLAS_LIBS)
 
 if test x"$ax_blas_ok" = xyes; then
     ifelse([$1],, [
-        AC_DEFINE(HAVE_BLAS,1, [Define if you have a BLAS library.])
+        AC_DEFINE(HAVE_BLAS,[], [Define if you have a BLAS library.])
         AH_TEMPLATE([F77_FUNC], 
                 [Define to a macro mangling the given Fortan function name])
         if test x"$ax_blas_underscore" = xyes; then
@@ -108,7 +108,7 @@ fi
 
 if test x"$ax_atlas_ok" = xyes; then
     ifelse([$1],, [
-        AC_DEFINE(HAVE_ATLAS,1, [Define if you have a ATLAS library.])
+        AC_DEFINE(HAVE_ATLAS,[], [Define if you have a ATLAS library.])
         ],
         [$1])
     :
@@ -119,7 +119,7 @@ fi
 
 if test x"$ax_openblas_ok" = xyes; then
     ifelse([$1],, [
-        AC_DEFINE(HAVE_OPENBLAS,1, [Define if you have an OpenBLAS library.])
+        AC_DEFINE(HAVE_OPENBLAS,[], [Define if you have an OpenBLAS library.])
         ],
         [$1])
     :
@@ -130,7 +130,7 @@ fi
 
 if test x"$ax_mkl_ok" = xyes; then
     ifelse([$1],, [
-        AC_DEFINE(HAVE_INTEL_MKL,1, [Define if you have an Intel MKL library.])
+        AC_DEFINE(HAVE_INTEL_MKL,[], [Define if you have an Intel MKL library.])
         ],
         [$1])
     :

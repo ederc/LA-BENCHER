@@ -21,8 +21,11 @@
 #ifdef __F4RT_HAVE_OPENMP
 #include "omp/mat-elim-omp.h"
 #endif
-#if defined(__F4RT_HAVE_KAAPIC)
+#ifdef __F4RT_HAVE_KAAPIC
 #include "kaapi/mat-elim-kaapi.h"
+#endif
+#ifdef __F4RT_HAVE_OPENBLAS
+#include "blas/mat-elim-blas.h"
 #endif
 #include "seq/mat-elim-seq.h"
 
