@@ -11,6 +11,7 @@
 #define F4RT_MAT_ELIM_H
 
 #include "matrix.h"
+#include "seq/mat-elim-seq.h"
 
 #ifdef __F4RT_HAVE_PTHREAD_H
 #include "pthrd/mat-elim-pthrd.h"
@@ -27,7 +28,7 @@
 #ifdef __F4RT_HAVE_OPENBLAS
 #include "blas/mat-elim-blas.h"
 #endif
-#include "seq/mat-elim-seq.h"
+
 
 void eliminate(Matrix& A, const int nthrds, const uint32 blocksize, 
               const int method, const int dimension, const int affinity, 
