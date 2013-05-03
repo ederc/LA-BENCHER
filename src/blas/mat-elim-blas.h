@@ -10,18 +10,21 @@
 #ifndef F4RT_MAT_ELIM_BLAS_H
 #define F4RT_MAT_ELIM_BLAS_H
 
-#include <matrix.h>
+#include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
+#include <f4rt-config.h>
 #include "../mat-elim-tools.h"
 
-#ifdef __F4RT_HAVE_OPENBLAS
-// HACK FOR "template with C linkage error" from LAPACK
-#include <complex.h>
-#define lapack_complex_float float _Complex
-#define lapack_complex_double double _Complex
+#ifdef __F4RT_HAVE_LAPACK
 
-#include <lapacke.h> // from OpenBLAS
+#ifdef __cplusplus
+extern "C" {
+#endif
+void elimBLAS(double *M, uint32 rows, uint32 cols, int nthrds, uint32 blocksize, uint64 prime);
 
-void elimBLAS(Matrix& A, uint32 blocksize, uint64 prime);
-
+#ifdef __cplusplus
+}
+#endif
 #endif
 #endif

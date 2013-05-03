@@ -147,8 +147,13 @@ void eliminate(Matrix& A, const int nthrds, const uint32 blocksize,
   }
   // using OpenBLAS, converts matrix to double matrix first
   if (method == 5) {
-#ifdef __F4RT_HAVE_OPENBLAS
-    elimBLAS(A, blocksize, prime);
+#ifdef __F4RT_HAVE_LAPACK
+    double *M = (double *)malloc(A.nRows() * A.nCols() * sizeof(double));
+    for (int i = 0; i < A.entries.size(); ++i) {
+      M[i]  = (double) A.entries[i];
+    }
+    elimBLAS(M, A.nRows(), A.nCols(), nthrds, blocksize, prime);
+    free(M);
 #else
     elimNaiveSEQModP(A, blocksize, prime);
 #endif

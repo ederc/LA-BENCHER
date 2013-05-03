@@ -11,27 +11,34 @@
 
 #define F4RT_DBG  0
 
-#ifdef __F4RT_HAVE_OPENBLAS
-void elimBLAS(Matrix& A, uint32 blocksize, uint64 prime) {
-  uint32 m    = A.nRows();
-  uint32 n    = A.nCols();
+#ifdef __F4RT_HAVE_LAPACK
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+  // LU decomoposition of a general matrix
+  void dgetrf_(int* M, int *N, double* A, int* lda, int* IPIV, int* INFO);
+#ifdef __cplusplus
+}
+#endif
+
+void elimBLAS(double *M, uint32 rows, uint32 cols, int nthrds, uint32 blocksize, uint64 prime) {
+  uint32 m    = rows;
+  uint32 n    = cols;
   uint64 dim  = m*n;
-  double *M = (double *)malloc(dim*sizeof(double));
-  for (int i = 0; i < dim; ++i) {
-    M[i]  = A.entries[i];
-  }
   // if m > n then only n eliminations are possible
-  uint32 boundary  = (m > n) ? n : m;
-  lapack_int *ipiv;
-  timeval start, stop;
+  //uint32 boundary  = (m > n) ? n : m;
+  double *ipiv  = (double *)malloc(dim * sizeof(double));
+  int errorHandler;
+  struct timeval start, stop;
   clock_t cStart, cStop;
   printf("Tiled Gaussian Elimination without pivoting\n");
   gettimeofday(&start, NULL);
   cStart  = clock();
 
   // calling BLAS / LAPACK
-  int info = dgetrf(LAPACK_ROW_MAJOR, m, n, M, m, ipiv);
-  printf("INFO %d\n", info);
+  dgetrf_(&m, &n, M, &m, ipiv, &errorHandler);
+  printf("INFO %d\n", errorHandler);
 
   gettimeofday(&stop, NULL);
   cStop = clock();
@@ -46,7 +53,7 @@ void elimBLAS(Matrix& A, uint32 blocksize, uint64 prime) {
   // get digits before decimal point of cputime (the longest number) and setw
   // with it: digits + 1 (point) + 4 (precision)
   double ratio = cputime/realtime;
-  printf("# Threads:        %d\n", thrdCounter);
+  printf("# Threads:        %d\n", nthrds);
   printf("Block size:       %u\n", blocksize);
   printf("- - - - - - - - - - - - - - - - - - - - - - - - - -\n");
   printf("Real time:        %.4f sec\n", realtime);

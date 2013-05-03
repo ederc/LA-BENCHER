@@ -25,7 +25,7 @@
 #ifdef __F4RT_HAVE_KAAPIC
 #include "kaapi/mat-elim-kaapi.h"
 #endif
-#ifdef __F4RT_HAVE_OPENBLAS
+#ifdef __F4RT_HAVE_LAPACK
 #include "blas/mat-elim-blas.h"
 #endif
 
