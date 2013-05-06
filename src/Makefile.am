@@ -55,9 +55,9 @@ SOURCES=										\
 pkginclude_HEADERS =	\
 	$(BASIC_HDRS)
 
-libf4rt_la_CPPFLAGS	= $(AM_CXXFLAGS) -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
-libf4rt_la_CXXFLAGS	= $(AM_CXXFLAGS) -std=gnu++0x -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
-libf4rt_la_CFLAGS	= $(AM_CFLAGS) -std=gnu99 -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
+libf4rt_la_CPPFLAGS	= $(AM_CXXFLAGS) -latlas -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
+libf4rt_la_CXXFLAGS	= $(AM_CXXFLAGS) -latlas -std=gnu++0x -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
+libf4rt_la_CFLAGS	= $(AM_CFLAGS) -latlas -std=gnu99 -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
 
 libf4rt_la_SOURCES	=	\
 	$(SOURCES)
@@ -81,8 +81,8 @@ intrinsics_CPPFLAGS= $(AM_CXXFLAGS)
 intrinsics_SOURCES= intrinsics.c intrinsics.h
 intrinsics_LDADD=libf4rt.la
 
-f4rt_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x
-f4rt_CFLAGS= $(AM_CFLAGS) -std=gnu99
+f4rt_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x -latlas
+f4rt_CFLAGS= $(AM_CFLAGS) -std=gnu99 -latlas
 f4rt_SOURCES=  							\
 	f4rt.cpp 									\
 	matrix.cpp 								\

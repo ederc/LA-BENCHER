@@ -32,6 +32,7 @@ typedef uint16 rmat; // real type of entry
 extern "C" {
 #endif
 double countGEPFlops(uint32 m, uint32 n, uint64 prime);
+double countGEPFlopsNoPrime(uint32 m, uint32 n, uint64 prime);
 
 //void cleanUpModP(Matrix& A, uint64 prime);
 

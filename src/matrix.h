@@ -37,7 +37,6 @@
 #include <kaapic.h>
 //#include <kaapi++>
 #endif
-//#include "auxiliary.h"
 
 typedef unsigned long long uint64;
 typedef unsigned int uint32;

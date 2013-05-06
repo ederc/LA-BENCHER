@@ -41,6 +41,16 @@ double countGEPFlops(uint32 m, uint32 n, uint64 prime) {
   return res;
 }
 
+
+double countGEPFlopsNoPrime(uint32 m, uint32 n, uint64 prime) {
+  uint32 boundary = m > n ? n : m;
+  double res = 0;
+  for (uint32 i = 1; i <= boundary; ++i) {
+    res +=  (2*(n-i)+1)*(m-i);
+  }
+  return res;
+}
+
 /*
 void cleanUpModP(Matrix& A, uint64 p) {
   for (uint64 i = 0; i < A.entries.size(); ++i)

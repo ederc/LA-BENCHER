@@ -45,7 +45,7 @@ void elimBLAS(double *M, uint32 rows, uint32 cols, int nthrds, uint32 blocksize,
   printf("---------------------------------------------------\n");
   printf("Method:           OpenBLAS\n");
   // compute FLOPS:
-  double flops = countGEPFlops(m, n, prime);
+  double flops = countGEPFlopsNoPrime(m, n, prime);
   float epsilon = 0.0000000001;
   double realtime = ((stop.tv_sec - start.tv_sec) * 1e6 +
                     (stop.tv_usec - start.tv_usec)) / 1e6;
