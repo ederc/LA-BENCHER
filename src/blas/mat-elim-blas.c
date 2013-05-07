@@ -8,6 +8,11 @@
  */
 
 #include "mat-elim-blas.h"
+#include "plasma.h"
+#include "quark.h"
+#include "lapacke.h"
+#include "cblas.h"
+#include "core_blas.h"
 
 #define F4RT_DBG  0
 
@@ -28,7 +33,7 @@ void elimBLAS(double *M, uint32 rows, uint32 cols, int nthrds, uint32 blocksize,
   uint64 dim  = m*n;
   // if m > n then only n eliminations are possible
   //uint32 boundary  = (m > n) ? n : m;
-  double *ipiv  = (double *)malloc(dim * sizeof(double));
+  //double *ipiv  = (double *)malloc(dim * sizeof(double));
   int errorHandler;
   struct timeval start, stop;
   clock_t cStart, cStop;
@@ -36,9 +41,23 @@ void elimBLAS(double *M, uint32 rows, uint32 cols, int nthrds, uint32 blocksize,
   gettimeofday(&start, NULL);
   cStart  = clock();
 
-  // calling BLAS / LAPACK
-  dgetrf_(&m, &n, M, &m, ipiv, &errorHandler);
+  // ATLAS implementation - start
+  //errorHandler = ATL_dgetrf(CblasRowMajor, m, n, M, m, ipiv);
+  // ATLAS implementation - end
+
+  // LAPACK implementation - start
+  //dgetrf_(&m, &n, M, &m, ipiv, &errorHandler);
+  // LAPACK implementation - end
+  
+  // PLASMA implementation - start
+  int *ipiv;
+  PLASMA_desc *L;
+  PLASMA_Init(nthrds);
+  errorHandler = PLASMA_Alloc_Workspace_dgetrf_incpiv(m, n, &L, &ipiv);
+  errorHandler = PLASMA_dgetrf_incpiv(m, n, M, m, L, ipiv);
+  PLASMA_Finalize();
   printf("INFO %d\n", errorHandler);
+  // PLASMA implementation - end
 
   gettimeofday(&stop, NULL);
   cStop = clock();

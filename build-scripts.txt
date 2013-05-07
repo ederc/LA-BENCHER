@@ -1,0 +1,17 @@
+##########################
+# PLASMA                 #
+##########################
+make distclean ; ./autogen.sh ; ./configure
+LDFLAGS="-L/home/eder/repos/xkaapi-2.0/install/lib
+-L/home/eder/repos/plasma-installer_2.5.0b1/install/lib"
+CFLAGS="-I/home/eder/repos/xkaapi-2.0/install/include
+-I/home/eder/repos/plasma-installer_2.5.0b1/install/include
+-L/home/eder/repos/plasma-installer_2.5.0b1/install/lib -lhwloc -lplasma -lquark
+-lcoreblas -lcblas -lblas -llapacke -llapack -lpthread"
+CXXFLAGS="-I/home/eder/repos/plasma-installer_2.5.0b1/install/include
+-L/home/eder/repos/plasma-installer_2.5.0b1/install/lib -lhwloc -lplasma -lquark
+-lcoreblas -lcblas -lblas -llapacke -llapack -lblas" ; make -j10
+
+##########################
+# OPEN BLAS              #
+##########################
