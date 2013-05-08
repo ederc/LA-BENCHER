@@ -182,8 +182,8 @@ void genRandom( const uint32 m, const uint32 n,
 int check(const Matrix& A, const Matrix& B, int unittest = 0) {
   if (!unittest)
     std::cout << "Checking generated matrix with data written to file." << std::endl;
-  for (size_t i = 0; i < A.nRows(); ++i)
-    for (size_t j = 0; j < A.nCols(); ++j) 
+  for (uint32 i = 0; i < A.nRows(); ++i)
+    for (uint32 j = 0; j < A.nCols(); ++j) 
       if (A(i,j) != B(i,j)) {
         if (!unittest)
           std::cerr << "Error: Matrices do not coincide at position (" << i << "," << j << ")" << std::endl;
@@ -196,8 +196,9 @@ void Matrix::read(FILE* file) {
   const uint32 colCount   = readOne(file);
   m = rowCount;
   n = colCount;
-  entries.resize(rowCount * colCount);
-  readMany(file, rowCount * colCount, entries);
+  uint64 dim  = static_cast<uint64>(rowCount)*colCount;
+  entries.resize(dim);
+  readMany(file, dim, entries);
 }
 
 void Matrix::write(FILE* file) {
