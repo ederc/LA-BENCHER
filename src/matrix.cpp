@@ -283,9 +283,10 @@ void Matrix::generateRandomMatrix(const uint32 nr, const uint32 nc, bool cmp = f
   // generate a matrix of size m*n with random entries of type uint32 (but
   // being unsigned integer < 2^16 in order to get a correct multiplication)
   //std::vector<uint16> v;
-  entries.resize(m*n);
+  uint64 dim  = static_cast<uint64>(m)*n;
+  entries.resize(dim);
   srand(time(NULL));
-  for (uint64 i = 0; i < m*n; ++i) {
+  for (uint64 i = 0; i < dim; ++i) {
     entries[i] = getRandomVal();
   }
 
