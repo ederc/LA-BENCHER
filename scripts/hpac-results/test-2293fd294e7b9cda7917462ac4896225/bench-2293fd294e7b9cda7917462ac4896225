@@ -1,0 +1,182 @@
+900,700
+1, 2
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.2329 sec
+CPU time:         2.2100 sec
+CPU/real time:    0.9897
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9578
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           pThread 1D
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.3478 sec
+CPU time:         2.3100 sec
+CPU/real time:    0.9839
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9109
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           pThread 1D
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.9974 sec
+CPU time:         2.3700 sec
+CPU/real time:    1.1866
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0707
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.3308 sec
+CPU time:         2.3100 sec
+CPU/real time:    0.9911
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9175
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.8749 sec
+CPU time:         2.8200 sec
+CPU/real time:    1.5041
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.1407
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           KAAPIC 1D
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.1907 sec
+CPU time:         2.1900 sec
+CPU/real time:    0.9997
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9762
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           KAAPIC 1D
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.7951 sec
+CPU time:         2.6500 sec
+CPU/real time:    1.4763
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.1914
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Intel TBB 1D auto partitioner
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.3097 sec
+CPU time:         2.3000 sec
+CPU/real time:    0.9958
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9259
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Intel TBB 1D auto partitioner
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.8982 sec
+CPU time:         2.7200 sec
+CPU/real time:    1.4329
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.1266
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Intel TBB 1D affinity partitioner
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.3033 sec
+CPU time:         2.2900 sec
+CPU/real time:    0.9942
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9285
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Intel TBB 1D affinity partitioner
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.7140 sec
+CPU time:         2.7100 sec
+CPU/real time:    1.5811
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.2477
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Intel TBB 1D simple partitioner
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.3318 sec
+CPU time:         2.3200 sec
+CPU/real time:    0.9949
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9171
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Intel TBB 1D simple partitioner
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.7706 sec
+CPU time:         2.8200 sec
+CPU/real time:    1.5927
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.2078
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Intel TBB 2D simple partitioner
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        16.7659 sec
+CPU time:         16.6700 sec
+CPU/real time:     0.9943
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        0.1276
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Intel TBB 2D simple partitioner
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        11.6323 sec
+CPU time:         18.7900 sec
+CPU/real time:     1.6153
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        0.1838
+---------------------------------------------------

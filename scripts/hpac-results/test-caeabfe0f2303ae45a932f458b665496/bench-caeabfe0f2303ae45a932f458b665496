@@ -1,0 +1,113 @@
+1200,1300
+1, 2
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        8.7936 sec
+CPU time:         8.7700 sec
+CPU/real time:    0.9973
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9644
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           pThread 1D
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        8.9911 sec
+CPU time:         8.8200 sec
+CPU/real time:    0.9810
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9433
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           pThread 1D
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        8.3494 sec
+CPU time:         9.3400 sec
+CPU/real time:    1.1186
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0157
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        9.1767 sec
+CPU time:         9.1300 sec
+CPU/real time:    0.9949
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9242
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         7.1083 sec
+CPU time:         10.6700 sec
+CPU/real time:     1.5011
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        1.1931
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        9.1436 sec
+CPU time:         9.1100 sec
+CPU/real time:    0.9963
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9275
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         8.7927 sec
+CPU time:         11.1600 sec
+CPU/real time:     1.2692
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        0.9645
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           KAAPIC 1D
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        8.6874 sec
+CPU time:         8.6500 sec
+CPU/real time:    0.9957
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9762
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+---------------------------------------------------
+Method:           KAAPIC 1D
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         6.4797 sec
+CPU time:         10.2000 sec
+CPU/real time:     1.5742
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        1.3088
+---------------------------------------------------
+Naive Gaussian Elimination with pivoting
+Naive Gaussian Elimination with pivoting
+Naive Gaussian Elimination with pivoting

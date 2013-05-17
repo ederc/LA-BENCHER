@@ -1,0 +1,361 @@
+1003,1207,1403
+1, 2
+Matrix Multiplication
+---------------------------------------------------
+Method:           Raw sequential
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.2998 sec
+CPU time:         3.2900 sec
+CPU/real time:    0.9970
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0294
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           pThread 1D
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.2562 sec
+CPU time:         3.2600 sec
+CPU/real time:    1.0012
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0432
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           pThread 1D
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.9133 sec
+CPU time:         3.5400 sec
+CPU/real time:    1.8502
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7755
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.2773 sec
+CPU time:         3.2700 sec
+CPU/real time:    0.9978
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0365
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.9602 sec
+CPU time:         3.5700 sec
+CPU/real time:    1.8212
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7329
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) inner loop
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.3867 sec
+CPU time:         3.3800 sec
+CPU/real time:    0.9980
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0030
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) inner loop
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.9832 sec
+CPU time:         3.7500 sec
+CPU/real time:    1.8909
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7129
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(2)
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.3041 sec
+CPU time:         3.3000 sec
+CPU/real time:    0.9988
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0281
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(2)
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.4928 sec
+CPU time:         3.6500 sec
+CPU/real time:    1.0450
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9726
+---------------------------------------------------
+DESCRIPTION
+       This program is used as a test for parallelization libraries like
+       OpenMP or Intel TBB. Its main feature is to multiply 2 dense matrices
+       with uint32 entries. If the value of the entries are < 2^16 the
+       result is even correct. Otherwise the program does not check for
+       overflows. Its purpose is to compare parallelization of mostly
+       independent tasks, namely matrix*matrix kernel operations.
+
+       The program also provides the possibility of generating random
+       input matrices.
+
+OPTIONS
+       -A FILE   set first intput file; if only -A is set but not -B then A*A^T is computed.
+       -B FILE   set second intput file
+       -C        number of cols of matrix to be generated
+       -a        sets CPU affinity of task scheduler; note this only works
+                 with TBB right now
+       -b        sets the block size/grain of task scheduler; default = 2
+       -c        if input file is set, multiply matrix with its own transpose
+       -d        sets the dimension of the parallel for loop
+                 (values: 1, 2; default = 1)
+       -g        generate a new random float matrix
+       -h        print this help and exit
+       -i        If parallel scheduler is used with option -d1, then the
+                 -i flag triggers collapsing on one loop level deeper.
+                 Without this flag, collapsing is done w.r.t. the outer loop.
+       -m        method to be used: 
+                 0 = Sequential
+                 1 = OpenMP
+                 2 = TBB
+                 4 = pThread
+                 Note: By default the sequential implementation is used
+       -N        Not transposing: B is NOT transposed before multiplication,
+                 thus the computation has a way worse cache locality
+       -p        if matrix multiplication took place, print of resulting matrix
+                 (no printing of resulting matrix by default)
+       -R        number of rows of matrix to be generated
+       -s        sets simple task scheduler; note this only works
+                 with TBB right now
+       -t        number of threads to be used (default: all possible ones)
+       -V        print version and exit
+
+       -v        set verbose flag
+DESCRIPTION
+       This program is used as a test for parallelization libraries like
+       OpenMP or Intel TBB. Its main feature is to multiply 2 dense matrices
+       with uint32 entries. If the value of the entries are < 2^16 the
+       result is even correct. Otherwise the program does not check for
+       overflows. Its purpose is to compare parallelization of mostly
+       independent tasks, namely matrix*matrix kernel operations.
+
+       The program also provides the possibility of generating random
+       input matrices.
+
+OPTIONS
+       -A FILE   set first intput file; if only -A is set but not -B then A*A^T is computed.
+       -B FILE   set second intput file
+       -C        number of cols of matrix to be generated
+       -a        sets CPU affinity of task scheduler; note this only works
+                 with TBB right now
+       -b        sets the block size/grain of task scheduler; default = 2
+       -c        if input file is set, multiply matrix with its own transpose
+       -d        sets the dimension of the parallel for loop
+                 (values: 1, 2; default = 1)
+       -g        generate a new random float matrix
+       -h        print this help and exit
+       -i        If parallel scheduler is used with option -d1, then the
+                 -i flag triggers collapsing on one loop level deeper.
+                 Without this flag, collapsing is done w.r.t. the outer loop.
+       -m        method to be used: 
+                 0 = Sequential
+                 1 = OpenMP
+                 2 = TBB
+                 4 = pThread
+                 Note: By default the sequential implementation is used
+       -N        Not transposing: B is NOT transposed before multiplication,
+                 thus the computation has a way worse cache locality
+       -p        if matrix multiplication took place, print of resulting matrix
+                 (no printing of resulting matrix by default)
+       -R        number of rows of matrix to be generated
+       -s        sets simple task scheduler; note this only works
+                 with TBB right now
+       -t        number of threads to be used (default: all possible ones)
+       -V        print version and exit
+
+       -v        set verbose flag
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D auto partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.3472 sec
+CPU time:         3.3100 sec
+CPU/real time:    0.9889
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0149
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D auto partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.0171 sec
+CPU time:         3.5800 sec
+CPU/real time:    1.7748
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.6841
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D affinity partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.3250 sec
+CPU time:         3.3100 sec
+CPU/real time:    0.9955
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0217
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D affinity partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.9094 sec
+CPU time:         3.5400 sec
+CPU/real time:    1.8540
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7791
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D simple partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.2875 sec
+CPU time:         3.2900 sec
+CPU/real time:    1.0008
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0333
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D simple partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.8576 sec
+CPU time:         3.5600 sec
+CPU/real time:    1.9165
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.8287
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D auto partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.9633 sec
+CPU time:         2.9600 sec
+CPU/real time:    0.9989
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.1463
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D auto partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.0090 sec
+CPU time:         3.2600 sec
+CPU/real time:    1.6227
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.6909
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D affinity partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.3021 sec
+CPU time:         3.1600 sec
+CPU/real time:    0.9570
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0287
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D affinity partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.7145 sec
+CPU time:         3.2900 sec
+CPU/real time:    1.9190
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.9814
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D simple partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.1453 sec
+CPU time:         3.1500 sec
+CPU/real time:    1.0015
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.0800
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D simple partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.7618 sec
+CPU time:         3.3900 sec
+CPU/real time:    1.9242
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.9282
+---------------------------------------------------

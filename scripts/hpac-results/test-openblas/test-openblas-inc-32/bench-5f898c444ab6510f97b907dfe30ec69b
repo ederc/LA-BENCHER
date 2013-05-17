@@ -1,0 +1,74 @@
+1024,1024,0
+1, 2, 4, 8, 16, 32
+Tiled Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           OpenBLAS
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1142 sec
+CPU time:         3.6500 sec
+CPU/real time:    31.9559
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       6.2625
+---------------------------------------------------
+Tiled Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           OpenBLAS
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.3780 sec
+CPU time:         12.0700 sec
+CPU/real time:    31.9314
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       15.1443
+---------------------------------------------------
+Tiled Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           OpenBLAS
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.4259 sec
+CPU time:         45.5700 sec
+CPU/real time:    31.9581
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       32.1226
+---------------------------------------------------
+Tiled Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           OpenBLAS
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        5.7112 sec
+CPU time:         182.5600 sec
+CPU/real time:    31.9653
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       64.1670
+---------------------------------------------------
+Tiled Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           OpenBLAS
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        30.2441 sec
+CPU time:         966.8300 sec
+CPU/real time:    31.9676
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       96.9411
+---------------------------------------------------
+Tiled Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           OpenBLAS
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        191.8133 sec
+CPU time:         5798.0100 sec
+CPU/real time:    30.2274
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       122.2841
+---------------------------------------------------

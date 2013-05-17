@@ -1,0 +1,51 @@
+1024,1024,0
+1
+Naive Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        4.4007 sec
+CPU time:         4.4000 sec
+CPU/real time:    0.9998
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9758
+---------------------------------------------------
+Naive Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        33.3212 sec
+CPU time:         33.2900 sec
+CPU/real time:     0.9991
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        1.0311
+---------------------------------------------------
+Naive Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        266.6818 sec
+CPU time:         266.4100 sec
+CPU/real time:      0.9990
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:         1.0307
+---------------------------------------------------
+Naive Gaussian Elimination without pivoting
+Naive Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        17374.7956 sec
+CPU time:         17357.3000 sec
+CPU/real time:        0.9990
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:           1.0125
+---------------------------------------------------

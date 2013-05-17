@@ -1,0 +1,309 @@
+1024,1024,0
+1, 2, 4, 8, 16, 32
+[MAIN] Running jobs: 0
+Pool: maxNumThreads 32
+      runningJobs   0 -- number of bits 32
+      bitmask       18446744073709551615 -- number of bits 64
+Cache-oblivious Gaussian Elimination without pivoting
+[MAIN] Running jobs at the end: 35
+---------------------------------------------------
+Method:           pThread 1D
+# Threads:        32
+Block size:       128
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.5683 sec
+CPU time:         8.8500 sec
+CPU/real time:    5.6429
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.7382
+---------------------------------------------------
+[MAIN] Running jobs: 0
+Pool: maxNumThreads 32
+      runningJobs   0 -- number of bits 32
+      bitmask       18446744073709551615 -- number of bits 64
+Cache-oblivious Gaussian Elimination without pivoting
+[MAIN] Running jobs at the end: 155
+---------------------------------------------------
+Method:           pThread 1D
+# Threads:        32
+Block size:       128
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         5.5248 sec
+CPU time:         97.8900 sec
+CPU/real time:    17.7184
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        6.2188
+---------------------------------------------------
+[MAIN] Running jobs: 0
+Pool: maxNumThreads 32
+      runningJobs   0 -- number of bits 32
+      bitmask       18446744073709551615 -- number of bits 64
+Cache-oblivious Gaussian Elimination without pivoting
+[MAIN] Running jobs at the end: 651
+---------------------------------------------------
+Method:           pThread 1D
+# Threads:        32
+Block size:       128
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         18.5897 sec
+CPU time:         609.7900 sec
+CPU/real time:     32.8025
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        14.7861
+---------------------------------------------------
+[MAIN] Running jobs: 0
+Pool: maxNumThreads 32
+      runningJobs   0 -- number of bits 32
+      bitmask       18446744073709551615 -- number of bits 64
+Cache-oblivious Gaussian Elimination without pivoting
+[MAIN] Running jobs at the end: 2667
+---------------------------------------------------
+Method:           pThread 1D
+# Threads:        32
+Block size:       128
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         109.3466 sec
+CPU time:         5708.6000 sec
+CPU/real time:      52.2065
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:         20.1103
+---------------------------------------------------
+[MAIN] Running jobs: 0
+Pool: maxNumThreads 32
+      runningJobs   0 -- number of bits 32
+      bitmask       18446744073709551615 -- number of bits 64
+Cache-oblivious Gaussian Elimination without pivoting
+[MAIN] Running jobs at the end: 10795
+---------------------------------------------------
+Method:           pThread 1D
+# Threads:        32
+Block size:       128
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:          702.8428 sec
+CPU time:         42003.6300 sec
+CPU/real time:       59.7625
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:          25.0299
+---------------------------------------------------
+[MAIN] Running jobs: 0
+Pool: maxNumThreads 32
+      runningJobs   0 -- number of bits 32
+      bitmask       18446744073709551615 -- number of bits 64
+Cache-oblivious Gaussian Elimination without pivoting
+[MAIN] Running jobs at the end: 43435
+---------------------------------------------------
+Method:           pThread 1D
+# Threads:        32
+Block size:       128
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:          8646.3783 sec
+CPU time:         541445.2800 sec
+CPU/real time:        62.6210
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:           16.2770
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Open MP parallel sections
+# Threads:        32
+Block size:       256
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.4049 sec
+CPU time:         7.7800 sec
+CPU/real time:    3.2351
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7857
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Open MP parallel sections
+# Threads:        32
+Block size:       256
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         9.6740 sec
+CPU time:         59.6000 sec
+CPU/real time:     6.1609
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        3.5516
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Open MP parallel sections
+# Threads:        32
+Block size:       256
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         34.7789 sec
+CPU time:         643.0100 sec
+CPU/real time:     18.4885
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:         7.9033
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Open MP parallel sections
+# Threads:        32
+Block size:       256
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         186.9065 sec
+CPU time:         7933.8400 sec
+CPU/real time:      42.4482
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:         11.7652
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Open MP parallel sections
+# Threads:        32
+Block size:       256
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         1257.3330 sec
+CPU time:         70403.4500 sec
+CPU/real time:       55.9943
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:          13.9916
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           KAAPIC 1D
+# Threads:        32
+Block size:       64
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.0724 sec
+CPU time:         32.4700 sec
+CPU/real time:    30.2792
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       4.0047
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           KAAPIC 1D
+# Threads:        32
+Block size:       64
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        4.3163 sec
+CPU time:         135.4600 sec
+CPU/real time:    31.3836
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       7.9600
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           KAAPIC 1D
+# Threads:        32
+Block size:       64
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        19.3218 sec
+CPU time:         612.3900 sec
+CPU/real time:    31.6943
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       14.2259
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           KAAPIC 1D
+# Threads:        32
+Block size:       64
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        159.2316 sec
+CPU time:         5079.6100 sec
+CPU/real time:    31.9008
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       13.8100
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           KAAPIC 1D
+# Threads:        32
+Block size:       64
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1912.2050 sec
+CPU time:         61111.6200 sec
+CPU/real time:    31.9587
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       9.1999
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           KAAPIC 1D
+# Threads:        32
+Block size:       64
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        11601.7480 sec
+CPU time:         370852.1400 sec
+CPU/real time:    31.9652
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       12.1307
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Intel TBB Invoke
+# Threads:        32
+Block size:       32
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         0.5548 sec
+CPU time:         13.4900 sec
+CPU/real time:    24.3138
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        7.7401
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Intel TBB Invoke
+# Threads:        32
+Block size:       32
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         2.3426 sec
+CPU time:         66.0100 sec
+CPU/real time:    28.1785
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       14.6667
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Intel TBB Invoke
+# Threads:        32
+Block size:       32
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:         12.1289 sec
+CPU time:         369.1800 sec
+CPU/real time:     30.4380
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        22.6623
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Intel TBB Invoke
+# Threads:        32
+Block size:       32
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:          84.6189 sec
+CPU time:         2644.4100 sec
+CPU/real time:      31.2508
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:         25.9870
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Intel TBB Invoke
+# Threads:        32
+Block size:       32
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:          651.8595 sec
+CPU time:         20650.0100 sec
+CPU/real time:       31.6786
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:          26.9875
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Intel TBB Invoke
+# Threads:        32
+Block size:       32
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:          4947.9986 sec
+CPU time:         157519.7900 sec
+CPU/real time:        31.8351
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:           28.4432
+---------------------------------------------------

@@ -1,0 +1,62 @@
+1024,1024,0
+1
+Naive Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        4.4711 sec
+CPU time:         4.4700 sec
+CPU/real time:    0.9998
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       0.9605
+---------------------------------------------------
+Naive Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        34.1913 sec
+CPU time:         34.1600 sec
+CPU/real time:     0.9991
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        1.0049
+---------------------------------------------------
+Naive Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        266.4606 sec
+CPU time:         266.1800 sec
+CPU/real time:      0.9989
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:         1.0316
+---------------------------------------------------
+Naive Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2127.2406 sec
+CPU time:         2124.9600 sec
+CPU/real time:       0.9989
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:          1.0337
+---------------------------------------------------
+Naive Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        16933.0658 sec
+CPU time:         16914.5100 sec
+CPU/real time:        0.9989
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:           1.0389
+---------------------------------------------------

@@ -1,0 +1,62 @@
+1024,1024,0
+1
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       32768
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        3.6542 sec
+CPU time:         3.6500 sec
+CPU/real time:    0.9988
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.1752
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       32768
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        27.2546 sec
+CPU time:         27.2200 sec
+CPU/real time:     0.9987
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:        1.2606
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       32768
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        215.0346 sec
+CPU time:         214.8100 sec
+CPU/real time:      0.9990
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:         1.2783
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       32768
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1714.5625 sec
+CPU time:         1712.8300 sec
+CPU/real time:       0.9990
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:          1.2825
+---------------------------------------------------
+Cache-oblivious Gaussian Elimination without pivoting
+---------------------------------------------------
+Method:           Raw sequential
+# Threads:        1
+Block size:       32768
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        14040.1061 sec
+CPU time:         14025.7500 sec
+CPU/real time:        0.9990
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:           1.2530
+---------------------------------------------------

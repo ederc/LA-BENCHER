@@ -1,0 +1,951 @@
+1501,1203,1019
+1, 2, 4, 8, 16, 32
+Matrix Multiplication
+---------------------------------------------------
+Method:           Raw sequential
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.5037 sec
+CPU time:         2.5000 sec
+CPU/real time:    0.9985
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.4698
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           pThread 1D
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.5626 sec
+CPU time:         2.5600 sec
+CPU/real time:    0.9990
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.4361
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           pThread 1D
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.4430 sec
+CPU time:         2.8700 sec
+CPU/real time:    1.9889
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.5503
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           pThread 1D
+Cache improved:   1
+# Threads:        4
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.9089 sec
+CPU time:         3.1600 sec
+CPU/real time:    3.4767
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       4.0488
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           pThread 1D
+Cache improved:   1
+# Threads:        8
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.5761 sec
+CPU time:         2.8900 sec
+CPU/real time:    5.0166
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       6.3879
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           pThread 1D
+Cache improved:   1
+# Threads:        16
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2901 sec
+CPU time:         4.1900 sec
+CPU/real time:    14.4411
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       12.6834
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           pThread 1D
+Cache improved:   1
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1491 sec
+CPU time:         4.5900 sec
+CPU/real time:    30.7829
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       24.6801
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.4267 sec
+CPU time:         2.4200 sec
+CPU/real time:    0.9972
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.5165
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.3451 sec
+CPU time:         2.6800 sec
+CPU/real time:    1.9924
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.7358
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+Cache improved:   1
+# Threads:        4
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.7203 sec
+CPU time:         2.8200 sec
+CPU/real time:    3.9152
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       5.1092
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+Cache improved:   1
+# Threads:        8
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2697 sec
+CPU time:         2.1500 sec
+CPU/real time:    7.9723
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       13.6457
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+Cache improved:   1
+# Threads:        16
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1479 sec
+CPU time:         2.3600 sec
+CPU/real time:    15.9546
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       24.8785
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) outer loop
+Cache improved:   1
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.0789 sec
+CPU time:         2.4900 sec
+CPU/real time:    31.5577
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       46.6398
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) inner loop
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.1531 sec
+CPU time:         2.1500 sec
+CPU/real time:    0.9986
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7092
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) inner loop
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.5373 sec
+CPU time:         3.0700 sec
+CPU/real time:    1.9971
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.3939
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) inner loop
+Cache improved:   1
+# Threads:        4
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.9052 sec
+CPU time:         3.6200 sec
+CPU/real time:    3.9991
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       4.0654
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) inner loop
+Cache improved:   1
+# Threads:        8
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2885 sec
+CPU time:         2.3000 sec
+CPU/real time:    7.9726
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       12.7563
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) inner loop
+Cache improved:   1
+# Threads:        16
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1723 sec
+CPU time:         2.7500 sec
+CPU/real time:    15.9585
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       21.3555
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(1) inner loop
+Cache improved:   1
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1364 sec
+CPU time:         4.3400 sec
+CPU/real time:    31.8247
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       26.9852
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(2)
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.1539 sec
+CPU time:         2.1500 sec
+CPU/real time:    0.9982
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7085
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(2)
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.5496 sec
+CPU time:         2.8700 sec
+CPU/real time:    1.8521
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.3749
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(2)
+Cache improved:   1
+# Threads:        4
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.8732 sec
+CPU time:         3.4100 sec
+CPU/real time:    3.9051
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       4.2143
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(2)
+Cache improved:   1
+# Threads:        8
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2696 sec
+CPU time:         2.1500 sec
+CPU/real time:    7.9736
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       13.6480
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(2)
+Cache improved:   1
+# Threads:        16
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1433 sec
+CPU time:         2.2900 sec
+CPU/real time:    15.9818
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       25.6827
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Open MP collapse(2)
+Cache improved:   1
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.0794 sec
+CPU time:         2.5100 sec
+CPU/real time:    31.6085
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       46.3426
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 1D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.4468 sec
+CPU time:         2.4500 sec
+CPU/real time:    1.0013
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.5040
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 1D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.2901 sec
+CPU time:         2.5600 sec
+CPU/real time:    1.9844
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.8526
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 1D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.7468 sec
+CPU time:         2.9800 sec
+CPU/real time:    3.9901
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       4.9274
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 1D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2696 sec
+CPU time:         2.1600 sec
+CPU/real time:    8.0108
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       13.6481
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 1D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2148 sec
+CPU time:         3.4300 sec
+CPU/real time:    15.9675
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       17.1314
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 1D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1428 sec
+CPU time:         4.6200 sec
+CPU/real time:    32.3604
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       25.7764
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 2D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.6601 sec
+CPU time:         2.6700 sec
+CPU/real time:    1.0037
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.3834
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 2D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.4112 sec
+CPU time:         2.8200 sec
+CPU/real time:    1.9984
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.6078
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 2D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.8823 sec
+CPU time:         3.5200 sec
+CPU/real time:    3.9896
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       4.1710
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 2D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2880 sec
+CPU time:         2.3000 sec
+CPU/real time:    7.9871
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       12.7794
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 2D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1733 sec
+CPU time:         2.7700 sec
+CPU/real time:    15.9796
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       21.2293
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           KAAPIC 2D
+Cache improved:   1
+# Threads:        0
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.0893 sec
+CPU time:         2.8400 sec
+CPU/real time:    31.8189
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       41.2304
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D auto partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.5670 sec
+CPU time:         2.5700 sec
+CPU/real time:    1.0012
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.4336
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D auto partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.4714 sec
+CPU time:         2.9400 sec
+CPU/real time:    1.9981
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.5010
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D auto partitioner
+Cache improved:   1
+# Threads:        4
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.7363 sec
+CPU time:         2.9300 sec
+CPU/real time:    3.9792
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       4.9978
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D auto partitioner
+Cache improved:   1
+# Threads:        8
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2692 sec
+CPU time:         2.1300 sec
+CPU/real time:    7.9119
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       13.6694
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D auto partitioner
+Cache improved:   1
+# Threads:        16
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1461 sec
+CPU time:         2.2500 sec
+CPU/real time:    15.3959
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       25.1810
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D auto partitioner
+Cache improved:   1
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.0835 sec
+CPU time:         2.4600 sec
+CPU/real time:    29.4678
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       44.0822
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D affinity partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.1184 sec
+CPU time:         2.1100 sec
+CPU/real time:    0.9960
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7371
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D affinity partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.3905 sec
+CPU time:         2.7800 sec
+CPU/real time:    1.9993
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.6466
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D affinity partitioner
+Cache improved:   1
+# Threads:        4
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.7176 sec
+CPU time:         2.8600 sec
+CPU/real time:    3.9857
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       5.1285
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D affinity partitioner
+Cache improved:   1
+# Threads:        8
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2700 sec
+CPU time:         2.1400 sec
+CPU/real time:    7.9253
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       13.6286
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D affinity partitioner
+Cache improved:   1
+# Threads:        16
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1603 sec
+CPU time:         2.4600 sec
+CPU/real time:    15.3418
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       22.9505
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D affinity partitioner
+Cache improved:   1
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.0959 sec
+CPU time:         2.8000 sec
+CPU/real time:    29.1919
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       38.3667
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D simple partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.1381 sec
+CPU time:         2.1400 sec
+CPU/real time:    1.0009
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7211
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D simple partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.2089 sec
+CPU time:         2.4200 sec
+CPU/real time:    2.0019
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       3.0442
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D simple partitioner
+Cache improved:   1
+# Threads:        4
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.7283 sec
+CPU time:         2.9000 sec
+CPU/real time:    3.9817
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       5.0526
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D simple partitioner
+Cache improved:   1
+# Threads:        8
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.3494 sec
+CPU time:         2.7700 sec
+CPU/real time:    7.9273
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       10.5317
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D simple partitioner
+Cache improved:   1
+# Threads:        16
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1834 sec
+CPU time:         2.8500 sec
+CPU/real time:    15.5400
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       20.0658
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 1D simple partitioner
+Cache improved:   1
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1000 sec
+CPU time:         2.9500 sec
+CPU/real time:    29.5080
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       36.8102
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D auto partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.1149 sec
+CPU time:         2.1100 sec
+CPU/real time:    0.9977
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7400
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D auto partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.3431 sec
+CPU time:         2.6800 sec
+CPU/real time:    1.9955
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.7400
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D auto partitioner
+Cache improved:   1
+# Threads:        4
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.7055 sec
+CPU time:         2.8200 sec
+CPU/real time:    3.9969
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       5.2159
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D auto partitioner
+Cache improved:   1
+# Threads:        8
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2673 sec
+CPU time:         2.1300 sec
+CPU/real time:    7.9696
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       13.7691
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D auto partitioner
+Cache improved:   1
+# Threads:        16
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1591 sec
+CPU time:         2.5000 sec
+CPU/real time:    15.7160
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       23.1340
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D auto partitioner
+Cache improved:   1
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.0904 sec
+CPU time:         2.7600 sec
+CPU/real time:    30.5414
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       40.7222
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D affinity partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.1465 sec
+CPU time:         2.1400 sec
+CPU/real time:    0.9970
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.7145
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D affinity partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.4402 sec
+CPU time:         2.8600 sec
+CPU/real time:    1.9859
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.5552
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D affinity partitioner
+Cache improved:   1
+# Threads:        4
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.6812 sec
+CPU time:         2.7200 sec
+CPU/real time:    3.9930
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       5.4023
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D affinity partitioner
+Cache improved:   1
+# Threads:        8
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.3074 sec
+CPU time:         2.4500 sec
+CPU/real time:    7.9700
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       11.9713
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D affinity partitioner
+Cache improved:   1
+# Threads:        16
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.1553 sec
+CPU time:         2.4300 sec
+CPU/real time:    15.6428
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       23.6897
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D affinity partitioner
+Cache improved:   1
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.0890 sec
+CPU time:         2.6700 sec
+CPU/real time:    30.0040
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       41.3541
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D simple partitioner
+Cache improved:   1
+# Threads:        1
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        2.2255 sec
+CPU time:         2.2200 sec
+CPU/real time:    0.9975
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       1.6536
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D simple partitioner
+Cache improved:   1
+# Threads:        2
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        1.5832 sec
+CPU time:         3.1600 sec
+CPU/real time:    1.9959
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       2.3244
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D simple partitioner
+Cache improved:   1
+# Threads:        4
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.8406 sec
+CPU time:         3.3600 sec
+CPU/real time:    3.9974
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       4.3781
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D simple partitioner
+Cache improved:   1
+# Threads:        8
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.4595 sec
+CPU time:         3.6700 sec
+CPU/real time:    7.9864
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       8.0082
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D simple partitioner
+Cache improved:   1
+# Threads:        16
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.3678 sec
+CPU time:         5.8400 sec
+CPU/real time:    15.8788
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       10.0059
+---------------------------------------------------
+Matrix Multiplication
+---------------------------------------------------
+Method:           Intel TBB 2D simple partitioner
+Cache improved:   1
+# Threads:        32
+Block size:       2
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+Real time:        0.2807 sec
+CPU time:         8.8300 sec
+CPU/real time:    31.4626
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+GFLOPS/sec:       13.1125
+---------------------------------------------------
