@@ -23,6 +23,7 @@ void multiply(Matrix& C, const Matrix& A, const Matrix& B, const int nthrds,
               const uint32 blocksize, const int method, const int dimension, 
               const int affinity, int impose, int outerloop) {
   // C = A*B^T
+  printf("Impose %d\n",impose);
   if (method == 2) { // TBB
 #ifdef __F4RT_HAVE_INTEL_TBB
     if (dimension == 1) {

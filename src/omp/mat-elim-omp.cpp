@@ -29,7 +29,7 @@ void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, uint32 blocksize, uint64 pri
   gettimeofday(&start, NULL);
   cStart  = clock();
   for (uint32 i = 0; i < boundary; ++i) {
-    A(i,i) %= prime;
+    //A(i,i) %= prime;
 #if F4RT_DBG
     std::cout << "!! A(" << i << "," << i << ") " << A(i,i) << std::endl;
     std::cout << "A(" << i << "," << i << ") " << A(i,i) % prime << std::endl;
@@ -52,14 +52,14 @@ void elimNaiveOMPModP1dOuter(Matrix& A, int nthrds, uint32 blocksize, uint64 pri
 #if F4RT_DBG
       std::cout << "A(" << j << "," << i << ") " << A(j,i) << std::endl;
 #endif
-      mult  = (A(j,i) * inv) % prime;
+      mult  = (A(j,i) * inv);// % prime;
       for (k = i+1; k < n; ++k) {
 #if F4RT_DBG
         std::cout << "A * mult " << A(i,k)*mult << " - " << (A(i,k)*mult) % prime << " - "
           << (A(i,k)%prime) * (mult % prime) << std::endl;
 #endif
         A(j,k) += A(i,k) * mult;
-        A(j,k) %= prime;
+        //A(j,k) %= prime;
 #if F4RT_DBG
         std::cout << "A(" << j << "," << k << ") " << A(j,k) << " - " << A(j,k) % prime << std::endl;
 #endif
@@ -270,14 +270,15 @@ void elimCoOMPBaseModP( mat *M, const uint32 k1, const uint32 i1,
 //{
 //#pragma omp for schedule(static)
     for (uint64 i = istart; i < size; i++) {
-      const mat tmp = (M[k+k1+(i1+i)*cols] * inv_piv) % prime;
+      const mat tmp = (M[k+k1+(i1+i)*cols] * inv_piv);
+      //const mat tmp = (M[k+k1+(i1+i)*cols] * inv_piv) % prime;
       // if the pivots are in the same column part of the matrix as Mmdf then we can
       // always start at the next column (k+1), otherwise we need to start at
       // column 0
       const uint64 jstart  = (k1 == j1) ? k+1 : 0;
       for (uint64 j = jstart; j < size; j++) {
         M[(j1+j)+(i1+i)*cols]  +=  M[(j1+j)+(k1+k)*cols] * tmp;
-        M[(j1+j)+(i1+i)*cols]  %=  prime;
+        //M[(j1+j)+(i1+i)*cols]  %=  prime;
       }
     }
 //}

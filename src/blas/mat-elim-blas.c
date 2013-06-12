@@ -54,6 +54,7 @@ void elimBLAS(double *M, uint32 rows, uint32 cols, int nthrds, uint32 blocksize,
   PLASMA_desc *L;
   PLASMA_Init(nthrds);
   //PLASMA_Init_Affinity(nthrds, NULL);
+  printf("los gehts\n");
   errorHandler = PLASMA_Alloc_Workspace_dgetrf_incpiv(m, n, &L, &ipiv);
   errorHandler = PLASMA_dgetrf_incpiv(m, n, M, m, L, ipiv);
   PLASMA_Finalize();

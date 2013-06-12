@@ -31,10 +31,10 @@ void *elimPTHRD(void *p) {
   mat inv         = _p->inv;
   mat mult;
   for (uint32 j = start+1; j < end+1; ++j) {
-    mult  = (_p->a[i+j*n] * inv) % prime;
+    mult  = (_p->a[i+j*n] * inv);// % prime;
     for (uint32 k = i+1; k < n; ++k) {
       _p->a[k+j*n]  +=  _p->a[k+i*n] * mult;
-      _p->a[k+j*n]  %=  prime;
+      //_p->a[k+j*n]  %=  prime;
     }
   }
   return 0;
@@ -65,7 +65,7 @@ void elimNaivePTHRDModP1d(Matrix& A, int numberThreads, uint32 blocksize, uint64
   gettimeofday(&start, NULL);
   cStart  = clock();
   for (uint32 i = 0; i < boundary; ++i) {
-    A(i,i) %= prime;
+    //A(i,i) %= prime;
 #if F4RT_DBG
     std::cout << "!! A(" << i << "," << i << ") " << A(i,i) << std::endl;
     std::cout << "A(" << i << "," << i << ") " << A(i,i) % prime << std::endl;
@@ -314,14 +314,15 @@ void elimCoPTHRDBaseModP( mat *M, const uint32 k1, const uint32 i1,
     //    {
     for (uint64 i = istart; i < size; i++) {
       //for (uint64 i = r.begin(); i != r.end(); ++i) {
-      const mat tmp = (M[k+k1+(i1+i)*cols] * inv_piv) % prime;
+      const mat tmp = (M[k+k1+(i1+i)*cols] * inv_piv);
+      //const mat tmp = (M[k+k1+(i1+i)*cols] * inv_piv) % prime;
       // if the pivots are in the same column part of the matrix as Mmdf then we can
       // always start at the next column (k+1), otherwise we need to start at
       // column 0
       const uint64 jstart  = (k1 == j1) ? k+1 : 0;
       for (uint64 j = jstart; j < size; j++) {
         M[(j1+j)+(i1+i)*cols]  +=  M[(j1+j)+(k1+k)*cols] * tmp;
-        M[(j1+j)+(i1+i)*cols]  %=  prime;
+        //M[(j1+j)+(i1+i)*cols]  %=  prime;
       }
     }
     //});

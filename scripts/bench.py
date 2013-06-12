@@ -96,6 +96,7 @@ if int(args.alg) == 4:
 threads = list()
 exp = 0
 max_threads = int(args.threads)
+plot_data = list()
 start_threads = int(args.startthreads)
 base = int(args.base)
 if base == 1:
@@ -142,10 +143,10 @@ if int(args.alg) == 2 or int(args.alg) == 3:
 if int(args.alg) == 4:
   if start_threads == 1:
     methods = ['Raw sequential','pThread 1D','Open MP parallel sections',
-    'KAAPIC 1D','Intel TBB Invoke']
+    'KAAPIC Spawn','Intel TBB Invoke']
   else :
     methods = ['pThread 1D','Open MP parallel sections',
-    'KAAPIC 1D','Intel TBB Invoke']
+    'KAAPIC Spawn','Intel TBB Invoke']
 
 # lists for all methods we have, those are lists of lists:
 # e.g. time_series[i] is a list of len(threads) elements of the timings
@@ -170,15 +171,15 @@ os.chdir(os.getcwd()+"/"+folder_name)
 # generate random matrices without timestamp if no increasing is done
 if int(args.inc) == -1:
   if int(args.alg) == 1:
-    os.system('../../src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
-    os.system('../../src/f4rt -G -R '+args.colsa+' -C '+args.colsb)
+    os.system('/home/eder/repos/devel-F4RT/src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
+    os.system('/home/eder/repos/devel-F4RT/src/f4rt -G -R '+args.colsa+' -C '+args.colsb)
   else :
-    os.system('../../src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
+    os.system('/home/eder/repos/devel-F4RT/src/f4rt -G -R '+args.rowsa+' -C '+args.colsa)
 
   bench_file = "bench-"+str(hash_value)
   f = open(bench_file,"w")
 
-  strstr = '../../src/f4rt -'+algorithm+' \
+  strstr = '/home/eder/repos/devel-F4RT/src/f4rt -'+algorithm+' \
   -A random-mat-'+args.rowsa+'-'+args.colsa+'.mat '
   if int(args.alg) == 1:
     strstr += '-B random-mat-'+args.colsa+'-'+args.colsb+'.mat'
@@ -186,7 +187,7 @@ if int(args.inc) == -1:
   thrds_str = str(threads)
   thrds_str = thrds_str.replace('[','')
   thrds_str = thrds_str.replace(']','')
-  thrds_str = thrds_str
+  plot_data = thrds_str
   if int(args.alg) == 1:
     f.write(args.rowsa+','+args.colsa+','+args.colsb+'\r\n')
   else :
@@ -289,14 +290,16 @@ else:
       rowSizes.append(rows)
       cols = int(args.colsa) + k * int(args.inc)
       colSizes.append(cols)
-      os.system('../../src/f4rt -G -R '+str(rows)+' -C '+str(cols))
+      plot_data.append(str(rowSizes[k])+'/'+str(colSizes[k]))
+      os.system('/home/eder/repos/devel-F4RT/src/f4rt -G -R '+str(rows)+' -C '+str(cols))
   else:
     for k in range(0,int(args.count)+1):
       rows = (2**k) * int(args.rowsa) 
       rowSizes.append(rows)
       cols = (2**k) * int(args.colsa)
       colSizes.append(cols)
-      os.system('../../src/f4rt -G -R '+str(rows)+' -C '+str(cols))
+      os.system('/home/eder/repos/devel-F4RT/src/f4rt -G -R '+str(rows)+' -C '+str(cols))
+      plot_data.append(str(rowSizes[k])+'/'+str(colSizes[k]))
 
   bench_file = "bench-"+str(hash_value)
   f = open(bench_file,"w")
@@ -314,7 +317,7 @@ else:
   block = 256
   if int(max_threads) == 1:
     for k in range(0,int(args.count)+1):
-      strstr = '../../src/f4rt -'+algorithm+' \
+      strstr = '/home/eder/repos/devel-F4RT/src/f4rt -'+algorithm+' \
       -A random-mat-'+str(rowSizes[k])+'-'+str(colSizes[k])+'.mat '
 
       print(strstr+' -m0 >> '+bench_file+'...')
@@ -324,7 +327,7 @@ else:
   # pThread computations 1D outer
   block = 128
   for k in range(0,int(args.count)+1):
-    strstr = '../../src/f4rt -'+algorithm+' \
+    strstr = '/home/eder/repos/devel-F4RT/src/f4rt -'+algorithm+' \
     -A random-mat-'+str(rowSizes[k])+'-'+str(colSizes[k])+'.mat -b '+str(block)
 
     print(strstr+' -m4 -t '+str(max_threads)+' >> bench-'+str(hash_value)+'...')
@@ -334,7 +337,7 @@ else:
   # OpenMP computations 1D outer
   block = 256
   for k in range(0,int(args.count)+1):
-    strstr = '../../src/f4rt -'+algorithm+' \
+    strstr = '/home/eder/repos/devel-F4RT/src/f4rt -'+algorithm+' \
     -A random-mat-'+str(rowSizes[k])+'-'+str(colSizes[k])+'.mat -b '+str(block)
 
     print(strstr+' -m1 -d 1 -t '+str(max_threads)+' >> bench-'+str(hash_value)+'...')
@@ -344,7 +347,7 @@ else:
   # KAAPIC computations 1D
   block = 64
   for k in range(0,int(args.count)+1):
-    strstr = '../../src/f4rt -'+algorithm+' \
+    strstr = '/home/eder/repos/devel-F4RT/src/f4rt -'+algorithm+' \
     -A random-mat-'+str(rowSizes[k])+'-'+str(colSizes[k])+'.mat -b '+str(block)
 
     print('KAAPI_CPUCOUNT='+str(max_threads)+' '+strstr+' -m3 -t '+str(max_threads)+' >> bench-'+str(hash_value)+'...')
@@ -354,7 +357,7 @@ else:
   # TBB computations 1D auto
   block = 32
   for k in range(0,int(args.count)+1):
-    strstr = '../../src/f4rt -'+algorithm+' \
+    strstr = '/home/eder/repos/devel-F4RT/src/f4rt -'+algorithm+' \
     -A random-mat-'+str(rowSizes[k])+'-'+str(colSizes[k])+'.mat -b '+str(block)
 
     print(strstr+' -m2 -t '+str(max_threads)+' >> bench-'+str(hash_value)+'...')
@@ -364,7 +367,7 @@ else:
   if int(args.alg) != 4:
     # TBB computations 1D affinity
     for k in range(0,int(args.count)+1):
-      strstr = '../../src/f4rt -'+algorithm+' \
+      strstr = '/home/eder/repos/devel-F4RT/src/f4rt -'+algorithm+' \
       -A random-mat-'+str(rowSizes[k])+'-'+str(colSizes[k])+'.mat '
 
       print(strstr+' -m2 -t '+str(max_threads)+' -a >> bench-'+str(hash_value)+'...')
@@ -373,7 +376,7 @@ else:
 
     # TBB computations 1D simple
     for k in range(0,int(args.count)+1):
-      strstr = '../../src/f4rt -'+algorithm+' \
+      strstr = '/home/eder/repos/devel-F4RT/src/f4rt -'+algorithm+' \
       -A random-mat-'+str(rowSizes[k])+'-'+str(colSizes[k])+'.mat '
 
       print(strstr+' -m2 -t '+str(max_threads)+' -s >> bench-'+str(hash_value)+'...')
@@ -412,7 +415,8 @@ if args.plot:
   # get threads for plot, stored in the first line of bench file
   #plot_threads = f.readline().strip().replace(' ','').split(',')
   # for compatibility to the other scripts just store this again
-  threads = plot_threads
+  plot_data = plot_threads
+  print(plot_data)
   threads = list(map(lambda x: int(x) - 1, threads))
 
 
@@ -432,43 +436,31 @@ if args.plot:
   #plot this data
 
   #line style, sequential method only if start_threads == 1
-  if int(args.alg) == 1:
-    if start_threads == 1:
-      stride = 1
-      coloring = ['k','c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
-      styles = ['None','-','-','--','-','-','-','-','--',':','-','--',':']
-      markers = ['^','None','None','None','None','o','s','None','None',
-        'None','None','None','None']
-    else:
-      stride = 1
-      coloring = ['c','b','b','g','y','y','#7d053f','#7d053f','#7d053f','r','r','r']
-      styles = ['-','-','--','-','-','-','-','--',':','-','--',':']
-      markers = ['None','None','None','None','o','s','None','None',
-        'None','None','None','None']
-  if int(args.alg) == 2 or int(args.alg) == 3:
-    if start_threads == 1:
-      stride = 1
-      coloring = ['k','c','b','y','#7d053f','#7d053f','#7d053f']
-      styles = ['None','-','-','-','-','--',':']
-      markers = ['^','None','None','o','None','None',
-        'None']
-    else:
-      stride = 1
-      coloring = ['c','b','y','#7d053f','#7d053f','#7d053f']
-      styles = ['-','-','-','-','--',':']
-      markers = ['None','None','o','None','None',
-        'None']
-  if int(args.alg) == 4:
-    if start_threads == 1:
-      stride = 1
-      coloring = ['k','c','b','y','#7d053f']
-      styles = ['None','-','-','-','-']
-      markers = ['^','None','None','o','None']
-    else:
-      stride = 1
-      coloring = ['c','b','y','#7d053f']
-      styles = ['-','-','-','-']
-      markers = ['None','None','o','None']
+  stride = 1
+  coloring =\
+  [\
+  '#0099cc','#33cc00','#ff1b54','#0033cc','#9900cc','#800020',\
+  '#ff4011','#ffbf01','#00144f','#ff1450',\
+  '#0099cc','#33cc00','#cc0033','#0033cc','#9900cc','#800020',\
+  '#ff4011','#ffbf01','#00144f','#ff1450',\
+  '#0099cc','#33cc00','#cc0033','#0033cc','#9900cc','#800020',\
+  '#ff4011','#ffbf01','#00144f','#ff1450',\
+  '#0099cc','#33cc00','#cc0033','#0033cc','#9900cc','#800020',\
+  '#ff4011','#ffbf01','#00144f','#ff1450'\
+  ]
+  styles = [\
+  '-','-','-','-','-','-','-','-','-','-',\
+  '--','--','--','--','--','--','--','--','--','--',\
+  ':',':',':',':',':',':',':',':',':',':',\
+  '-','-','-','-','-','-','-','-','-','-'\
+  ]
+  markers = [\
+  'None','None','None','None','None','None','None','None','None','None',\
+  'None','None','None','None','None','None','None','None','None','None',\
+  'None','None','None','None','None','None','None','None','None','None',\
+  'o','o','o','o','o','o','o','o','o','o'\
+  ]
+  
 
   pl.rc('legend',**{'fontsize':5})
   fig = pl.figure()
@@ -517,11 +509,14 @@ if args.plot:
   group_labels = plot_threads
 
   #ax.set_xticklabels(group_labels)
-  threads_tmp = range(0,len(plot_threads))
+  threads_tmp = range(0,len(plot_data))
+  #threads_tmp = range(0,len(plot_threads))
   # get right scale for a4 paper size
-  scale_tmp = 38 / (len(plot_threads)) 
+  scale_tmp = 38 / (len(plot_data)) 
+  #scale_tmp = 38 / (len(plot_threads)) 
   threads = range(0,38,scale_tmp)
-  tick_lbs = plot_threads
+  print(threads)
+  tick_lbs = plot_data
   ax.xaxis.set_ticks(threads)
   ax.xaxis.set_ticklabels(tick_lbs)
 
@@ -591,11 +586,13 @@ if args.plot:
   ax = pl.gca() 
 
   #ax.set_xticklabels(group_labels)
-  threads_tmp = range(0,len(plot_threads))
+  threads_tmp = range(0,len(plot_data))
+  #threads_tmp = range(0,len(plot_threads))
   # get right scale for a4 paper size
-  scale_tmp = 38 / (len(plot_threads)) 
+  scale_tmp = 38 / (len(plot_data)) 
+  #scale_tmp = 38 / (len(plot_threads)) 
   threads = range(0,38,scale_tmp)
-  tick_lbs = plot_threads
+  tick_lbs = plot_data
   ax.xaxis.set_ticks(threads)
   ax.xaxis.set_ticklabels(tick_lbs)
 
