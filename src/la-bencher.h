@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <getopt.h>
-#include "f4rt-config.h"
+#include "la-bencher-config.h"
 
 #include "matrix.h"
 #include "mat-gen.h"

@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sys/time.h>
-#include <f4rt-config.h>
+#include <la-bencher-config.h>
 #include "../mat-elim-tools.h"
 
 #ifdef __F4RT_HAVE_LAPACK

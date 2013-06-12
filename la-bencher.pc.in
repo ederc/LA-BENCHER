@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: LA-BENCHER
+Description: Benching tools for Linear Algebra.
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lla_bencher -lm
+Cflags: -I${includedir}/la_bencher @AM_CFLAGS@ 

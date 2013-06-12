@@ -12,29 +12,29 @@ INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/include -I$(top_builddir)
 
 SUBDIRS=
 
-BASIC_HDRS =								\
-	../include/f4rt-config.h 	\
-	intrinsics.h							\
-	matrix.h									\
-	mat-mult.h								\
-	kaapi/mat-mult-kaapi.h		\
-	omp/mat-mult-omp.h				\
-	pthrd/mat-mult-pthrd.h		\
-	seq/mat-mult-seq.h				\
-	tbb/mat-mult-tbb.h				\
-	mat-elim.h								\
-	mat-elim-tools.h					\
-	blas/mat-elim-blas.h			\
-	kaapi/mat-elim-kaapi.h		\
-	omp/mat-elim-omp.h				\
-	pthrd/mat-elim-pthrd.h		\
-	seq/mat-elim-seq.h				\
-	tbb/mat-elim-tbb.h				\
+BASIC_HDRS =											\
+	../include/la-bencher-config.h 	\
+	intrinsics.h										\
+	matrix.h												\
+	mat-mult.h											\
+	kaapi/mat-mult-kaapi.h					\
+	omp/mat-mult-omp.h							\
+	pthrd/mat-mult-pthrd.h					\
+	seq/mat-mult-seq.h							\
+	tbb/mat-mult-tbb.h							\
+	mat-elim.h											\
+	mat-elim-tools.h								\
+	blas/mat-elim-blas.h						\
+	kaapi/mat-elim-kaapi.h					\
+	omp/mat-elim-omp.h							\
+	pthrd/mat-elim-pthrd.h					\
+	seq/mat-elim-seq.h							\
+	tbb/mat-elim-tbb.h							\
 	mat-gen.h
 
 SOURCES=										\
 	intrinsics.c							\
-	f4rt.cpp									\
+	la-bencher.cpp						\
 	matrix.cpp								\
 	mat-mult.cpp							\
 	kaapi/mat-mult-kaapi.cpp	\
@@ -55,36 +55,36 @@ SOURCES=										\
 pkginclude_HEADERS =	\
 	$(BASIC_HDRS)
 
-libf4rt_la_CPPFLAGS	= $(AM_CXXFLAGS) -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
-libf4rt_la_CXXFLAGS	= $(AM_CXXFLAGS) -std=gnu++0x -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
-libf4rt_la_CFLAGS	= $(AM_CFLAGS) -std=gnu99 -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
+libla_bencher_la_CPPFLAGS	= $(AM_CXXFLAGS) -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
+libla_bencher_la_CXXFLAGS	= $(AM_CXXFLAGS) -std=gnu++0x -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
+libla_bencher_la_CFLAGS	= $(AM_CFLAGS) -std=gnu99 -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
 
-libf4rt_la_SOURCES	=	\
+libla_bencher_la_SOURCES	=	\
 	$(SOURCES)
 
-libf4rt_la_LIBADD=
+libla_bencher_la_LIBADD=
 if ENABLE_DEBUG
-lib_LTLIBRARIES	=	libf4rt.la libf4rt_debug.la
-libf4rt_debug_la_CPPFLAGS	=	$(AM_CXXFLAGS) -g3 -ggdb -Wall -D__F4RT_DEBUG -DDEBUG $(INCLUDES)
-libf4rt_debug_la_CXXFLAGS	=	$(AM_CXXFLAGS) -g3 -ggdb -Wall -std=gnu++0x -D__F4RT_DEBUG -DDEBUG $(INCLUDES)
-libf4rt__debug_la_CFLAGS	= $(AM_CFLAGS) -std=gnu99 -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
-libf4rt_debug_la_SOURCES	=	\
+lib_LTLIBRARIES	=	libla-bencher.la libla-bencher_debug.la
+libla_bencher_debug_la_CPPFLAGS	=	$(AM_CXXFLAGS) -g3 -ggdb -Wall -D__F4RT_DEBUG -DDEBUG $(INCLUDES)
+libla_bencher_debug_la_CXXFLAGS	=	$(AM_CXXFLAGS) -g3 -ggdb -Wall -std=gnu++0x -D__F4RT_DEBUG -DDEBUG $(INCLUDES)
+libla_bencher__debug_la_CFLAGS	= $(AM_CFLAGS) -std=gnu99 -Wall -D__F4RT_NDEBUG -DNDEBUG $(INCLUDES)
+libla_bencher_debug_la_SOURCES	=	\
 	$(SOURCES)
-libf4rt_debug_la_LIBADD=
+libla_bencher_debug_la_LIBADD=
 else
-lib_LTLIBRARIES	=	libf4rt.la
+lib_LTLIBRARIES	=	libla-bencher.la
 endif
 
-bin_PROGRAMS = intrinsics f4rt
+bin_PROGRAMS = intrinsics la-bencher
 
 intrinsics_CPPFLAGS= $(AM_CXXFLAGS)
 intrinsics_SOURCES= intrinsics.c intrinsics.h
-intrinsics_LDADD=libf4rt.la
+intrinsics_LDADD=libla-bencher.la
 
-f4rt_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x
-f4rt_CFLAGS= $(AM_CFLAGS) -std=gnu99
-f4rt_SOURCES=  							\
-	f4rt.cpp 									\
+la_bencher_CXXFLAGS= $(AM_CXXFLAGS) -std=gnu++0x
+la_bencher_CFLAGS= $(AM_CFLAGS) -std=gnu99
+la_bencher_SOURCES=  				\
+	la-bencher.cpp 						\
 	matrix.cpp 								\
 	mat-mult.cpp							\
 	kaapi/mat-mult-kaapi.cpp	\

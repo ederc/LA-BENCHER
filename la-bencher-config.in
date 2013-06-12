@@ -13,11 +13,11 @@ libdir=@libdir@
 usage()
 {
     cat <<EOF
-Usage: f4rt-config [OPTION]
+Usage: la-bencher-config [OPTION]
 
 Known values for OPTION are:
 
-  --prefix		show F4RT installation prefix 
+  --prefix		show LA-BENCHER installation prefix 
   --libs		print library linking information
   --cflags		print pre-processor and compiler flags
   --help		display this help and exit

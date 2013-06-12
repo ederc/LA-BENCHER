@@ -8,15 +8,21 @@
  */
 
 #include "mat-elim-blas.h"
+#ifdef __F4RT_HAVE_PLASMA
 #include "plasma.h"
-#include "quark.h"
-#include "lapacke.h"
-#include "cblas.h"
 #include "core_blas.h"
+#include "quark.h"
+#endif
+#ifdef __F4RT_HAVE_LAPACKE
+#include "lapacke.h"
+#endif
+#ifdef __F4RT_HAVE_CBLAS
+#include "cblas.h"
+#endif
 
 #define F4RT_DBG  0
 
-#ifdef __F4RT_HAVE_LAPACK
+#if defined(__F4RT_HAVE_LAPACK) && defined(__F4RT_HAVE_BLAS)
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,8 +32,8 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
 void elimBLAS(double *M, uint32 rows, uint32 cols, int nthrds, uint32 blocksize, uint64 prime) {
+/*
   uint32 m    = rows;
   uint32 n    = cols;
   uint64 dim  = m*n;
@@ -50,15 +56,14 @@ void elimBLAS(double *M, uint32 rows, uint32 cols, int nthrds, uint32 blocksize,
   // LAPACK implementation - end
   
   // PLASMA implementation - start
-  int *ipiv;
-  PLASMA_desc *L;
-  PLASMA_Init(nthrds);
+  //int *ipiv;
+  //PLASMA_desc *L;
+  //PLASMA_Init(nthrds);
   //PLASMA_Init_Affinity(nthrds, NULL);
-  printf("los gehts\n");
-  errorHandler = PLASMA_Alloc_Workspace_dgetrf_incpiv(m, n, &L, &ipiv);
-  errorHandler = PLASMA_dgetrf_incpiv(m, n, M, m, L, ipiv);
-  PLASMA_Finalize();
-  printf("INFO %d\n", errorHandler);
+  //errorHandler = PLASMA_Alloc_Workspace_dgetrf_incpiv(m, n, &L, &ipiv);
+  //errorHandler = PLASMA_dgetrf_incpiv(m, n, M, m, L, ipiv);
+  //PLASMA_Finalize();
+  //printf("INFO %d\n", errorHandler);
   // PLASMA implementation - end
 
   gettimeofday(&stop, NULL);
@@ -84,5 +89,6 @@ void elimBLAS(double *M, uint32 rows, uint32 cols, int nthrds, uint32 blocksize,
   printf("- - - - - - - - - - - - - - - - - - - - - - - - - -\n");
   printf("GFLOPS/sec:       %.4f\n", flops / (1000000000 * realtime));
   printf("---------------------------------------------------\n");
+*/
 }
 #endif

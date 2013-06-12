@@ -147,13 +147,12 @@ void eliminate(Matrix& A, const int nthrds, const uint32 blocksize,
   }
   // using OpenBLAS, converts matrix to double matrix first
   if (method == 5) {
-#ifdef __F4RT_HAVE_LAPACK
+#if defined(__F4RT_HAVE_LAPACK) or defined(__F4RT_HAVE_BLAS)
     uint64 dim  = static_cast<uint64>(A.nRows())*A.nCols();
     double *M = (double *)malloc(dim * sizeof(double));
     for (uint64 i = 0; i < dim; ++i) {
       M[i]  = (double) A.entries[i];
     }
-    printf("moving data done %llu\n", dim);
     elimBLAS(M, A.nRows(), A.nCols(), nthrds, blocksize, prime);
     free(M);
 #else

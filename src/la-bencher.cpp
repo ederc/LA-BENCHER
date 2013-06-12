@@ -1,5 +1,5 @@
 /**
- * \file   f4rt.cpp
+ * \file   la-bencher.cpp
  * \author Christian Eder ( christian.eder@inria.fr )
  * \date   February 2013
  * \brief  General source file for f4rt stuff.
@@ -7,7 +7,7 @@
  *         Public License version 3. See COPYING for more information.
  */
 
-#include "f4rt.h"
+#include "la-bencher.h"
 
 void print_help(int exval) {
  printf("DESCRIPTION\n");

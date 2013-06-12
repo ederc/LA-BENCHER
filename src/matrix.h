@@ -10,7 +10,7 @@
 #ifndef F4RT_MATRIX_H
 #define F4RT_MATRIX_H
 
-#include <f4rt-config.h>
+#include <la-bencher-config.h>
 #include <map>
 #include <cmath>
 #include <algorithm>

@@ -17,7 +17,7 @@
 #include <stdint.h>
 #include <limits.h>
 
-#include "f4rt-config.h"
+#include "la-bencher-config.h"
 
 #ifdef __F4RT_HAVE_AVX
 #include <immintrin.h>

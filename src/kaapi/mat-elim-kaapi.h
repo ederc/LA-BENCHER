@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sys/time.h>
-#include <f4rt-config.h>
+#include <la-bencher-config.h>
 #if defined(__F4RT_HAVE_KAAPIC)
 //#include <kaapi.h>
 #include <kaapic.h>

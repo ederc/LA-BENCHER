@@ -1,6 +1,6 @@
 # Copyright 2010 members of the LinBox group
 # 
-# This file is part of F4RT, licensed under the GNU General Public
+# This file is part of LA-BENCHER, licensed under the GNU General Public
 # License version 3. See COPYING for more information.
 
 dnl X_CFLAGS_APPEND(cflag)
@@ -61,10 +61,10 @@ AC_CACHE_CHECK([whether $1 is compilable],
 
 
 AC_PREREQ(2.50)
-AC_INIT(F4RT,0.0.1,ederc@mathematik.uni-kl.de)
+AC_INIT(LA-BENCHER,0.0.1,ederc@mathematik.uni-kl.de)
 AM_INIT_AUTOMAKE([1.8 gnu no-dependencies])
-AM_CONFIG_HEADER([include/f4rt-config.h])
-AX_PREFIX_CONFIG_H(include/f4rt-config.h, __F4RT)
+AM_CONFIG_HEADER([include/la-bencher-config.h])
+AX_PREFIX_CONFIG_H(include/la-bencher-config.h, __F4RT)
 AC_PATH_PROG(RM, rm, $FALSE)
 RM="$RM -f"
 
@@ -314,7 +314,7 @@ case "${host_cpu}" in
   *)
 	;;
 esac
-AC_DEFINE_UNQUOTED([CPU_SPINWAIT], [$CPU_SPINWAIT], "spinwait macro for f4rt")
+AC_DEFINE_UNQUOTED([CPU_SPINWAIT], [$CPU_SPINWAIT], "spinwait macro for LA-BENCHER")
 
 LD_PRELOAD_VAR="LD_PRELOAD"
 so="so"
@@ -514,7 +514,7 @@ AC_CHECK_FUNC([_malloc_thread_cleanup],
               [have__malloc_thread_cleanup="0"]
              )
 if test "x$have__malloc_thread_cleanup" = "x1" ; then
-  AC_DEFINE([THREAD_CLEANUP], [ ], "thread cleanup for f4rt")
+  AC_DEFINE([THREAD_CLEANUP], [ ], "thread cleanup for LA-BENCHER")
   force_tls="1"
 fi
 
@@ -594,7 +594,7 @@ fi
 AC_SUBST([enable_tls])
 if test "x${enable_tls}" = "x1" ; then
   AC_DEFINE_UNQUOTED([TLS], [ ], "Macro for using thread-local storage in
-      f4rt.")
+      LA-BENCHER.")
 elif test "x${force_tls}" = "x1" ; then
   AC_MSG_ERROR([Failed to configure TLS, which is mandatory for correct function])
 fi
@@ -1011,8 +1011,8 @@ AC_SUBST([AM_CDEBUGFLAGS])
 
 AC_OUTPUT([
 Makefile
-f4rt.pc
-f4rt-config
+la-bencher.pc
+la-bencher-config
 src/Makefile
 tests/Makefile
 tests/data/Makefile
